@@ -1,0 +1,20 @@
+Tackle-A full body charge attack.-TM-Normal-0-
+Defend-The pokemon prepares to take damage.-TM-Normal-0-
+Hyper Beam-Powerful beam; user rests next turn.-TM-Normal-0-
+Flamethrower-Intense fire blast; may burn.-TM-Fire-0-
+Surf-Huge wave attack; travels on water.-HM-Water-0-
+Thunderbolt-Strong electric blast; may paralyze.-TM-Electric-0-
+Solar Beam-Absorbs light, then fires beam.-TM-Grass-0-
+Ice Beam-Freezing beam; may freeze.-TM-Ice-0-
+Close Combat-Powerful attack; lowers defenses.-TM-Fighting-0-
+Sludge Bomb-Toxic sludge; may poison.-TM-Poison-0-
+Earthquake-Shakes ground; hits all nearby.-TM-Ground-0-
+Brave Bird-High damage charge; recoil.-TM-Flying-0-
+Psychic-Telekinetic blast; may lower Sp. Def.-TM-Psychic-0-
+Megahorn-Powerful horn stab; high crit rate.-TM-Bug-0-
+Stone Edge-Sharp stones; high crit rate.-TM-Rock-0-
+Shadow Ball-Shadowy blast; may lower Sp. Def.-TM-Ghost-0-
+Draco Meteor-Comets attack; lowers user’s Sp. Atk.-TM-Dragon-0-
+Dark Pulse-Dark energy wave; may flinch.-TM-Dark-0-
+Iron Head-Steel hard head slam; may flinch.-TM-Steel-0-
+Moonblast-Lunar energy blast; may lower Sp. Atk.-TM-Fairy-0-
