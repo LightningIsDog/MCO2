@@ -206,6 +206,7 @@ public class DexGui {
             subButton.addActionListener(e -> {
                 switch (currentLabel) {
                     case "ADD MOVE":
+                        AddMove();
                         break;
                     case "VIEW MOVE":
                         break;
@@ -426,6 +427,7 @@ public class DexGui {
     return panel;
 }
 
+// di pa maayos input fields for dex numbers 
  public static void AddPokemon() {
     JFrame pokFrame = new JFrame();
     pokFrame.setSize(1300, 700);
@@ -477,6 +479,40 @@ public class DexGui {
     gbc.anchor = GridBagConstraints.NORTHEAST;
     gbc.insets = new Insets(120, 20, 0, 50);
 
+    backgroundPanel.add(mainPanel, gbc);
+
+    pokFrame.setContentPane(backgroundPanel);
+    pokFrame.setLocationRelativeTo(null);
+    pokFrame.setVisible(true);
+}
+
+public static void AddMove() {
+    JFrame pokFrame = new JFrame();
+    pokFrame.setSize(1300, 700);
+    pokFrame.setUndecorated(true);
+    pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    ImageIcon pokBg = new ImageIcon("addmo.jpg");
+
+    // Custom background panel
+    JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+    backgroundPanel.setOpaque(false);
+
+    // Main container for UI elements
+    JPanel mainPanel = new JPanel();
+    mainPanel.setOpaque(false);
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+    // Add constraints for placement
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
     backgroundPanel.add(mainPanel, gbc);
 
     pokFrame.setContentPane(backgroundPanel);
