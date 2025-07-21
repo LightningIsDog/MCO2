@@ -394,30 +394,42 @@ public class DexGui {
 
     submitButton.addActionListener(e -> {
         String input = textField.getText().trim();
-        int number = getValidatedIntInput(input, 0, 9999);
+        int number = getValidatedIntInput(input, 1, 9999);
 
         if (number == -1) {
-            JOptionPane.showMessageDialog(panel, "Invalid input. Please enter a number between 0–9999.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(panel, "Invalid input. Please enter a number between 1–9999.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (checkDuplicate) {
+            boolean isDuplicate = false;
             try (BufferedReader br = new BufferedReader(new FileReader("pokedex.txt"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    String[] parts = line.split(",");
-                    if (parts.length > 0 && parts[0].trim().equals(String.valueOf(number))) {
-                        JOptionPane.showMessageDialog(panel, "Pokedex number already exists. Please enter a unique number.", "Duplicate Entry", JOptionPane.WARNING_MESSAGE);
-                        return; // 🛑 Don't proceed
+                    String[] parts = line.trim().split(" +");
+                    if (parts.length > 0) {
+                        String fileDex = parts[0].trim();
+                        if (fileDex.equals(String.valueOf(number))) {
+                            isDuplicate = true;
+                            break;
+                        }
                     }
                 }
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(panel, "Error reading file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            if (isDuplicate) {
+                JOptionPane.showMessageDialog(panel, "Pokedex number already exists. Please enter a unique number.", "Duplicate Entry", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
         }
 
-        // ✅ Only continue if all checks passed
+        // ✅ All checks passed — lock input
+        textField.setEnabled(false);
+        submitButton.setEnabled(false);
+
         onSubmit.accept(number);
     });
 
@@ -427,8 +439,74 @@ public class DexGui {
     return panel;
 }
 
-// di pa maayos input fields for dex numbers 
- public static void AddPokemon() {
+public static JPanel PokemonNameInput(String labelText, String buttonText, boolean checkDuplicate, Consumer<String> onSubmit) {
+    JPanel panel = new JPanel();
+    panel.setOpaque(false);
+    panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+    JLabel label = new JLabel(labelText);
+    label.setForeground(Color.BLUE);
+    label.setFont(new Font("Arial", Font.BOLD, 18));
+
+    JTextField textField = new JTextField(15);
+    textField.setFont(new Font("Arial", Font.PLAIN, 16));
+    textField.setForeground(Color.BLACK);
+    textField.setBackground(new Color(255, 255, 204));
+    textField.setCaretColor(Color.BLUE);
+    textField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+
+    JButton submitButton = new JButton(buttonText);
+    submitButton.setFont(new Font("Arial", Font.BOLD, 16));
+
+    submitButton.addActionListener(e -> {
+        String name = textField.getText().trim();
+
+        // ❌ Check if empty
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(panel, "Name field cannot be empty.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // ❌ Check if duplicate
+        if (checkDuplicate) {
+            boolean isDuplicate = false;
+            try (BufferedReader br = new BufferedReader(new FileReader("pokedex.txt"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] parts = line.trim().split(" +");
+                    if (parts.length > 1) {
+                        String fileName = parts[1].trim();
+                        if (fileName.equalsIgnoreCase(name)) {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(panel, "Error reading file: " + ex.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (isDuplicate) {
+                JOptionPane.showMessageDialog(panel, "Pokémon name already exists. Please enter a unique name.", "Duplicate Entry", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
+        // ✅ Lock name input once valid
+        textField.setEnabled(false);
+        submitButton.setEnabled(false);
+
+        onSubmit.accept(name);
+    });
+
+    panel.add(label);
+    panel.add(textField);
+    panel.add(submitButton);
+    return panel;
+}
+
+public static void AddPokemon() {
     JFrame pokFrame = new JFrame();
     pokFrame.setSize(1300, 700);
     pokFrame.setUndecorated(true);
@@ -449,14 +527,17 @@ public class DexGui {
     mainPanel.setOpaque(false);
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-    // 👇 Flag to avoid duplicate panel additions
+    // ✅ Flag to avoid re-adding name panel
     final boolean[] namePanelAdded = {false};
 
-    JPanel dexPanel = DexNum("Enter Pokedex Number:", "Submit", true, number -> {
+    JPanel dexPanel = DexNum("Enter Pokedex Number:", "Next", true, number -> {
+        System.out.println("Dex Number input: " + number);
+
+        // Show name field only once
         if (!namePanelAdded[0]) {
-            JPanel namePanel = DexNum("Enter Pokemon Name (as number for now):", "Next", false, name -> {
-                System.out.println("Name (input): " + name);
-                // more inputs here...
+            JPanel namePanel = PokemonNameInput("Enter Pokémon Name:", "Next", true, name -> {
+                System.out.println("Entered Name: " + name);
+                // next input steps...
             });
 
             mainPanel.add(Box.createVerticalStrut(20));
@@ -464,7 +545,7 @@ public class DexGui {
             mainPanel.revalidate();
             mainPanel.repaint();
 
-            namePanelAdded[0] = true; // ✅ Avoid adding it again
+            namePanelAdded[0] = true; // flag to prevent duplication
         }
     });
 
