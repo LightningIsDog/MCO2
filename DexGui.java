@@ -112,6 +112,12 @@ public class DexGui {
         }).start();
     }
 
+    public static ImageIcon loadImage(String path, int width, int height) {
+    ImageIcon icon = new ImageIcon(path);
+    Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(img);
+}
+
    public static void PokemonManagement() {
     JFrame pokFrame = new JFrame();
     pokFrame.setSize(1300, 700);
@@ -379,14 +385,14 @@ public class DexGui {
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
     JLabel label = new JLabel(labelText);
-    label.setForeground(Color.BLUE);
+    label.setForeground(Color.BLACK);
     label.setFont(new Font("Arial", Font.BOLD, 18));
 
     JTextField textField = new JTextField(15);
     textField.setFont(new Font("Arial", Font.PLAIN, 16));
     textField.setForeground(Color.BLACK);
     textField.setBackground(new Color(255, 255, 204));
-    textField.setCaretColor(Color.BLUE);
+    textField.setCaretColor(Color.BLACK);
     textField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
     JButton submitButton = new JButton(buttonText);
@@ -445,14 +451,14 @@ public static JPanel PokemonNameInput(String labelText, String buttonText, boole
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
     JLabel label = new JLabel(labelText);
-    label.setForeground(Color.BLUE);
+    label.setForeground(Color.BLACK);
     label.setFont(new Font("Arial", Font.BOLD, 18));
 
     JTextField textField = new JTextField(15);
     textField.setFont(new Font("Arial", Font.PLAIN, 16));
     textField.setForeground(Color.BLACK);
     textField.setBackground(new Color(255, 255, 204));
-    textField.setCaretColor(Color.BLUE);
+    textField.setCaretColor(Color.BLACK);
     textField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 
     JButton submitButton = new JButton(buttonText);
@@ -461,7 +467,6 @@ public static JPanel PokemonNameInput(String labelText, String buttonText, boole
     submitButton.addActionListener(e -> {
         String name = textField.getText().trim();
 
-        // ❌ Check if empty
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(panel, "Name field cannot be empty.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
             return;
@@ -506,6 +511,61 @@ public static JPanel PokemonNameInput(String labelText, String buttonText, boole
     return panel;
 }
 
+public static JPanel PokemonTypeInput(String labelText, String buttonText, boolean isRequired, Consumer<String> onValidTypeEntered) {
+    JPanel panel = new JPanel();
+    panel.setOpaque(false);
+    panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+    JLabel label = new JLabel(labelText);
+    label.setForeground(Color.BLACK);
+    label.setFont(new Font("Arial", Font.BOLD, 18));
+
+    JTextField textField = new JTextField(15);
+    textField.setFont(new Font("Arial", Font.PLAIN, 16));
+    textField.setForeground(Color.BLACK);
+    textField.setBackground(new Color(255, 255, 204));
+    textField.setCaretColor(Color.BLACK);
+    textField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+
+    JButton submitButton = new JButton(buttonText);
+    submitButton.setFont(new Font("Arial", Font.BOLD, 16));
+
+    JLabel errorLabel = new JLabel(" ");
+    errorLabel.setForeground(Color.RED);
+    errorLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+    panel.add(label);
+    panel.add(textField);
+    panel.add(submitButton);
+    panel.add(errorLabel);
+
+    submitButton.addActionListener(e -> {
+        String input = textField.getText().trim().toLowerCase();
+        String[] validTypes = {
+            "bug", "fighting", "psychic", "fairy", "grass", "ice",
+            "ghost", "poison", "flying", "normal", "dragon", "rock",
+            "steel", "fire", "water", "dark", "ground", "electric"
+        };
+
+        boolean isValid = false;
+        for (String type : validTypes) {
+            if (type.equalsIgnoreCase(input)) {
+                isValid = true;
+                break;
+            }
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(panel, "Invalid Pokemon Type", "Invalid Type", JOptionPane.WARNING_MESSAGE);
+        } else {
+            errorLabel.setText(" ");
+            textField.setEnabled(false);
+            submitButton.setEnabled(false);
+            onValidTypeEntered.accept(input);
+        }
+    });
+    return panel;
+}
+
 public static void AddPokemon() {
     JFrame pokFrame = new JFrame();
     pokFrame.setSize(1300, 700);
@@ -524,41 +584,97 @@ public static void AddPokemon() {
     backgroundPanel.setOpaque(false);
 
     JPanel mainPanel = new JPanel();
-    mainPanel.setOpaque(false);
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+    mainPanel.setOpaque(false);
 
-    // ✅ Flag to avoid re-adding name panel
-    final boolean[] namePanelAdded = {false};
+    // Wrap a panel with FlowLayout.LEFT around each input group (excluding image)
+    JPanel dexPanelWrap = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    dexPanelWrap.setOpaque(false);
 
+    JPanel namePlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    namePlaceholder.setOpaque(false);
+
+    JPanel typePlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    typePlaceholder.setOpaque(false);
+
+    JPanel type2PromptPlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    type2PromptPlaceholder.setOpaque(false);
+
+    JPanel imagePlaceholder = new JPanel(); // image can remain centered
+    imagePlaceholder.setPreferredSize(new Dimension(500, 250));
+    imagePlaceholder.setOpaque(false);
+
+    mainPanel.add(Box.createVerticalStrut(25)); // top spacing
+
+    // DexNum Panel
     JPanel dexPanel = DexNum("Enter Pokedex Number:", "Next", true, number -> {
         System.out.println("Dex Number input: " + number);
 
-        // Show name field only once
-        if (!namePanelAdded[0]) {
-            JPanel namePanel = PokemonNameInput("Enter Pokémon Name:", "Next", true, name -> {
-                System.out.println("Entered Name: " + name);
-                // next input steps...
-            });
+        // Show Pokémon name input
+        namePlaceholder.removeAll();
+        namePlaceholder.add(PokemonNameInput("Enter Pokémon Name:", "Next", true, name -> {
+            System.out.println("Entered Name: " + name);
 
-            mainPanel.add(Box.createVerticalStrut(20));
-            mainPanel.add(namePanel);
-            mainPanel.revalidate();
-            mainPanel.repaint();
+            // Show image and type input
+            imagePlaceholder.removeAll();
+            imagePlaceholder.add(new JLabel(loadImage("types.png", 500, 250)));
+            imagePlaceholder.revalidate();
+            imagePlaceholder.repaint();
 
-            namePanelAdded[0] = true; // flag to prevent duplication
-        }
+            typePlaceholder.removeAll();
+            typePlaceholder.add(PokemonTypeInput("Enter Pokémon Type 1:", "Next", true, type -> {
+                System.out.println("Valid Pokémon Type: " + type);
+
+                // Show "Does it have Type 2?" text + buttons
+                type2PromptPlaceholder.removeAll();
+                JLabel label = new JLabel("Does Pokémon have a Type 2?");
+                label.setFont(new Font("Arial", Font.BOLD, 18)); // match font size
+                label.setForeground(Color.BLACK);
+
+                ButtonBg btn1 = new ButtonBg("YES", new Dimension(100, 25), new Color(0, 153, 76));
+                ButtonBg btn2 = new ButtonBg("NO", new Dimension(100, 25), new Color(255, 0, 0));
+
+                type2PromptPlaceholder.add(label);
+                type2PromptPlaceholder.add(Box.createHorizontalStrut(10));
+                type2PromptPlaceholder.add(btn1);
+                type2PromptPlaceholder.add(btn2);
+
+                type2PromptPlaceholder.revalidate();
+                type2PromptPlaceholder.repaint();
+            }));
+
+            typePlaceholder.revalidate();
+            typePlaceholder.repaint();
+        }));
+
+        namePlaceholder.revalidate();
+        namePlaceholder.repaint();
     });
 
-    mainPanel.add(Box.createVerticalStrut(80));
-    mainPanel.add(dexPanel);
+    // Add dexPanel to wrapper
+    dexPanelWrap.add(dexPanel);
 
+    // Add all to mainPanel
+    JPanel type2PromptWrap = new JPanel(new FlowLayout(FlowLayout.LEFT));
+type2PromptWrap.setOpaque(false);
+type2PromptWrap.add(type2PromptPlaceholder); // wrap the actual placeholder
+    mainPanel.add(dexPanelWrap);
+    mainPanel.add(Box.createVerticalStrut(5));
+    mainPanel.add(namePlaceholder);
+    mainPanel.add(imagePlaceholder); // center-aligned
+    mainPanel.add(Box.createVerticalStrut(5));
+    mainPanel.add(typePlaceholder);
+    mainPanel.add(Box.createVerticalStrut(2));
+    mainPanel.add(type2PromptWrap);
+
+    // Position mainPanel inside backgroundPanel
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 1;
     gbc.gridy = 0;
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
     gbc.anchor = GridBagConstraints.NORTHEAST;
-    gbc.insets = new Insets(120, 20, 0, 50);
+    gbc.insets = new Insets(120, 0, 0, 80);
 
     backgroundPanel.add(mainPanel, gbc);
 
