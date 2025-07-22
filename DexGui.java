@@ -511,7 +511,7 @@ public static JPanel PokemonNameInput(String labelText, String buttonText, boole
     return panel;
 }
 
-public static JPanel PokemonTypeInput(String labelText, String buttonText, boolean isRequired, Consumer<String> onValidTypeEntered) {
+public static JPanel PokemonTypeInput(String labelText,String buttonText,boolean isType2,String type1Value,Consumer<String> onValidTypeEntered) {
     JPanel panel = new JPanel();
     panel.setOpaque(false);
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -541,6 +541,7 @@ public static JPanel PokemonTypeInput(String labelText, String buttonText, boole
 
     submitButton.addActionListener(e -> {
         String input = textField.getText().trim().toLowerCase();
+
         String[] validTypes = {
             "bug", "fighting", "psychic", "fairy", "grass", "ice",
             "ghost", "poison", "flying", "normal", "dragon", "rock",
@@ -554,134 +555,199 @@ public static JPanel PokemonTypeInput(String labelText, String buttonText, boole
                 break;
             }
         }
+
         if (!isValid) {
-            JOptionPane.showMessageDialog(panel, "Invalid Pokemon Type", "Invalid Type", JOptionPane.WARNING_MESSAGE);
-        } else {
-            errorLabel.setText(" ");
-            textField.setEnabled(false);
-            submitButton.setEnabled(false);
-            onValidTypeEntered.accept(input);
+            JOptionPane.showMessageDialog(panel, "Invalid Pokémon Type", "Invalid Type", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        if (isType2 && input.equalsIgnoreCase(type1Value)) {
+            JOptionPane.showMessageDialog(panel, "Duplicate Type", "Duplicate Type", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // ✅ All validations passed
+        errorLabel.setText(" ");
+        textField.setEnabled(false);
+        submitButton.setEnabled(false);
+        onValidTypeEntered.accept(input);
     });
+
     return panel;
 }
 
 public static void AddPokemon() {
-    JFrame pokFrame = new JFrame();
-    pokFrame.setSize(1300, 700);
-    pokFrame.setUndecorated(true);
-    pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame pokFrame = new JFrame();
+        pokFrame.setSize(1300, 700); // Your original size
+        pokFrame.setUndecorated(true);
+        pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    ImageIcon pokBg = new ImageIcon("addpok.jpg");
+        ImageIcon pokBg = new ImageIcon("addpok.jpg");
 
-    JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-    };
-    backgroundPanel.setOpaque(false);
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel.setOpaque(false);
 
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    mainPanel.setOpaque(false);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setOpaque(false);
+        mainPanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Explicitly align mainPanel contents left
 
-    // Wrap a panel with FlowLayout.LEFT around each input group (excluding image)
-    JPanel dexPanelWrap = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    dexPanelWrap.setOpaque(false);
+        JPanel dexPanelWrap = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dexPanelWrap.setOpaque(false);
 
-    JPanel namePlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    namePlaceholder.setOpaque(false);
+        JPanel namePlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        namePlaceholder.setOpaque(false);
 
-    JPanel typePlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    typePlaceholder.setOpaque(false);
+        JPanel typePlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        typePlaceholder.setOpaque(false);
 
-    JPanel type2PromptPlaceholder = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    type2PromptPlaceholder.setOpaque(false);
+        // This panel (type2ContainerForStacking) manages the vertical stacking
+        JPanel type2ContainerForStacking = new JPanel();
+        type2ContainerForStacking.setLayout(new BoxLayout(type2ContainerForStacking, BoxLayout.Y_AXIS));
+        type2ContainerForStacking.setOpaque(false);
+        type2ContainerForStacking.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    JPanel imagePlaceholder = new JPanel(); // image can remain centered
-    imagePlaceholder.setPreferredSize(new Dimension(500, 250));
-    imagePlaceholder.setOpaque(false);
+        // This panel (type2PromptAndButtonsRow) holds the label and YES/NO buttons horizontally.
+        JPanel type2PromptAndButtonsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        type2PromptAndButtonsRow.setOpaque(false);
+        type2PromptAndButtonsRow.setAlignmentX(Component.LEFT_ALIGNMENT); // Align within its BoxLayout parent
 
-    mainPanel.add(Box.createVerticalStrut(25)); // top spacing
+        JPanel imagePlaceholder = new JPanel();
+        imagePlaceholder.setPreferredSize(new Dimension(500, 250));
+        imagePlaceholder.setOpaque(false);
 
-    // DexNum Panel
-    JPanel dexPanel = DexNum("Enter Pokedex Number:", "Next", true, number -> {
-        System.out.println("Dex Number input: " + number);
+        mainPanel.add(Box.createVerticalStrut(25));
 
-        // Show Pokémon name input
-        namePlaceholder.removeAll();
-        namePlaceholder.add(PokemonNameInput("Enter Pokémon Name:", "Next", true, name -> {
-            System.out.println("Entered Name: " + name);
+        JPanel dexPanel = DexNum("Enter Pokedex Number:", "Next", true, number -> {
+            System.out.println("Dex Number input: " + number);
 
-            // Show image and type input
-            imagePlaceholder.removeAll();
-            imagePlaceholder.add(new JLabel(loadImage("types.png", 500, 250)));
-            imagePlaceholder.revalidate();
-            imagePlaceholder.repaint();
+            namePlaceholder.removeAll();
+            namePlaceholder.add(PokemonNameInput("Enter Pokémon Name:", "Next", true, name -> {
+                System.out.println("Entered Name: " + name);
 
-            typePlaceholder.removeAll();
-            typePlaceholder.add(PokemonTypeInput("Enter Pokémon Type 1:", "Next", true, type -> {
-                System.out.println("Valid Pokémon Type: " + type);
+                imagePlaceholder.removeAll();
+                imagePlaceholder.add(new JLabel(loadImage("types.png", 500, 250)));
+                imagePlaceholder.revalidate();
+                imagePlaceholder.repaint();
 
-                // Show "Does it have Type 2?" text + buttons
-                type2PromptPlaceholder.removeAll();
-                JLabel label = new JLabel("Does Pokémon have a Type 2?");
-                label.setFont(new Font("Arial", Font.BOLD, 18)); // match font size
-                label.setForeground(Color.BLACK);
+                final String[] finalType1 = new String[1];
 
-                ButtonBg btn1 = new ButtonBg("YES", new Dimension(100, 25), new Color(0, 153, 76));
-                ButtonBg btn2 = new ButtonBg("NO", new Dimension(100, 25), new Color(255, 0, 0));
+                typePlaceholder.removeAll();
+                typePlaceholder.add(PokemonTypeInput("Enter Pokémon Type 1:", "Next", false, "", type -> {
+                    System.out.println("Valid Type 1: " + type);
+                    finalType1[0] = type;
 
-                type2PromptPlaceholder.add(label);
-                type2PromptPlaceholder.add(Box.createHorizontalStrut(10));
-                type2PromptPlaceholder.add(btn1);
-                type2PromptPlaceholder.add(btn2);
+                    type2PromptAndButtonsRow.removeAll();
+                    type2ContainerForStacking.removeAll(); // Clear the stacking container completely
 
-                type2PromptPlaceholder.revalidate();
-                type2PromptPlaceholder.repaint();
+                    JLabel label = new JLabel("Does Pokémon have a Type 2?");
+                    label.setFont(new Font("Arial", Font.BOLD, 18));
+                    label.setForeground(Color.BLACK);
+
+                    ButtonBg btn1 = new ButtonBg("YES", new Dimension(100, 25), new Color(0, 153, 76));
+                    ButtonBg btn2 = new ButtonBg("NO", new Dimension(100, 25), new Color(255, 0, 0));
+
+                    type2PromptAndButtonsRow.add(label);
+                    type2PromptAndButtonsRow.add(Box.createHorizontalStrut(10));
+                    type2PromptAndButtonsRow.add(btn1);
+                    type2PromptAndButtonsRow.add(btn2);
+
+                    type2ContainerForStacking.add(type2PromptAndButtonsRow);
+                    type2ContainerForStacking.revalidate();
+                    type2ContainerForStacking.repaint();
+
+                    btn1.addActionListener(e1 -> {
+                        btn1.setEnabled(false);
+                        btn2.setEnabled(false);
+
+                        // Create the horizontal JPanel for "Enter Pokémon Type 2" input, text field, and its "Next" button.
+                        // Your PokemonTypeInput method correctly handles the internal horizontal layout.
+                        JPanel type2InputPanel = PokemonTypeInput("Enter Pokémon Type 2:", "Next", true, finalType1[0], type2 -> {
+                            if (type2.equalsIgnoreCase(finalType1[0])) {
+                                JOptionPane.showMessageDialog(null, "Duplicate Type", "Duplicate Type", JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                System.out.println("Valid Pokémon Type 2: " + type2);
+                            }
+                        });
+
+                        // *** FIX APPLIED HERE: Adjusting "Enter Type 2" to the left ***
+                        // Create a wrapper panel to apply a left shift.
+                        // Use FlowLayout with 0 horizontal/vertical gaps to prevent unintended spacing.
+                        JPanel leftAdjustedInputPanelWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+                        leftAdjustedInputPanelWrapper.setOpaque(false); // Keep it transparent
+
+                        // Add a NEGATIVE horizontal strut to pull the subsequent content to the LEFT.
+                        // Adjust the value (e.g., -10, -20, -30) to control the amount of left shift.
+                        leftAdjustedInputPanelWrapper.add(Box.createHorizontalStrut(-20)); // Adjust this negative value for desired shift
+
+                        // Add your horizontally laid out type2InputPanel to this wrapper.
+                        leftAdjustedInputPanelWrapper.add(type2InputPanel);
+
+                        // Ensure this wrapper panel itself aligns to the left within its BoxLayout parent.
+                        leftAdjustedInputPanelWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+                        // Add the wrapper (which now contains your horizontally adjusted input panel)
+                        // to the vertically stacking container.
+                        type2ContainerForStacking.add(Box.createVerticalStrut(10)); // Maintain space before this element
+                        type2ContainerForStacking.add(leftAdjustedInputPanelWrapper); // <-- Add the WRAPPER here!
+                        type2ContainerForStacking.revalidate();
+                        type2ContainerForStacking.repaint();
+                    });
+
+                    btn2.addActionListener(e -> {
+                        btn1.setEnabled(false);
+                        btn2.setEnabled(false);
+                        String type2 = "0";
+                        System.out.println("User clicked NO – Type 2 set to: " + type2);
+                    });
+
+                }));
+
+                typePlaceholder.revalidate();
+                typePlaceholder.repaint();
             }));
 
-            typePlaceholder.revalidate();
-            typePlaceholder.repaint();
-        }));
+            namePlaceholder.revalidate();
+            namePlaceholder.repaint();
+        });
 
-        namePlaceholder.revalidate();
-        namePlaceholder.repaint();
-    });
+        dexPanelWrap.add(dexPanel);
 
-    // Add dexPanel to wrapper
-    dexPanelWrap.add(dexPanel);
+        // type2PromptWrap is a FlowLayout.LEFT panel, wrapping the type2ContainerForStacking
+        JPanel type2PromptWrap = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        type2PromptWrap.setOpaque(false);
+        type2PromptWrap.setAlignmentX(Component.LEFT_ALIGNMENT); // Ensure this wrapper also aligns left
+        type2PromptWrap.add(type2ContainerForStacking); // This makes the vertically stacked content align left
 
-    // Add all to mainPanel
-    JPanel type2PromptWrap = new JPanel(new FlowLayout(FlowLayout.LEFT));
-type2PromptWrap.setOpaque(false);
-type2PromptWrap.add(type2PromptPlaceholder); // wrap the actual placeholder
-    mainPanel.add(dexPanelWrap);
-    mainPanel.add(Box.createVerticalStrut(5));
-    mainPanel.add(namePlaceholder);
-    mainPanel.add(imagePlaceholder); // center-aligned
-    mainPanel.add(Box.createVerticalStrut(5));
-    mainPanel.add(typePlaceholder);
-    mainPanel.add(Box.createVerticalStrut(2));
-    mainPanel.add(type2PromptWrap);
+        mainPanel.add(dexPanelWrap);
+        mainPanel.add(Box.createVerticalStrut(5));
+        mainPanel.add(namePlaceholder);
+        mainPanel.add(imagePlaceholder);
+        mainPanel.add(Box.createVerticalStrut(5));
+        mainPanel.add(typePlaceholder);
+        mainPanel.add(Box.createVerticalStrut(2));
+        mainPanel.add(type2PromptWrap);
 
-    // Position mainPanel inside backgroundPanel
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 1;
-    gbc.gridy = 0;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    gbc.anchor = GridBagConstraints.NORTHEAST;
-    gbc.insets = new Insets(120, 0, 0, 80);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        gbc.insets = new Insets(120, 0, 0, 80);
 
-    backgroundPanel.add(mainPanel, gbc);
+        backgroundPanel.add(mainPanel, gbc);
 
-    pokFrame.setContentPane(backgroundPanel);
-    pokFrame.setLocationRelativeTo(null);
-    pokFrame.setVisible(true);
-}
+        pokFrame.setContentPane(backgroundPanel);
+        pokFrame.setLocationRelativeTo(null);
+        pokFrame.setVisible(true);
+    }
 
 public static void AddMove() {
     JFrame pokFrame = new JFrame();
