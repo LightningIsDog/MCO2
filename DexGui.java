@@ -371,7 +371,9 @@ public class DexGui {
         JScrollPane descScroll = new JScrollPane(descArea);
 
         JLabel machineLabel = new JLabel("Machine:");
-        JTextField machineField = new JTextField();
+        JComboBox<String> machineCombo = new JComboBox<>(new String[]{
+                "HM","TM"
+        });
 
         JLabel type1Label = new JLabel("Primary Type:");
         JComboBox<String> type1Combo = new JComboBox<>(new String[]{
@@ -393,7 +395,7 @@ public class DexGui {
         formPanel.add(descLabel);
         formPanel.add(descScroll);
         formPanel.add(machineLabel);
-        formPanel.add(machineField);
+        formPanel.add(machineCombo);
         formPanel.add(type1Label);
         formPanel.add(type1Combo);
         formPanel.add(type2Label);
@@ -413,7 +415,7 @@ public class DexGui {
         addButton.addActionListener(e -> {
             String name = nameField.getText().trim();
             String desc = descArea.getText().trim();
-            String machine = machineField.getText().trim();
+            String machine = (String) machineCombo.getSelectedItem();
             String type1 = (String) type1Combo.getSelectedItem();
             String type2 = (String) type2Combo.getSelectedItem();
 
@@ -443,9 +445,21 @@ public class DexGui {
             // Clear fields for next entry
             nameField.setText("");
             descArea.setText("");
-            machineField.setText("");
+            machineCombo.setSelectedIndex(0);
             type1Combo.setSelectedIndex(0);
             type2Combo.setSelectedIndex(0);
+            String data = ("\n" + name + "-" + desc + "-" + machine + "-"+ type1 +"-" + type2 + "-");
+
+            try
+            {
+                FileWriter writer = new FileWriter("moves.txt",true);
+                writer.append(data);
+                writer.close();
+            }
+            catch (IOException f)
+            {
+                f.printStackTrace();
+            }
         });
 
         backButton.addActionListener(e -> addFrame.dispose());
