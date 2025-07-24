@@ -245,6 +245,14 @@ public class Pokemon
         return heldItem;
     }
 
+    public void setMoves(Moves[] moves) {
+    this.moves = moves;
+}
+
+public void setPMoves(int pMoves) {
+    this.pMoves = pMoves;
+}
+
     /**
        Displays the details of the Pokémon in a formatted manner.
        It includes the Pokédex number, name, type(s), base level, stats (HP, Attack, Defense, Speed),
@@ -438,6 +446,14 @@ public class Pokemon
         System.out.println("\n ================================================================================================");
     }
 
+     public int getPMoves() {
+        return pMoves;
+    }
+
+    public Moves[] getMoves() {
+        return moves;
+    }
+
     /**
         Teaches a move to the Pokémon if it doesn't already know it and if it can learn it.
         @param moveName the name of the move to teach
@@ -562,9 +578,13 @@ public class Pokemon
         Makes the Pokémon cry, which is a sound it makes.
         This method prints a message indicating that the Pokémon is crying.
     */
-    public void cry()
-    {
-        System.out.println("\n\t" + Name + " cries " + Name.toUpperCase() + "!!!"); // Cry := sound pokemon makes
+     public String cry() {
+        // You might want to remove spaces from the name for the actual "sound" part
+        // For example, "Mister Mime" might cry "MISTERMIME!!!"
+        String crySoundName = this.Name.replace(" ", "");
+
+        // Construct and return the string
+        return this.Name + " cries " + crySoundName.toUpperCase() + "!!!";
     }
 }
 
