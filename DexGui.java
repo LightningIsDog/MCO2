@@ -159,6 +159,7 @@ public class DexGui {
                         AddPokemon();
                         break;
                     case "VIEW POKEMON":
+                        ViewPokemon();
                         break;
                     case "SEARCH POKEMON":
                         break;
@@ -1625,4 +1626,188 @@ public class DexGui {
         pokFrame2.setVisible(true);
     }
 
+    // may kulang pa
+    public static void ViewPokemon() {
+        JFrame frame = new JFrame("Pokédex Viewer");
+        frame.setSize(900, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(Color.WHITE);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("pokedex.txt"))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] data = line.trim().split("\\s+");
+                // Check if the line has enough data points
+                if (data.length < 12) {
+                    System.err.println("Skipping malformed line in pokedex.txt: " + line);
+                    continue;
+                }
+
+                // Parse all the data from the current line
+                int pokedexNo = Integer.parseInt(data[0]);
+                String name = data[1].replace("_", " "); // Replace underscore with space for display
+                String type1 = data[2];
+                String type2 = data[3].equals("0") ? "None" : data[3];
+                int baseLevel = Integer.parseInt(data[4]);
+                int from = Integer.parseInt(data[5]);
+                int to = Integer.parseInt(data[6]);
+                int evoLevel = Integer.parseInt(data[7]);
+                int hp = Integer.parseInt(data[8]);
+                int atk = Integer.parseInt(data[9]);
+                int def = Integer.parseInt(data[10]);
+                int spd = Integer.parseInt(data[11]);
+
+                // *** THIS IS THE CRUCIAL MISSING STEP! ***
+                // Create a Pokemon object using the parsed data from the current line.
+                // Ensure your Pokemon class has a constructor that matches these parameters.
+                Pokemon currentPokemon = new Pokemon(pokedexNo, name, type1, type2, baseLevel,
+                                                     from, to, evoLevel, hp, atk, def, spd);
+
+                JPanel pokemonCard = new JPanel();
+                pokemonCard.setLayout(new BoxLayout(pokemonCard, BoxLayout.Y_AXIS));
+                pokemonCard.setBackground(new Color(245, 245, 245));
+                pokemonCard.setMaximumSize(new Dimension(800, 250));
+                pokemonCard.setPreferredSize(new Dimension(800, 250));
+                pokemonCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+                pokemonCard.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY, 1),
+                    BorderFactory.createEmptyBorder(10, 15, 10, 15)
+                ));
+
+                // Now that currentPokemon is created, you can access its methods and fields
+                pokemonCard.add(new JLabel("Pokédex No: " + String.format("%04d", pokedexNo)));
+                pokemonCard.add(new JLabel("Name: " + name)); // This 'name' is the local variable
+                 pokemonCard.add(Box.createVerticalStrut(5));
+                pokemonCard.add(new JLabel(currentPokemon.cry()));
+                 pokemonCard.add(Box.createVerticalStrut(5));
+                pokemonCard.add(new JLabel("Type 1: " + type1));
+                pokemonCard.add(new JLabel("Type 2: " + type2));
+                pokemonCard.add(new JLabel("Base Level: " + baseLevel));
+                pokemonCard.add(new JLabel("HP: " + hp + " | ATTACK: " + atk + " | DEFENSE: " + def + " | SPEED: " + spd));
+                 // --- Evolution Information ---
+            String evolvesFromText;
+            int fromPokedexNo = currentPokemon.getFrom();
+            // Check if it evolves from something and if that Pokedex entry is valid
+            if (fromPokedexNo != 0 && fromPokedexNo <= Pokedex.pokemonCount) {
+                // Ensure Pokedex.pokemon is accessible (e.g., it's a static array in Pokedex class)
+                evolvesFromText = "Evolves From: " + Pokedex.pokemon[fromPokedexNo - 1].getName() +
+                                  " at Level " + Pokedex.pokemon[fromPokedexNo - 1].getEvoLevel();
+            } else if (fromPokedexNo != 0) {
+                evolvesFromText = "Evolves From: Unknown At Unknown Level";
+            } else {
+                evolvesFromText = "Evolves From: None"; // Original "None" case
+            }
+            pokemonCard.add(new JLabel(evolvesFromText));
+
+            String evolvesToText;
+            int toPokedexNo = currentPokemon.getTo();
+            // Check if it evolves to something and if that Pokedex entry is valid
+            if (toPokedexNo != 0 && toPokedexNo <= Pokedex.pokemonCount) {
+                evolvesToText = "Evolves To: " + Pokedex.pokemon[toPokedexNo - 1].getName() +
+                                " at Level " + currentPokemon.getEvoLevel(); // Use currentPokemon's EvoLevel
+            } else if (toPokedexNo != 0) {
+                evolvesToText = "Evolves To: Unknown At Level " + currentPokemon.getEvoLevel();
+            } else {
+                evolvesToText = "Evolves To: None"; // Original "None" case
+            }
+            pokemonCard.add(new JLabel(evolvesToText));
+                pokemonCard.add(Box.createVerticalStrut(5));
+                pokemonCard.add(new JLabel("Held Item: None"));
+                pokemonCard.add(Box.createVerticalStrut(5));
+
+                StringBuilder movesTextBuilder = new StringBuilder();
+movesTextBuilder.append("<html>")
+                .append(currentPokemon.getName()).append("'s Moves:<br>");
+
+// Access the number of moves directly from the current Pokemon object
+if (currentPokemon.getPMoves() == 0) {
+    movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(No moves known)");
+} else {
+    // Loop through the actual moves stored in the current Pokemon object
+    for (int i = 0; i < currentPokemon.getPMoves(); i++) {
+        // Get the current move object using the getter
+        Moves m = currentPokemon.getMoves()[i];
+
+        // --- CRUCIAL NULL CHECK HERE ---
+        // This check is still necessary to prevent NullPointerExceptions
+        // if for some reason a slot in the 'moves' array is null,
+        // even if pMoves suggests there's a move there.
+        if (m != null) {
+            movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;- ") // HTML spaces for indentation
+                            .append(m.getName()).append(": ").append(m.getDesc())
+                            .append(" [").append(m.getType1());
+
+            // Handle Type2: append if it's not "0" and not empty
+            if (!m.getType2().contains("0") && !m.getType2().isEmpty()) {
+                movesTextBuilder.append("/").append(m.getType2());
+            }
+            movesTextBuilder.append("]");
+
+            // Handle Machine: append if it's not null and not empty
+            if (m.getMachine() != null && !m.getMachine().isEmpty()) {
+                movesTextBuilder.append(" (Machine: ").append(m.getMachine()).append(")");
+            }
+            movesTextBuilder.append("<br>"); // HTML line break for the next move
+        } else {
+            // This case should ideally not be hit if your teachMove logic is robust,
+            // but it's a good fallback for debugging or unexpected data.
+            movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(Empty or unassigned move slot)<br>");
+        }
+    }
 }
+movesTextBuilder.append("</html>");
+
+// Create and add the JLabel to your pokemonCard JPanel
+// Assuming 'pokemonCard' is the JPanel you're adding components to
+JLabel movesLabel = new JLabel(movesTextBuilder.toString());
+pokemonCard.add(movesLabel);
+
+                mainPanel.add(pokemonCard);
+                mainPanel.add(Box.createVerticalStrut(10)); // Add a small space between cards
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Show an error message to the user if the file can't be read
+            JOptionPane.showMessageDialog(frame, "Error reading pokedex.txt: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            // Show an error message if there's a problem parsing numbers
+            JOptionPane.showMessageDialog(frame, "Error parsing a number from pokedex.txt. Check file format.", "Data Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // Back button panel
+        JPanel backPanel = new JPanel();
+        backPanel.setBackground(Color.WHITE);
+        JButton backButton = new JButton("Back");
+        backButton.setPreferredSize(new Dimension(100, 30));
+        backButton.addActionListener(e -> frame.dispose()); // Close the frame on click
+        backPanel.add(backButton);
+
+        // Add space and the back button panel to the main content
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(backPanel);
+
+        // Set up the scroll pane for the main content
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBorder(null); // Remove default scroll pane border
+
+        frame.add(scrollPane);
+        frame.setLocationRelativeTo(null); // Center the frame on the screen
+        frame.setVisible(true);
+    }
+
+public static void SearchMenu(){
+    
+}
+
+}
+
+    
