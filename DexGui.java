@@ -737,6 +737,7 @@ public class DexGui {
             subButton.addActionListener(e -> {
                 switch (currentLabel) {
                     case "ADD TRAINER":
+                        addTrainerMenu();
                         break;
                     case "VIEW TRAINER":
                         break;
@@ -2404,6 +2405,275 @@ public static void SearchPokType(Pokemon[] pokemonList) {
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
 }
+
+    private static void addTrainerMenu(){
+        JFrame pokFrame = new JFrame();
+        pokFrame.setSize(1300, 700);
+        pokFrame.setUndecorated(true);
+        pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Load background image
+        ImageIcon pokBg = new ImageIcon("addtrainermen.png");
+
+        // Custom panel to paint background
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        // Center container for buttons
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new GridLayout(4, 1, 20, 60)); // 4 rows, 1 column, spacing
+
+        // Button labels
+        String[] labels = {"ADD NEW TRAINER", "MANAGE TRAINER PROFILE","BACK"};
+
+        for (String label : labels) {
+            ButtonBg subButton = new ButtonBg(label, new Dimension(300, 60), Color.RED);
+            final String currentLabel = label;
+
+            subButton.addActionListener(e -> {
+                switch (currentLabel) {
+                    case "ADD NEW TRAINER":
+                        break;
+                    case "MANAGE TRAINER PROFILE":
+                        ManageTrainerProf();
+                        break;
+                    case "BACK":
+                        TrainerManagement();
+                        break;
+                }
+            });
+
+            mainPanel.add(subButton);
+        }
+
+        // Center mainPanel using GridBagConstraints
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(150, 0, 0, 0); // top, left, bottom, right — pushes panel downward
+        backgroundPanel.add(mainPanel, gbc);
+
+        // Final setup
+        pokFrame.setContentPane(backgroundPanel);
+        pokFrame.setLocationRelativeTo(null);
+        pokFrame.setVisible(true);
+    }
+
+    private static void ManageTrainerProf(){
+        JFrame pokFrame = new JFrame();
+        pokFrame.setSize(1300, 700);
+        pokFrame.setUndecorated(true);
+        pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Load background image
+        ImageIcon pokBg = new ImageIcon("managetrainerprof.png");
+
+        // Custom panel to paint background
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        // Center container for buttons
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new GridLayout(4, 1, 20, 60)); // 4 rows, 1 column, spacing
+
+        // Button labels
+        String[] labels = {"MANAGE YOUR POKEMON", "MANAGE YOUR ITEMS","BACK"};
+
+        for (String label : labels) {
+            ButtonBg subButton = new ButtonBg(label, new Dimension(300, 60), Color.RED);
+            final String currentLabel = label;
+
+            subButton.addActionListener(e -> {
+                switch (currentLabel) {
+                    case "MANAGE YOUR POKEMON":
+                        ManageTrainerPok();
+                        break;
+                    case "MANAGE YOUR ITEMS":
+                        ManageTrainerItem();
+                        break;
+                    case "BACK":
+                        addTrainerMenu();
+                        break;
+                }
+            });
+
+            mainPanel.add(subButton);
+        }
+
+        // Center mainPanel using GridBagConstraints
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(300, 0, 0, 0); // top, left, bottom, right — pushes panel downward
+        backgroundPanel.add(mainPanel, gbc);
+
+        // Final setup
+        pokFrame.setContentPane(backgroundPanel);
+        pokFrame.setLocationRelativeTo(null);
+        pokFrame.setVisible(true);
+    }
+
+    private static void ManageTrainerPok() {
+    JFrame pokFrame = new JFrame();
+    pokFrame.setSize(1300, 700);
+    pokFrame.setUndecorated(true);
+    pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    // Load background image
+    ImageIcon pokBg = new ImageIcon("managetrainerpok.png");
+
+    // Custom panel to paint background
+    JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+
+    // Main vertical container
+    JPanel contentPanel = new JPanel();
+    contentPanel.setOpaque(false);
+    contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+    // Top button panel
+    JPanel topButtons = new JPanel();
+    topButtons.setOpaque(false);
+    topButtons.setLayout(new GridLayout(3, 2, 20, 30)); // 6 buttons in a grid
+
+    // Button labels excluding BACK
+    String[] labels = {
+        "ADD POKEMON TO STORAGE", 
+        "ADD POKEMON TO LINEUP",
+        "SWITCH POKEMON FROM STORAGE",
+        "RELEASE POKEMON",
+        "TEACH MOVES",
+        "UNLEARN MOVES"
+    };
+
+    for (String label : labels) {
+        ButtonBg subButton = new ButtonBg(label, new Dimension(400, 60), Color.RED);
+        final String currentLabel = label;
+
+        subButton.addActionListener(e -> {
+            switch (currentLabel) {
+                case "ADD POKEMON TO STORAGE":
+                    break;
+                case "ADD POKEMON TO LINEUP":
+                    break;
+                case "SWITCH POKEMON FROM STORAGE":
+                    break;
+                case "RELEASE POKEMON":
+                    break;
+                case "TEACH MOVES":
+                    break;
+                case "UNLEARN MOVES":
+                    break;
+            }
+        });
+
+        topButtons.add(subButton);
+    }
+
+    // Back button panel
+    JPanel backPanel = new JPanel();
+    backPanel.setOpaque(false);
+    ButtonBg backButton = new ButtonBg("BACK", new Dimension(300, 80), Color.RED);
+    backButton.addActionListener(e -> ManageTrainerProf());
+    backPanel.add(backButton);
+
+    // Combine all panels
+    contentPanel.add(topButtons);
+    contentPanel.add(Box.createVerticalStrut(40)); // spacing between top buttons and back
+    contentPanel.add(backPanel);
+
+    // Center contentPanel using GridBagConstraints
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.insets = new Insets(230, 0, 0, 0); // adjust to shift vertically
+    backgroundPanel.add(contentPanel, gbc);
+
+    // Final setup
+    pokFrame.setContentPane(backgroundPanel);
+    pokFrame.setLocationRelativeTo(null);
+    pokFrame.setVisible(true);
 }
+
+private static void ManageTrainerItem(){
+     JFrame pokFrame = new JFrame();
+        pokFrame.setSize(1300, 700);
+        pokFrame.setUndecorated(true);
+        pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Load background image
+        ImageIcon pokBg = new ImageIcon("managetrainitem.png");
+
+        // Custom panel to paint background
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        // Center container for buttons
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new GridLayout(4, 1, 20, 30)); // 4 rows, 1 column, spacing
+
+        // Button labels
+        String[] labels = {"BUY ITEM", "USE ITEM","SELL ITEM","BACK"};
+
+        for (String label : labels) {
+            ButtonBg subButton = new ButtonBg(label, new Dimension(300, 60), Color.RED);
+            final String currentLabel = label;
+
+            subButton.addActionListener(e -> {
+                switch (currentLabel) {
+                    case "BUY ITEM":
+                        break;
+                    case "USE ITEM":
+                        
+                        break;
+                    case "SELL ITEM":
+                        
+                        break;
+                    case "BACK":
+                        ManageTrainerProf();
+                        break;
+                }
+            });
+
+            mainPanel.add(subButton);
+        }
+
+        // Center mainPanel using GridBagConstraints
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(200, 0, 0, 0); // top, left, bottom, right — pushes panel downward
+        backgroundPanel.add(mainPanel, gbc);
+
+        // Final setup
+        pokFrame.setContentPane(backgroundPanel);
+        pokFrame.setLocationRelativeTo(null);
+        pokFrame.setVisible(true);
+}
+}
+
 
     
