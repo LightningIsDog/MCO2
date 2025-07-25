@@ -2465,236 +2465,376 @@ public class DexGui {
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
     }
-    public static void AddTrainer() {
-        JFrame addFrame = new JFrame("Add New Trainer");
-        addFrame.setSize(800, 700);  // Increased height to accommodate taller result area
-        addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    private static boolean trainerExists(String id, String name) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("-");
+            if (parts.length >= 2) {
+                String existingId = parts[0].trim();
+                String existingName = parts[1].trim();
+                if (existingId.equals(id) || existingName.equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 
-        // Form panel (unchanged)
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new GridLayout(7, 2, 10, 10));// Adjusted for trainer fields
+   public static void AddTrainer() {
+    JFrame addFrame = new JFrame("Add New Trainer");
+    addFrame.setSize(900, 700);
+    addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Form fields - same as before
-        JLabel idLabel = new JLabel("Trainer ID (5 digits):");
-        JTextField idField = new JTextField();
+    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel nameLabel = new JLabel("Trainer Name:");
-        JTextField nameField = new JTextField();
+    JPanel formPanel = new JPanel(new GridLayout(9, 2, 10, 10));
 
-        JLabel sexLabel = new JLabel("Sex:");
-        JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
+    // Form fields
+    JLabel idLabel = new JLabel("Trainer ID (5 digits):");
+    JTextField idField = new JTextField();
 
-        JLabel descLabel = new JLabel("Description:");
-        JTextArea descArea = new JTextArea(3, 20);
-        JScrollPane descScroll = new JScrollPane(descArea);
+    JLabel nameLabel = new JLabel("Trainer Name:");
+    JTextField nameField = new JTextField();
 
-        JLabel homeLabel = new JLabel("Hometown:");
-        JTextField homeField = new JTextField();
+    JLabel sexLabel = new JLabel("Sex:");
+    JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
 
-        JLabel birthLabel = new JLabel("Birth Date:");
-        JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
-        JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
-        JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
-        birthPanel.add(new JLabel("Month:"));
-        birthPanel.add(monthSpinner);
-        birthPanel.add(new JLabel("Day:"));
-        birthPanel.add(daySpinner);
-        birthPanel.add(new JLabel("Year:"));
-        birthPanel.add(yearSpinner);
+    JLabel descLabel = new JLabel("Description:");
+    JTextArea descArea = new JTextArea(3, 20);
+    JScrollPane descScroll = new JScrollPane(descArea);
 
-        // Add components to form panel
-        formPanel.add(idLabel);
-        formPanel.add(idField);
-        formPanel.add(nameLabel);
-        formPanel.add(nameField);
-        formPanel.add(sexLabel);
-        formPanel.add(sexCombo);
-        formPanel.add(descLabel);
-        formPanel.add(descScroll);
-        formPanel.add(homeLabel);
-        formPanel.add(homeField);
-        formPanel.add(birthLabel);
-        formPanel.add(birthPanel);
+    JLabel homeLabel = new JLabel("Hometown:");
+    JTextField homeField = new JTextField();
 
-        // Button panel (unchanged)
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton addButton = new JButton("Add Trainer");
-        JButton backButton = new JButton("Back");
+    JLabel birthLabel = new JLabel("Birth Date:");
+    JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
+    JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
+    JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
+    birthPanel.add(new JLabel("Month:"));
+    birthPanel.add(monthSpinner);
+    birthPanel.add(new JLabel("Day:"));
+    birthPanel.add(daySpinner);
+    birthPanel.add(new JLabel("Year:"));
+    birthPanel.add(yearSpinner);
 
-        // Updated Result Area - Now taller
-        JTextArea resultArea = new JTextArea(10, 50);  // Increased from 8 to 10 rows
-        resultArea.setEditable(false);
+    formPanel.add(idLabel); formPanel.add(idField);
+    formPanel.add(nameLabel); formPanel.add(nameField);
+    formPanel.add(sexLabel); formPanel.add(sexCombo);
+    formPanel.add(descLabel); formPanel.add(descScroll);
+    formPanel.add(homeLabel); formPanel.add(homeField);
+    formPanel.add(birthLabel); formPanel.add(birthPanel);
+    formPanel.add(new JLabel()); formPanel.add(new JLabel());
+
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    JButton addButton = new JButton("Add Trainer");
+    JButton backButton = new JButton("Back");
+
+    // Updated Result Area - Now taller
+        JTextArea resultArea = new JTextArea(10, 50);  // This is the actual text component
         resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         resultArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
         // Make the scroll pane taller
-        JScrollPane resultScroll = new JScrollPane(resultArea);
-        resultScroll.setPreferredSize(new Dimension(700, 250));  // Increased from 150 to 200 pixels
+        JScrollPane resultScroll = new JScrollPane(resultArea); // This is the scrollable panel
+resultScroll.setPreferredSize(new Dimension(700, 250)); // <--- THIS is the result panel size
 
-        // Center panel to hold form and result area
-        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
-        centerPanel.add(formPanel, BorderLayout.NORTH);
-        centerPanel.add(resultScroll, BorderLayout.CENTER);
+    addButton.addActionListener(e -> {
+        String id = idField.getText().trim();
+        String name = nameField.getText().trim();
+        String sex = (String) sexCombo.getSelectedItem();
+        String description = descArea.getText().trim();
+        String home = homeField.getText().trim();
+        int month = (int) monthSpinner.getValue();
+        int day = (int) daySpinner.getValue();
+        int year = (int) yearSpinner.getValue();
 
-        // Add some vertical space between form and result area
-        centerPanel.add(Box.createVerticalStrut(10), BorderLayout.CENTER);
+        StringBuilder errors = new StringBuilder();
 
-        // Main panel layout
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Add action listeners - same as before
-        addButton.addActionListener(e -> {
-            String id = idField.getText().trim();
-            String name = nameField.getText().trim();
-            String sex = (String) sexCombo.getSelectedItem();
-            String description = descArea.getText().trim();
-            String home = homeField.getText().trim();
-            int month = (int) monthSpinner.getValue();
-            int day = (int) daySpinner.getValue();
-            int year = (int) yearSpinner.getValue();
-
-            // Validation - same as before
-            StringBuilder errors = new StringBuilder();
-
-            if (id.isEmpty()) {
-                errors.append("• Trainer ID cannot be blank\n");
-            } else if (id.length() != 5) {
-                errors.append("• Trainer ID must be exactly 5 digits\n");
-            } else {
-                for (char c : id.toCharArray()) {
-                    if (!Character.isDigit(c)) {
-                        errors.append("• Trainer ID must contain only digits\n");
-                        break;
-                    }
+        // ID Validation
+        if (id.isEmpty()) {
+            errors.append("• Trainer ID cannot be blank\n");
+        } else if (id.length() != 5) {
+            errors.append("• Trainer ID must be exactly 5 digits\n");
+        } else {
+            for (char c : id.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    errors.append("• Trainer ID must contain only digits\n");
+                    break;
                 }
             }
-
-            if (name.isEmpty()) {
-                errors.append("• Trainer name cannot be blank\n");
-            } else {
-                for (char c : name.toCharArray()) {
-                    if (Character.isDigit(c)) {
-                        errors.append("• Trainer name cannot contain numbers\n");
-                        break;
-                    }
-                }
-            }
-
-            if (description.isEmpty()) {
-                errors.append("• Description cannot be blank\n");
-            }
-
-            if (home.isEmpty()) {
-                errors.append("• Hometown cannot be blank\n");
-            }
-
-            if (errors.length() > 0) {
-                resultArea.setText("Please correct the following errors:\n" + errors.toString());
-                return;
-            }
-
-            // Success case - format output like AddMove
-            resultArea.setText("Trainer added successfully!\n\n" +
-                    "ID: " + id + "\n" +
-                    "Name: " + name + "\n" +
-                    "Sex: " + sex + "\n" +
-                    "Hometown: " + home + "\n" +
-                    "Birth Date: " + month + "/" + day + "/" + year + "\n" +
-                    "Description: " + description);
-
-            // Clear fields for next entry - same as before
-            idField.setText("");
-            nameField.setText("");
-            descArea.setText("");
-            homeField.setText("");
-            monthSpinner.setValue(1);
-            daySpinner.setValue(1);
-            yearSpinner.setValue(2000);
-        });
-
-        backButton.addActionListener(e -> addFrame.dispose());
-
-        buttonPanel.add(addButton);
-        buttonPanel.add(backButton);
-
-        // Layout adjustments to match AddMove
-        centerPanel = new JPanel(new BorderLayout());
-        centerPanel.add(formPanel, BorderLayout.NORTH);
-        centerPanel.add(resultScroll, BorderLayout.CENTER);
-
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        addFrame.add(mainPanel);
-        addFrame.setLocationRelativeTo(null);
-        addFrame.setVisible(true);
-    }
-    private static void ManageTrainerProf(){
-        JFrame pokFrame = new JFrame();
-        pokFrame.setSize(1300, 700);
-        pokFrame.setUndecorated(true);
-        pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Load background image
-        ImageIcon pokBg = new ImageIcon("managetrainerprof.png");
-
-        // Custom panel to paint background
-        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-
-        // Center container for buttons
-        JPanel mainPanel = new JPanel();
-        mainPanel.setOpaque(false);
-        mainPanel.setLayout(new GridLayout(4, 1, 20, 60)); // 4 rows, 1 column, spacing
-
-        // Button labels
-        String[] labels = {"MANAGE YOUR POKEMON", "MANAGE YOUR ITEMS","BACK"};
-
-        for (String label : labels) {
-            ButtonBg subButton = new ButtonBg(label, new Dimension(300, 60), Color.RED);
-            final String currentLabel = label;
-
-            subButton.addActionListener(e -> {
-                switch (currentLabel) {
-                    case "MANAGE YOUR POKEMON":
-                        ManageTrainerPok();
-                        break;
-                    case "MANAGE YOUR ITEMS":
-                        ManageTrainerItem();
-                        break;
-                    case "BACK":
-                        addTrainerMenu();
-                        break;
-                }
-            });
-
-            mainPanel.add(subButton);
         }
 
-        // Center mainPanel using GridBagConstraints
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(300, 0, 0, 0); // top, left, bottom, right — pushes panel downward
-        backgroundPanel.add(mainPanel, gbc);
+        // Name Validation
+        if (name.isEmpty()) {
+            errors.append("• Trainer name cannot be blank\n");
+        } else {
+            for (char c : name.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    errors.append("• Trainer name cannot contain numbers\n");
+                    break;
+                }
+            }
+        }
 
-        // Final setup
-        pokFrame.setContentPane(backgroundPanel);
-        pokFrame.setLocationRelativeTo(null);
-        pokFrame.setVisible(true);
+        // Description and Hometown Validation
+        if (description.isEmpty()) errors.append("• Description cannot be blank\n");
+        if (home.isEmpty()) errors.append("• Hometown cannot be blank\n");
+
+        // Check for duplicate Trainer ID and Name
+        if (trainerExists(id, name)) {
+            errors.append("• A trainer with this ID or Name already exists\n");
+        }
+
+        // Show errors
+        if (errors.length() > 0) {
+            resultArea.setText("Please correct the following errors:\n" + errors);
+            return;
+        }
+
+        // Save to file
+        try (FileWriter writer = new FileWriter("trainers.txt", true)) {
+            writer.append("\n").append(id).append("-").append(name).append("-")
+                  .append(String.valueOf(month)).append("-").append(String.valueOf(day)).append("-")
+                  .append(String.valueOf(year)).append("-").append(sex).append("-")
+                  .append(home).append("-").append(description).append("-");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        resultArea.setText("Trainer added successfully!\n\n" +
+                "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Sex: " + sex + "\n" +
+                "Hometown: " + home + "\n" +
+                "Birth Date: " + month + "/" + day + "/" + year + "\n" +
+                "Description: " + description);
+
+        idField.setText(""); nameField.setText(""); descArea.setText(""); homeField.setText("");
+        monthSpinner.setValue(1); daySpinner.setValue(1); yearSpinner.setValue(2000);
+    });
+
+    backButton.addActionListener(e -> addFrame.dispose());
+    buttonPanel.add(addButton);
+    buttonPanel.add(backButton);
+
+    mainPanel.add(formPanel, BorderLayout.NORTH);
+    mainPanel.add(resultScroll, BorderLayout.CENTER);
+    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+    addFrame.add(mainPanel);
+    addFrame.setLocationRelativeTo(null);
+    addFrame.setVisible(true);
+}
+
+    private static boolean isTrainerIdValid(String id) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Get the first 5-digit ID before the first hyphen
+            String[] parts = line.split("-");
+            if (parts.length > 0 && parts[0].equals(id)) {
+                return true;
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+private static Trainers getTrainerById(String id) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("-");
+            if (parts.length >= 8 && parts[0].equals(id)) {
+                String name = parts[1];
+                int month = Integer.parseInt(parts[2]);
+                int day = Integer.parseInt(parts[3]);
+                int year = Integer.parseInt(parts[4]);
+                String sex = parts[5];
+                String home = parts[6];
+                String description = parts[7];
+                return new Trainers(id, name, month, day, year, sex, home, description);
+            }
+        }
+    } catch (IOException | NumberFormatException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+private static void ManageTrainerProf() {
+    JFrame pokFrame = new JFrame();
+    pokFrame.setSize(1300, 700);
+    pokFrame.setUndecorated(true);
+    pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    ImageIcon pokBg = new ImageIcon("managetrainerprof.png");
+
+    JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+
+    JPanel containerPanel = new JPanel(new CardLayout());
+    containerPanel.setOpaque(false);
+
+    // ===================== Updated Input Panel =====================
+    JPanel inputPanel = new JPanel();
+    inputPanel.setOpaque(false);
+    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+    inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JLabel promptLabel = new JLabel("Enter Trainer ID:");
+    promptLabel.setForeground(Color.WHITE); // White font
+    promptLabel.setBackground(Color.BLACK); // Black background
+    promptLabel.setOpaque(true);            // Make background visible
+    promptLabel.setFont(new Font("Arial", Font.BOLD, 28));
+    promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JTextField trainerIdField = new JTextField();
+    trainerIdField.setMaximumSize(new Dimension(300, 40));
+    trainerIdField.setFont(new Font("Arial", Font.PLAIN, 20));
+    trainerIdField.setHorizontalAlignment(JTextField.CENTER);
+    trainerIdField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JButton submitButton = new JButton("Submit");
+    submitButton.setFont(new Font("Arial", Font.BOLD, 20));
+    submitButton.setPreferredSize(new Dimension(150, 40));
+    submitButton.setMaximumSize(new Dimension(150, 40));
+    submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    inputPanel.add(promptLabel);
+    inputPanel.add(Box.createVerticalStrut(20));
+    inputPanel.add(trainerIdField);
+    inputPanel.add(Box.createVerticalStrut(20));
+    inputPanel.add(submitButton);
+    // ===============================================================
+
+    // Welcome label (shown after login)
+    JLabel welcomeLabel = new JLabel();
+    welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    welcomeLabel.setFont(new Font("Arial", Font.BOLD, 60));
+    welcomeLabel.setOpaque(true);
+    welcomeLabel.setBackground(Color.BLACK);
+    welcomeLabel.setForeground(Color.WHITE);
+    welcomeLabel.setPreferredSize(new Dimension(1000, 80));
+
+    JPanel mainPanel = new JPanel();
+    mainPanel.setOpaque(false);
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+    final Trainers[] activeTrainer = {null};
+
+    JPanel welcomePanel = new JPanel();
+    welcomePanel.setOpaque(false);
+    welcomePanel.add(welcomeLabel);
+    mainPanel.add(welcomePanel);
+    mainPanel.add(Box.createVerticalStrut(40));
+
+    String[] labels = {"MANAGE YOUR POKEMON", "MANAGE YOUR ITEMS", "BACK"};
+
+    for (String label : labels) {
+        ButtonBg subButton = new ButtonBg(label, new Dimension(250, 50), Color.RED);
+        final String currentLabel = label;
+
+        subButton.addActionListener(e -> {
+            switch (currentLabel) {
+                case "MANAGE YOUR POKEMON":
+                    ManageTrainerPok(activeTrainer[0]);
+                    break;
+                case "MANAGE YOUR ITEMS":
+                    ManageTrainerItem(activeTrainer[0]);
+                    break;
+                case "BACK":
+                    pokFrame.dispose();
+                    addTrainerMenu();
+                    break;
+            }
+        });
+
+        JPanel buttonWrapper = new JPanel();
+        buttonWrapper.setOpaque(false);
+        buttonWrapper.setMaximumSize(new Dimension(250, 50));
+        buttonWrapper.add(subButton);
+        mainPanel.add(buttonWrapper);
+        mainPanel.add(Box.createVerticalStrut(20));
     }
 
-    private static void ManageTrainerPok() {
+    containerPanel.add(inputPanel, "input");
+    containerPanel.add(mainPanel, "menu");
+
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.fill = GridBagConstraints.NONE;
+    gbc.insets = new Insets(200, 0, 0, 0); // Adjust top spacing
+    backgroundPanel.add(containerPanel, gbc);
+
+    submitButton.addActionListener(e -> {
+        String enteredId = trainerIdField.getText().trim();
+
+        if (enteredId.matches("\\d{5}")) {
+            Trainers currentTrainer = getTrainerById(enteredId);
+            if (currentTrainer != null) {
+                activeTrainer[0] = currentTrainer;
+                welcomeLabel.setText("Welcome Trainer " + currentTrainer.getName() + "!");
+                CardLayout cl = (CardLayout) containerPanel.getLayout();
+                cl.show(containerPanel, "menu");
+            } else {
+                int choice = JOptionPane.showOptionDialog(
+                    pokFrame,
+                    "Trainer ID not found!",
+                    "Error",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.ERROR_MESSAGE,
+                    null,
+                    new Object[]{"Go Back"},
+                    "Go Back"
+                );
+                if (choice == 0) {
+                    pokFrame.dispose();
+                    addTrainerMenu();
+                }
+            }
+        } else {
+            int choice = JOptionPane.showOptionDialog(
+                pokFrame,
+                "Enter a valid 5-digit Trainer ID.",
+                "Invalid Input",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                new Object[]{"Go Back"},
+                "Go Back"
+            );
+            if (choice == 0) {
+                pokFrame.dispose();
+                addTrainerMenu();
+            }
+        }
+    });
+
+    pokFrame.setContentPane(backgroundPanel);
+    pokFrame.setLocationRelativeTo(null);
+    pokFrame.setVisible(true);
+}
+
+    private static void ManageTrainerPok(Trainers trainer) {
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2760,7 +2900,7 @@ public class DexGui {
         JPanel backPanel = new JPanel();
         backPanel.setOpaque(false);
         ButtonBg backButton = new ButtonBg("BACK", new Dimension(300, 80), Color.RED);
-        backButton.addActionListener(e -> ManageTrainerProf());
+        backButton.addActionListener(e -> pokFrame.dispose());
         backPanel.add(backButton);
 
         // Combine all panels
@@ -2781,7 +2921,7 @@ public class DexGui {
         pokFrame.setVisible(true);
     }
 
-    private static void ManageTrainerItem(){
+    private static void ManageTrainerItem(Trainers trainer){
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2822,7 +2962,7 @@ public class DexGui {
 
                         break;
                     case "BACK":
-                        ManageTrainerProf();
+                        pokFrame.dispose();
                         break;
                 }
             });
@@ -2843,5 +2983,4 @@ public class DexGui {
         pokFrame.setVisible(true);
     }
 }
-
 
