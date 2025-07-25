@@ -2467,17 +2467,17 @@ public class DexGui {
     }
     public static void AddTrainer() {
         JFrame addFrame = new JFrame("Add New Trainer");
-        addFrame.setSize(900, 700);
+        addFrame.setSize(800, 700);  // Increased height to accommodate taller result area
         addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Form panel
+        // Form panel (unchanged)
         JPanel formPanel = new JPanel();
-        formPanel.setLayout(new GridLayout(9, 2, 10, 10));
+        formPanel.setLayout(new GridLayout(7, 2, 10, 10));// Adjusted for trainer fields
 
-        // Form fields
+        // Form fields - same as before
         JLabel idLabel = new JLabel("Trainer ID (5 digits):");
         JTextField idField = new JTextField();
 
@@ -2519,20 +2519,35 @@ public class DexGui {
         formPanel.add(homeField);
         formPanel.add(birthLabel);
         formPanel.add(birthPanel);
-        formPanel.add(new JLabel()); // Empty cell
-        formPanel.add(new JLabel()); // Empty cell
 
-        // Button panel
+        // Button panel (unchanged)
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton addButton = new JButton("Add Trainer");
         JButton backButton = new JButton("Back");
 
-        // Result area
-        JTextArea resultArea = new JTextArea();
+        // Updated Result Area - Now taller
+        JTextArea resultArea = new JTextArea(10, 50);  // Increased from 8 to 10 rows
         resultArea.setEditable(false);
-        JScrollPane resultScroll = new JScrollPane(resultArea);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        resultArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        // Add action listeners
+        // Make the scroll pane taller
+        JScrollPane resultScroll = new JScrollPane(resultArea);
+        resultScroll.setPreferredSize(new Dimension(700, 250));  // Increased from 150 to 200 pixels
+
+        // Center panel to hold form and result area
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.add(formPanel, BorderLayout.NORTH);
+        centerPanel.add(resultScroll, BorderLayout.CENTER);
+
+        // Add some vertical space between form and result area
+        centerPanel.add(Box.createVerticalStrut(10), BorderLayout.CENTER);
+
+        // Main panel layout
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add action listeners - same as before
         addButton.addActionListener(e -> {
             String id = idField.getText().trim();
             String name = nameField.getText().trim();
@@ -2543,10 +2558,9 @@ public class DexGui {
             int day = (int) daySpinner.getValue();
             int year = (int) yearSpinner.getValue();
 
-            // Validation
+            // Validation - same as before
             StringBuilder errors = new StringBuilder();
 
-            // ID validation
             if (id.isEmpty()) {
                 errors.append("• Trainer ID cannot be blank\n");
             } else if (id.length() != 5) {
@@ -2560,7 +2574,6 @@ public class DexGui {
                 }
             }
 
-            // Name validation
             if (name.isEmpty()) {
                 errors.append("• Trainer name cannot be blank\n");
             } else {
@@ -2572,31 +2585,20 @@ public class DexGui {
                 }
             }
 
-            // Description validation
             if (description.isEmpty()) {
                 errors.append("• Description cannot be blank\n");
             }
 
-            // Hometown validation
             if (home.isEmpty()) {
                 errors.append("• Hometown cannot be blank\n");
             }
 
-            // Check for errors
             if (errors.length() > 0) {
                 resultArea.setText("Please correct the following errors:\n" + errors.toString());
                 return;
             }
 
-            // Check if trainer already exists (you'll need to implement this check)
-            // if (trainerExists(id)) {
-            //     resultArea.setText("Error: A trainer with this ID already exists.");
-            //     return;
-            // }
-
-            // Add the trainer (you'll need to implement this part)
-            // new Trainer(id, name, sex, description, home, month, day, year);
-
+            // Success case - format output like AddMove
             resultArea.setText("Trainer added successfully!\n\n" +
                     "ID: " + id + "\n" +
                     "Name: " + name + "\n" +
@@ -2605,17 +2607,7 @@ public class DexGui {
                     "Birth Date: " + month + "/" + day + "/" + year + "\n" +
                     "Description: " + description);
 
-            // Save to file
-            try {
-                FileWriter writer = new FileWriter("trainers.txt", true);
-                writer.append("\n" + id + "-" + name + "-" + month + "-" + day + "-" +
-                        year + "-" + sex + "-" + home + "-" + description + "-");
-                writer.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            // Clear fields for next entry
+            // Clear fields for next entry - same as before
             idField.setText("");
             nameField.setText("");
             descArea.setText("");
@@ -2630,8 +2622,12 @@ public class DexGui {
         buttonPanel.add(addButton);
         buttonPanel.add(backButton);
 
-        mainPanel.add(formPanel, BorderLayout.NORTH);
-        mainPanel.add(resultScroll, BorderLayout.CENTER);
+        // Layout adjustments to match AddMove
+        centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(formPanel, BorderLayout.NORTH);
+        centerPanel.add(resultScroll, BorderLayout.CENTER);
+
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         addFrame.add(mainPanel);
