@@ -295,72 +295,72 @@ public class DexGui {
     }
 
     public static void SearchMove() {
-    JFrame searchFrame = new JFrame("Search Move");
-    searchFrame.setSize(600, 300);
-    searchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame searchFrame = new JFrame("Search Move");
+        searchFrame.setSize(600, 300);
+        searchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-    JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JLabel searchLabel = new JLabel("Enter Move Keyword:");
-    JTextField searchField = new JTextField(20);
-    JButton searchButton = new JButton("Search");
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel searchLabel = new JLabel("Enter Move Keyword:");
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Search");
 
-    inputPanel.add(searchLabel);
-    inputPanel.add(searchField);
-    inputPanel.add(searchButton);
+        inputPanel.add(searchLabel);
+        inputPanel.add(searchField);
+        inputPanel.add(searchButton);
 
-    JTextArea resultArea = new JTextArea();
-    resultArea.setEditable(false);
-    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    JScrollPane scrollPane = new JScrollPane(resultArea);
+        JTextArea resultArea = new JTextArea();
+        resultArea.setEditable(false);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(resultArea);
 
-    JButton backButton = new JButton("Back");
-    backButton.addActionListener(e -> searchFrame.dispose());
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> searchFrame.dispose());
 
-    searchButton.addActionListener(e -> {
-        String keyword = searchField.getText().trim().toLowerCase();
-        if (keyword.isEmpty()) {
-            resultArea.setText("Please enter a move keyword to search.");
-            return;
-        }
-
-        StringBuilder foundMoves = new StringBuilder();
-        for (Moves move : Moves.moveList) {
-            if (move != null && (
-                move.getName().toLowerCase().contains(keyword) ||
-                move.getDesc().toLowerCase().contains(keyword) ||
-                move.getMachine().toLowerCase().contains(keyword) || // TM or HM
-                move.getType1().toLowerCase().contains(keyword) ||
-                (!move.getType2().equals("0") && move.getType2().toLowerCase().contains(keyword))
-            )) {
-                foundMoves.append("Move: ").append(move.getName()).append("\n");
-                foundMoves.append("Description: ").append(move.getDesc()).append("\n");
-                foundMoves.append("Machine: ").append(move.getMachine()).append("\n");
-                foundMoves.append("Type: ").append(move.getType1());
-                if (!move.getType2().equals("0")) {
-                    foundMoves.append("/").append(move.getType2());
-                }
-                foundMoves.append("\n\n----------------------------------------\n\n");
+        searchButton.addActionListener(e -> {
+            String keyword = searchField.getText().trim().toLowerCase();
+            if (keyword.isEmpty()) {
+                resultArea.setText("Please enter a move keyword to search.");
+                return;
             }
-        }
 
-        if (foundMoves.length() == 0) {
-            resultArea.setText("No move matches the keyword: " + keyword);
-        } else {
-            resultArea.setText(foundMoves.toString());
-        }
-    });
+            StringBuilder foundMoves = new StringBuilder();
+            for (Moves move : Moves.moveList) {
+                if (move != null && (
+                        move.getName().toLowerCase().contains(keyword) ||
+                                move.getDesc().toLowerCase().contains(keyword) ||
+                                move.getMachine().toLowerCase().contains(keyword) || // TM or HM
+                                move.getType1().toLowerCase().contains(keyword) ||
+                                (!move.getType2().equals("0") && move.getType2().toLowerCase().contains(keyword))
+                )) {
+                    foundMoves.append("Move: ").append(move.getName()).append("\n");
+                    foundMoves.append("Description: ").append(move.getDesc()).append("\n");
+                    foundMoves.append("Machine: ").append(move.getMachine()).append("\n");
+                    foundMoves.append("Type: ").append(move.getType1());
+                    if (!move.getType2().equals("0")) {
+                        foundMoves.append("/").append(move.getType2());
+                    }
+                    foundMoves.append("\n\n----------------------------------------\n\n");
+                }
+            }
 
-    mainPanel.add(inputPanel, BorderLayout.NORTH);
-    mainPanel.add(scrollPane, BorderLayout.CENTER);
-    mainPanel.add(backButton, BorderLayout.SOUTH);
+            if (foundMoves.length() == 0) {
+                resultArea.setText("No move matches the keyword: " + keyword);
+            } else {
+                resultArea.setText(foundMoves.toString());
+            }
+        });
 
-    searchFrame.add(mainPanel);
-    searchFrame.setLocationRelativeTo(null);
-    searchFrame.setVisible(true);
-}
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(backButton, BorderLayout.SOUTH);
+
+        searchFrame.add(mainPanel);
+        searchFrame.setLocationRelativeTo(null);
+        searchFrame.setVisible(true);
+    }
 
     public static void AddMove() {
         JFrame addFrame = new JFrame("Add New Move");
@@ -552,157 +552,157 @@ public class DexGui {
         pokFrame.setVisible(true);
     }
 
-     public static void ViewItems() {
-    JFrame viewFrame = new JFrame("All Items");
-    viewFrame.setSize(1300, 700);
-    viewFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    public static void ViewItems() {
+        JFrame viewFrame = new JFrame("All Items");
+        viewFrame.setSize(1300, 700);
+        viewFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BorderLayout());
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
 
-    JTextArea itemsTextArea = new JTextArea();
-    itemsTextArea.setEditable(false);
-    itemsTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    JScrollPane scrollPane = new JScrollPane(itemsTextArea);
+        JTextArea itemsTextArea = new JTextArea();
+        itemsTextArea.setEditable(false);
+        itemsTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(itemsTextArea);
 
-    JButton backButton = new JButton("Back");
-    backButton.addActionListener(e -> viewFrame.dispose());
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> viewFrame.dispose());
 
-    StringBuilder itemsText = new StringBuilder();
+        StringBuilder itemsText = new StringBuilder();
 
-    // Available Items section
-    itemsText.append("========== AVAILABLE ITEMS ==========\n\n");
-    for (Items item : Items.itemList) {
-        if (item != null && !item.getForEvo()) {
-            itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
-            itemsText.append("Name: ").append(item.getitemName()).append("\n");
-            itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
-            itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
-            itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
-
-            if (item.getToSold()) {
-                itemsText.append(String.format("Buying Price: P %.2f\n", item.getstartBuyingPrice()));
-            } else {
-                itemsText.append("Buying Price: Not Sold\n");
-            }
-
-            itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
-            itemsText.append("\n----------------------------------------\n\n");
-        }
-    }
-
-    // Evolution Stones section
-    itemsText.append("========== EVOLUTION STONES ==========\n\n");
-    for (Items item : Items.itemList) {
-        if (item != null && item.getForEvo()) {
-            itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
-            itemsText.append("Name: ").append(item.getitemName()).append("\n");
-            itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
-            itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
-            itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
-
-            if (item.getToSold()) {
-                itemsText.append(String.format("Buying Price: P %.2f - P %.2f\n",
-                        item.getstartBuyingPrice(), item.getendBuyingPrice()));
-            } else {
-                itemsText.append("Buying Price: Not Sold\n");
-            }
-
-            itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
-            itemsText.append("\n----------------------------------------\n\n");
-        }
-    }
-
-    itemsTextArea.setText(itemsText.toString());
-
-    mainPanel.add(scrollPane, BorderLayout.CENTER);
-    mainPanel.add(backButton, BorderLayout.SOUTH);
-
-    viewFrame.add(mainPanel);
-    viewFrame.setLocationRelativeTo(null);
-    viewFrame.setVisible(true);
-}
-
-    public static void SearchItem() {
-    JFrame searchFrame = new JFrame("Search Item");
-    searchFrame.setSize(600, 300);
-    searchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-    JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JLabel searchLabel = new JLabel("Enter Item Name:");
-    JTextField searchField = new JTextField(20);
-    JButton searchButton = new JButton("Search");
-
-    inputPanel.add(searchLabel);
-    inputPanel.add(searchField);
-    inputPanel.add(searchButton);
-
-    JTextArea resultArea = new JTextArea();
-    resultArea.setEditable(false);
-    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    JScrollPane scrollPane = new JScrollPane(resultArea);
-
-    JButton backButton = new JButton("Back");
-    backButton.addActionListener(e -> ItemManagement());
-
-    searchButton.addActionListener(e -> {
-        String keyword = searchField.getText().trim().toLowerCase();
-        if (keyword.isEmpty()) {
-            resultArea.setText("Please enter an item name or keyword.");
-            return;
-        }
-
-        StringBuilder foundItems = new StringBuilder();
+        // Available Items section
+        itemsText.append("========== AVAILABLE ITEMS ==========\n\n");
         for (Items item : Items.itemList) {
-            if (item != null && (
-    item.getitemName().toLowerCase().contains(keyword) ||
-    item.getitemCategory().toLowerCase().contains(keyword) ||
-    item.getitemDesc().toLowerCase().contains(keyword) ||
-    item.getitemEffects().toLowerCase().contains(keyword) ||
-    String.valueOf(item.getstartBuyingPrice()).contains(keyword) ||
-    String.valueOf(item.getendBuyingPrice()).contains(keyword) ||
-    String.valueOf(item.getsellingPrice()).contains(keyword)
-)) {
-                foundItems.append("Item ID: ").append(item.getitemID()).append("\n");
-                foundItems.append("Name: ").append(item.getitemName()).append("\n");
-                foundItems.append("Category: ").append(item.getitemCategory()).append("\n");
-                foundItems.append("Description: ").append(item.getitemDesc()).append("\n");
-                foundItems.append("Effects: ").append(item.getitemEffects()).append("\n");
+            if (item != null && !item.getForEvo()) {
+                itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
 
                 if (item.getToSold()) {
-                    if (!item.getForEvo()) {
-                        foundItems.append(String.format("Buying Price: P %.2f\n", item.getstartBuyingPrice()));
-                    } else {
-                        foundItems.append(String.format("Buying Price: P %.2f - P %.2f\n",
-                                item.getstartBuyingPrice(), item.getendBuyingPrice()));
-                    }
+                    itemsText.append(String.format("Buying Price: P %.2f\n", item.getstartBuyingPrice()));
                 } else {
-                    foundItems.append("Buying Price: Not Sold\n");
+                    itemsText.append("Buying Price: Not Sold\n");
                 }
 
-                foundItems.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
-                foundItems.append("\n----------------------------------------\n\n");
+                itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append("\n----------------------------------------\n\n");
             }
         }
 
-        if (foundItems.length() == 0) {
-            resultArea.setText("No item matches the keyword: " + keyword);
-        } else {
-            resultArea.setText(foundItems.toString());
+        // Evolution Stones section
+        itemsText.append("========== EVOLUTION STONES ==========\n\n");
+        for (Items item : Items.itemList) {
+            if (item != null && item.getForEvo()) {
+                itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
+
+                if (item.getToSold()) {
+                    itemsText.append(String.format("Buying Price: P %.2f - P %.2f\n",
+                            item.getstartBuyingPrice(), item.getendBuyingPrice()));
+                } else {
+                    itemsText.append("Buying Price: Not Sold\n");
+                }
+
+                itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append("\n----------------------------------------\n\n");
+            }
         }
-    });
 
-    mainPanel.add(inputPanel, BorderLayout.NORTH);
-    mainPanel.add(scrollPane, BorderLayout.CENTER);
-    mainPanel.add(backButton, BorderLayout.SOUTH);
+        itemsTextArea.setText(itemsText.toString());
 
-    searchFrame.add(mainPanel);
-    searchFrame.setLocationRelativeTo(null);
-    searchFrame.setVisible(true);
-}
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(backButton, BorderLayout.SOUTH);
+
+        viewFrame.add(mainPanel);
+        viewFrame.setLocationRelativeTo(null);
+        viewFrame.setVisible(true);
+    }
+
+    public static void SearchItem() {
+        JFrame searchFrame = new JFrame("Search Item");
+        searchFrame.setSize(600, 300);
+        searchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel searchLabel = new JLabel("Enter Item Name:");
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Search");
+
+        inputPanel.add(searchLabel);
+        inputPanel.add(searchField);
+        inputPanel.add(searchButton);
+
+        JTextArea resultArea = new JTextArea();
+        resultArea.setEditable(false);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(resultArea);
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> ItemManagement());
+
+        searchButton.addActionListener(e -> {
+            String keyword = searchField.getText().trim().toLowerCase();
+            if (keyword.isEmpty()) {
+                resultArea.setText("Please enter an item name or keyword.");
+                return;
+            }
+
+            StringBuilder foundItems = new StringBuilder();
+            for (Items item : Items.itemList) {
+                if (item != null && (
+                        item.getitemName().toLowerCase().contains(keyword) ||
+                                item.getitemCategory().toLowerCase().contains(keyword) ||
+                                item.getitemDesc().toLowerCase().contains(keyword) ||
+                                item.getitemEffects().toLowerCase().contains(keyword) ||
+                                String.valueOf(item.getstartBuyingPrice()).contains(keyword) ||
+                                String.valueOf(item.getendBuyingPrice()).contains(keyword) ||
+                                String.valueOf(item.getsellingPrice()).contains(keyword)
+                )) {
+                    foundItems.append("Item ID: ").append(item.getitemID()).append("\n");
+                    foundItems.append("Name: ").append(item.getitemName()).append("\n");
+                    foundItems.append("Category: ").append(item.getitemCategory()).append("\n");
+                    foundItems.append("Description: ").append(item.getitemDesc()).append("\n");
+                    foundItems.append("Effects: ").append(item.getitemEffects()).append("\n");
+
+                    if (item.getToSold()) {
+                        if (!item.getForEvo()) {
+                            foundItems.append(String.format("Buying Price: P %.2f\n", item.getstartBuyingPrice()));
+                        } else {
+                            foundItems.append(String.format("Buying Price: P %.2f - P %.2f\n",
+                                    item.getstartBuyingPrice(), item.getendBuyingPrice()));
+                        }
+                    } else {
+                        foundItems.append("Buying Price: Not Sold\n");
+                    }
+
+                    foundItems.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
+                    foundItems.append("\n----------------------------------------\n\n");
+                }
+            }
+
+            if (foundItems.length() == 0) {
+                resultArea.setText("No item matches the keyword: " + keyword);
+            } else {
+                resultArea.setText(foundItems.toString());
+            }
+        });
+
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(backButton, BorderLayout.SOUTH);
+
+        searchFrame.add(mainPanel);
+        searchFrame.setLocationRelativeTo(null);
+        searchFrame.setVisible(true);
+    }
 
     public static void TrainerManagement() {
         JFrame pokFrame = new JFrame();
@@ -1792,230 +1792,230 @@ public class DexGui {
     }
 
     public static JLabel buildMoveLabel(Pokemon currentPokemon) {
-    StringBuilder movesTextBuilder = new StringBuilder();
-    movesTextBuilder.append("<html>").append(currentPokemon.getName()).append("'s Moves:<br>");
+        StringBuilder movesTextBuilder = new StringBuilder();
+        movesTextBuilder.append("<html>").append(currentPokemon.getName()).append("'s Moves:<br>");
 
-    if (currentPokemon.getPMoves() == 0) {
-        movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(No moves known)");
-    } else {
-        for (int i = 0; i < currentPokemon.getPMoves(); i++) {
-            Moves m = currentPokemon.getMoves()[i];
-            if (m != null) {
-                movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;- ")
-                        .append(m.getName()).append(": ").append(m.getDesc())
-                        .append(" [").append(m.getType1());
+        if (currentPokemon.getPMoves() == 0) {
+            movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(No moves known)");
+        } else {
+            for (int i = 0; i < currentPokemon.getPMoves(); i++) {
+                Moves m = currentPokemon.getMoves()[i];
+                if (m != null) {
+                    movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;- ")
+                            .append(m.getName()).append(": ").append(m.getDesc())
+                            .append(" [").append(m.getType1());
 
-                if (!m.getType2().equals("0") && !m.getType2().isEmpty()) {
-                    movesTextBuilder.append("/").append(m.getType2());
+                    if (!m.getType2().equals("0") && !m.getType2().isEmpty()) {
+                        movesTextBuilder.append("/").append(m.getType2());
+                    }
+
+                    movesTextBuilder.append("]");
+                    if (m.getMachine() != null && !m.getMachine().isEmpty()) {
+                        movesTextBuilder.append(" (Machine: ").append(m.getMachine()).append(")");
+                    }
+                    movesTextBuilder.append("<br>");
+                } else {
+                    movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(Empty or unassigned move slot)<br>");
                 }
-
-                movesTextBuilder.append("]");
-                if (m.getMachine() != null && !m.getMachine().isEmpty()) {
-                    movesTextBuilder.append(" (Machine: ").append(m.getMachine()).append(")");
-                }
-                movesTextBuilder.append("<br>");
-            } else {
-                movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(Empty or unassigned move slot)<br>");
             }
         }
-    }
 
-    movesTextBuilder.append("</html>");
-    return new JLabel(movesTextBuilder.toString());
-}
+        movesTextBuilder.append("</html>");
+        return new JLabel(movesTextBuilder.toString());
+    }
 
     // may kulang pa
     public static void ViewPokemon() {
-    JFrame frame = new JFrame("Pokédex Viewer");
-    frame.setSize(900, 600);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame frame = new JFrame("Pokédex Viewer");
+        frame.setSize(900, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    mainPanel.setBackground(Color.WHITE);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(Color.WHITE);
 
-    try (BufferedReader reader = new BufferedReader(new FileReader("pokedex.txt"))) {
-        String line;
+        try (BufferedReader reader = new BufferedReader(new FileReader("pokedex.txt"))) {
+            String line;
 
-        while ((line = reader.readLine()) != null) {
-            if (line.trim().isEmpty()) continue;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
 
-            String[] data = line.trim().split("\\s+");
-            if (data.length < 12) continue;
+                String[] data = line.trim().split("\\s+");
+                if (data.length < 12) continue;
 
-            // Parse all fields
-            int pokedexNo = Integer.parseInt(data[0]);
-            String name = data[1].replace("_", " ");
-            String type1 = data[2];
-            String type2 = data[3].equals("0") ? "None" : data[3];
-            int baseLevel = Integer.parseInt(data[4]);
-            int from = Integer.parseInt(data[5]);
-            int to = Integer.parseInt(data[6]);
-            int evoLevel = Integer.parseInt(data[7]);
-            int hp = Integer.parseInt(data[8]);
-            int atk = Integer.parseInt(data[9]);
-            int def = Integer.parseInt(data[10]);
-            int spd = Integer.parseInt(data[11]);
+                // Parse all fields
+                int pokedexNo = Integer.parseInt(data[0]);
+                String name = data[1].replace("_", " ");
+                String type1 = data[2];
+                String type2 = data[3].equals("0") ? "None" : data[3];
+                int baseLevel = Integer.parseInt(data[4]);
+                int from = Integer.parseInt(data[5]);
+                int to = Integer.parseInt(data[6]);
+                int evoLevel = Integer.parseInt(data[7]);
+                int hp = Integer.parseInt(data[8]);
+                int atk = Integer.parseInt(data[9]);
+                int def = Integer.parseInt(data[10]);
+                int spd = Integer.parseInt(data[11]);
 
-            // Create Pokémon object
-            Pokemon currentPokemon = new Pokemon(pokedexNo, name, type1, type2, baseLevel, from, to, evoLevel, hp, atk, def, spd);
+                // Create Pokémon object
+                Pokemon currentPokemon = new Pokemon(pokedexNo, name, type1, type2, baseLevel, from, to, evoLevel, hp, atk, def, spd);
 
-            // 🔁 Copy moves if present in Pokedex.pokemon
-            if (pokedexNo <= Pokedex.pokemonCount) {
-                Pokemon original = Pokedex.pokemon[pokedexNo - 1];
-                if (original != null) {
-                    currentPokemon.setMoves(original.getMoves());
-                    currentPokemon.setPMoves(original.getPMoves());
-                }
-            }
-
-            // 🔁 Use the exact layout logic from DisplayPokemonSearch()
-            JPanel pokemonCard = new JPanel();
-            pokemonCard.setLayout(new BoxLayout(pokemonCard, BoxLayout.Y_AXIS));
-            pokemonCard.setBackground(new Color(245, 245, 245));
-            pokemonCard.setMaximumSize(new Dimension(800, 250));
-            pokemonCard.setPreferredSize(new Dimension(800, 250));
-            pokemonCard.setAlignmentX(Component.CENTER_ALIGNMENT);
-            pokemonCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GRAY, 1),
-                BorderFactory.createEmptyBorder(10, 15, 10, 15)
-            ));
-
-            pokemonCard.add(new JLabel("Pokédex No: " + String.format("%04d", currentPokemon.getPokedexNo())));
-            pokemonCard.add(new JLabel("Name: " + currentPokemon.getName()));
-            pokemonCard.add(Box.createVerticalStrut(5));
-            pokemonCard.add(new JLabel(currentPokemon.cry()));
-            pokemonCard.add(Box.createVerticalStrut(5));
-            pokemonCard.add(new JLabel("Type 1: " + currentPokemon.getType1()));
-            pokemonCard.add(new JLabel("Type 2: " + (currentPokemon.getType2().equals("0") ? "None" : currentPokemon.getType2())));
-            pokemonCard.add(new JLabel("Base Level: " + currentPokemon.getBaseLevel()));
-            pokemonCard.add(new JLabel("HP: " + currentPokemon.getHP() + " | ATTACK: " + currentPokemon.getAtk() + " | DEFENSE: " + currentPokemon.getDef() + " | SPEED: " + currentPokemon.getSpd()));
-
-            // Evolution Info
-            int fromPokedexNo = currentPokemon.getFrom();
-            int toPokedexNo = currentPokemon.getTo();
-            String evolvesFromText = "Evolves From: " + (fromPokedexNo > 0 && fromPokedexNo <= Pokedex.pokemonCount
-                    ? Pokedex.pokemon[fromPokedexNo - 1].getName() + " at Level " + Pokedex.pokemon[fromPokedexNo - 1].getEvoLevel()
-                    : (fromPokedexNo == 0 ? "None" : "Unknown At Unknown Level"));
-            String evolvesToText = "Evolves To: " + (toPokedexNo > 0 && toPokedexNo <= Pokedex.pokemonCount
-                    ? Pokedex.pokemon[toPokedexNo - 1].getName() + " at Level " + currentPokemon.getEvoLevel()
-                    : (toPokedexNo == 0 ? "None" : "Unknown At Level " + currentPokemon.getEvoLevel()));
-
-            pokemonCard.add(new JLabel(evolvesFromText));
-            pokemonCard.add(new JLabel(evolvesToText));
-            pokemonCard.add(Box.createVerticalStrut(5));
-            pokemonCard.add(new JLabel("Held Item: None"));
-            pokemonCard.add(Box.createVerticalStrut(5));
-
-            // Moves
-            StringBuilder movesTextBuilder = new StringBuilder();
-            movesTextBuilder.append("<html>").append(currentPokemon.getName()).append("'s Moves:<br>");
-            if (currentPokemon.getPMoves() == 0) {
-                movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(No moves known)");
-            } else {
-                for (int i = 0; i < currentPokemon.getPMoves(); i++) {
-                    Moves m = currentPokemon.getMoves()[i];
-                    if (m != null) {
-                        movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;- ")
-                                .append(m.getName()).append(": ").append(m.getDesc())
-                                .append(" [").append(m.getType1());
-
-                        if (!m.getType2().equals("0") && !m.getType2().isEmpty()) {
-                            movesTextBuilder.append("/").append(m.getType2());
-                        }
-
-                        movesTextBuilder.append("]");
-                        if (m.getMachine() != null && !m.getMachine().isEmpty()) {
-                            movesTextBuilder.append(" (Machine: ").append(m.getMachine()).append(")");
-                        }
-                        movesTextBuilder.append("<br>");
-                    } else {
-                        movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(Empty or unassigned move slot)<br>");
+                // 🔁 Copy moves if present in Pokedex.pokemon
+                if (pokedexNo <= Pokedex.pokemonCount) {
+                    Pokemon original = Pokedex.pokemon[pokedexNo - 1];
+                    if (original != null) {
+                        currentPokemon.setMoves(original.getMoves());
+                        currentPokemon.setPMoves(original.getPMoves());
                     }
                 }
-            }
-            movesTextBuilder.append("</html>");
-            pokemonCard.add(new JLabel(movesTextBuilder.toString()));
 
-            mainPanel.add(pokemonCard);
-            mainPanel.add(Box.createVerticalStrut(10));
+                // 🔁 Use the exact layout logic from DisplayPokemonSearch()
+                JPanel pokemonCard = new JPanel();
+                pokemonCard.setLayout(new BoxLayout(pokemonCard, BoxLayout.Y_AXIS));
+                pokemonCard.setBackground(new Color(245, 245, 245));
+                pokemonCard.setMaximumSize(new Dimension(800, 250));
+                pokemonCard.setPreferredSize(new Dimension(800, 250));
+                pokemonCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+                pokemonCard.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.GRAY, 1),
+                        BorderFactory.createEmptyBorder(10, 15, 10, 15)
+                ));
+
+                pokemonCard.add(new JLabel("Pokédex No: " + String.format("%04d", currentPokemon.getPokedexNo())));
+                pokemonCard.add(new JLabel("Name: " + currentPokemon.getName()));
+                pokemonCard.add(Box.createVerticalStrut(5));
+                pokemonCard.add(new JLabel(currentPokemon.cry()));
+                pokemonCard.add(Box.createVerticalStrut(5));
+                pokemonCard.add(new JLabel("Type 1: " + currentPokemon.getType1()));
+                pokemonCard.add(new JLabel("Type 2: " + (currentPokemon.getType2().equals("0") ? "None" : currentPokemon.getType2())));
+                pokemonCard.add(new JLabel("Base Level: " + currentPokemon.getBaseLevel()));
+                pokemonCard.add(new JLabel("HP: " + currentPokemon.getHP() + " | ATTACK: " + currentPokemon.getAtk() + " | DEFENSE: " + currentPokemon.getDef() + " | SPEED: " + currentPokemon.getSpd()));
+
+                // Evolution Info
+                int fromPokedexNo = currentPokemon.getFrom();
+                int toPokedexNo = currentPokemon.getTo();
+                String evolvesFromText = "Evolves From: " + (fromPokedexNo > 0 && fromPokedexNo <= Pokedex.pokemonCount
+                        ? Pokedex.pokemon[fromPokedexNo - 1].getName() + " at Level " + Pokedex.pokemon[fromPokedexNo - 1].getEvoLevel()
+                        : (fromPokedexNo == 0 ? "None" : "Unknown At Unknown Level"));
+                String evolvesToText = "Evolves To: " + (toPokedexNo > 0 && toPokedexNo <= Pokedex.pokemonCount
+                        ? Pokedex.pokemon[toPokedexNo - 1].getName() + " at Level " + currentPokemon.getEvoLevel()
+                        : (toPokedexNo == 0 ? "None" : "Unknown At Level " + currentPokemon.getEvoLevel()));
+
+                pokemonCard.add(new JLabel(evolvesFromText));
+                pokemonCard.add(new JLabel(evolvesToText));
+                pokemonCard.add(Box.createVerticalStrut(5));
+                pokemonCard.add(new JLabel("Held Item: None"));
+                pokemonCard.add(Box.createVerticalStrut(5));
+
+                // Moves
+                StringBuilder movesTextBuilder = new StringBuilder();
+                movesTextBuilder.append("<html>").append(currentPokemon.getName()).append("'s Moves:<br>");
+                if (currentPokemon.getPMoves() == 0) {
+                    movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(No moves known)");
+                } else {
+                    for (int i = 0; i < currentPokemon.getPMoves(); i++) {
+                        Moves m = currentPokemon.getMoves()[i];
+                        if (m != null) {
+                            movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;- ")
+                                    .append(m.getName()).append(": ").append(m.getDesc())
+                                    .append(" [").append(m.getType1());
+
+                            if (!m.getType2().equals("0") && !m.getType2().isEmpty()) {
+                                movesTextBuilder.append("/").append(m.getType2());
+                            }
+
+                            movesTextBuilder.append("]");
+                            if (m.getMachine() != null && !m.getMachine().isEmpty()) {
+                                movesTextBuilder.append(" (Machine: ").append(m.getMachine()).append(")");
+                            }
+                            movesTextBuilder.append("<br>");
+                        } else {
+                            movesTextBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;(Empty or unassigned move slot)<br>");
+                        }
+                    }
+                }
+                movesTextBuilder.append("</html>");
+                pokemonCard.add(new JLabel(movesTextBuilder.toString()));
+
+                mainPanel.add(pokemonCard);
+                mainPanel.add(Box.createVerticalStrut(10));
+            }
+
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error loading pokedex.txt: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-    } catch (IOException | NumberFormatException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(frame, "Error loading pokedex.txt: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        // Add Back Button
+        JPanel backPanel = new JPanel();
+        backPanel.setBackground(Color.WHITE);
+        JButton backButton = new JButton("Back");
+        backButton.setPreferredSize(new Dimension(100, 30));
+        backButton.addActionListener(e -> frame.dispose());
+        backPanel.add(backButton);
+
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(backPanel);
+
+        // Final ScrollPane Setup
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBorder(null);
+
+        frame.add(scrollPane);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
-    // Add Back Button
-    JPanel backPanel = new JPanel();
-    backPanel.setBackground(Color.WHITE);
-    JButton backButton = new JButton("Back");
-    backButton.setPreferredSize(new Dimension(100, 30));
-    backButton.addActionListener(e -> frame.dispose());
-    backPanel.add(backButton);
-
-    mainPanel.add(Box.createVerticalStrut(20));
-    mainPanel.add(backPanel);
-
-    // Final ScrollPane Setup
-    JScrollPane scrollPane = new JScrollPane(mainPanel);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-    scrollPane.setBorder(null);
-
-    frame.add(scrollPane);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-}
-
     public static JPanel DisplayPokemonSearch(Pokemon currentPokemon) {
-    JPanel pokemonCard = new JPanel();
-    pokemonCard.setLayout(new BoxLayout(pokemonCard, BoxLayout.Y_AXIS));
-    pokemonCard.setBackground(new Color(245, 245, 245));
-    pokemonCard.setMaximumSize(new Dimension(800, 250));
-    pokemonCard.setPreferredSize(new Dimension(800, 250));
-    pokemonCard.setAlignmentX(Component.CENTER_ALIGNMENT);
-    pokemonCard.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(Color.GRAY, 1),
-        BorderFactory.createEmptyBorder(10, 15, 10, 15)
-    ));
+        JPanel pokemonCard = new JPanel();
+        pokemonCard.setLayout(new BoxLayout(pokemonCard, BoxLayout.Y_AXIS));
+        pokemonCard.setBackground(new Color(245, 245, 245));
+        pokemonCard.setMaximumSize(new Dimension(800, 250));
+        pokemonCard.setPreferredSize(new Dimension(800, 250));
+        pokemonCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pokemonCard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 1),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
 
-    pokemonCard.add(new JLabel("Pokédex No: " + String.format("%04d", currentPokemon.getPokedexNo())));
-    pokemonCard.add(new JLabel("Name: " + currentPokemon.getName()));
-    pokemonCard.add(Box.createVerticalStrut(5));
-    pokemonCard.add(new JLabel(currentPokemon.cry()));
-    pokemonCard.add(Box.createVerticalStrut(5));
-    pokemonCard.add(new JLabel("Type 1: " + currentPokemon.getType1()));
-    pokemonCard.add(new JLabel("Type 2: " + (currentPokemon.getType2().equals("0") ? "None" : currentPokemon.getType2())));
-    pokemonCard.add(new JLabel("Base Level: " + currentPokemon.getBaseLevel()));
-    pokemonCard.add(new JLabel("HP: " + currentPokemon.getHP() + " | ATTACK: " + currentPokemon.getAtk() + " | DEFENSE: " + currentPokemon.getDef() + " | SPEED: " + currentPokemon.getSpd()));
+        pokemonCard.add(new JLabel("Pokédex No: " + String.format("%04d", currentPokemon.getPokedexNo())));
+        pokemonCard.add(new JLabel("Name: " + currentPokemon.getName()));
+        pokemonCard.add(Box.createVerticalStrut(5));
+        pokemonCard.add(new JLabel(currentPokemon.cry()));
+        pokemonCard.add(Box.createVerticalStrut(5));
+        pokemonCard.add(new JLabel("Type 1: " + currentPokemon.getType1()));
+        pokemonCard.add(new JLabel("Type 2: " + (currentPokemon.getType2().equals("0") ? "None" : currentPokemon.getType2())));
+        pokemonCard.add(new JLabel("Base Level: " + currentPokemon.getBaseLevel()));
+        pokemonCard.add(new JLabel("HP: " + currentPokemon.getHP() + " | ATTACK: " + currentPokemon.getAtk() + " | DEFENSE: " + currentPokemon.getDef() + " | SPEED: " + currentPokemon.getSpd()));
 
-    // Evolution info
-    int fromPokedexNo = currentPokemon.getFrom();
-    int toPokedexNo = currentPokemon.getTo();
+        // Evolution info
+        int fromPokedexNo = currentPokemon.getFrom();
+        int toPokedexNo = currentPokemon.getTo();
 
-    String evolvesFromText = "Evolves From: " + (fromPokedexNo > 0 && fromPokedexNo <= Pokedex.pokemonCount
-            ? Pokedex.pokemon[fromPokedexNo - 1].getName() + " at Level " + Pokedex.pokemon[fromPokedexNo - 1].getEvoLevel()
-            : (fromPokedexNo == 0 ? "None" : "Unknown At Unknown Level"));
+        String evolvesFromText = "Evolves From: " + (fromPokedexNo > 0 && fromPokedexNo <= Pokedex.pokemonCount
+                ? Pokedex.pokemon[fromPokedexNo - 1].getName() + " at Level " + Pokedex.pokemon[fromPokedexNo - 1].getEvoLevel()
+                : (fromPokedexNo == 0 ? "None" : "Unknown At Unknown Level"));
 
-    String evolvesToText = "Evolves To: " + (toPokedexNo > 0 && toPokedexNo <= Pokedex.pokemonCount
-            ? Pokedex.pokemon[toPokedexNo - 1].getName() + " at Level " + currentPokemon.getEvoLevel()
-            : (toPokedexNo == 0 ? "None" : "Unknown At Level " + currentPokemon.getEvoLevel()));
+        String evolvesToText = "Evolves To: " + (toPokedexNo > 0 && toPokedexNo <= Pokedex.pokemonCount
+                ? Pokedex.pokemon[toPokedexNo - 1].getName() + " at Level " + currentPokemon.getEvoLevel()
+                : (toPokedexNo == 0 ? "None" : "Unknown At Level " + currentPokemon.getEvoLevel()));
 
-    pokemonCard.add(new JLabel(evolvesFromText));
-    pokemonCard.add(new JLabel(evolvesToText));
-    pokemonCard.add(Box.createVerticalStrut(5));
-    pokemonCard.add(new JLabel("Held Item: None"));
-    pokemonCard.add(Box.createVerticalStrut(5));
+        pokemonCard.add(new JLabel(evolvesFromText));
+        pokemonCard.add(new JLabel(evolvesToText));
+        pokemonCard.add(Box.createVerticalStrut(5));
+        pokemonCard.add(new JLabel("Held Item: None"));
+        pokemonCard.add(Box.createVerticalStrut(5));
 
-    // Moves
-    pokemonCard.add(buildMoveLabel(currentPokemon));
+        // Moves
+        pokemonCard.add(buildMoveLabel(currentPokemon));
 
-    return pokemonCard;
-}
+        return pokemonCard;
+    }
 
 
-      public static void SearchMenu() {
+    public static void SearchMenu() {
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2048,7 +2048,7 @@ public class DexGui {
             subButton.addActionListener(e -> {
                 switch (currentLabel) {
                     case "POKEDEX NUMBER":
-                    SearchDex(Pokedex.pokemon); // Replace pokemonList with actual array
+                        SearchDex(Pokedex.pokemon); // Replace pokemonList with actual array
                         break;
                     case "POKEMON NAME":
                         SearchPokName(Pokedex.pokemon);
@@ -2071,7 +2071,7 @@ public class DexGui {
         gbc.gridy = 0;
         gbc.insets = new Insets(150, 0, 0, 0); // Adjust top spacing
         backgroundPanel.add(mainPanel, gbc);
-        
+
         // Final setup
         pokFrame.setContentPane(backgroundPanel);
         pokFrame.setLocationRelativeTo(null);
@@ -2079,332 +2079,332 @@ public class DexGui {
     }
 
     public static Pokemon searchByPokedexNumber(Pokemon[] pokemonList, int searchID) {
-    for (Pokemon p : pokemonList) {
-        if (p != null && p.getPokedexNo() == searchID) {
-            return p; // Found
+        for (Pokemon p : pokemonList) {
+            if (p != null && p.getPokedexNo() == searchID) {
+                return p; // Found
+            }
         }
+        return null; // Not found
     }
-    return null; // Not found
-}
 
-   public static void SearchDex(Pokemon[] pokemonList) {
-    JFrame pokFrame2 = new JFrame();
-    pokFrame2.setSize(1300, 700);
-    pokFrame2.setUndecorated(true);
-    pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public static void SearchDex(Pokemon[] pokemonList) {
+        JFrame pokFrame2 = new JFrame();
+        pokFrame2.setSize(1300, 700);
+        pokFrame2.setUndecorated(true);
+        pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    ImageIcon pokBg = new ImageIcon("searchNum.png");
+        ImageIcon pokBg = new ImageIcon("searchNum.png");
 
-    JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+        JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel2.setOpaque(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        // 🟨 Prompt Label
+        JLabel promptLabel = new JLabel("Search Pokedex Number:");
+        promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        promptLabel.setForeground(Color.BLACK);
+        promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // 🟦 Result Panel placeholder
+        JPanel resultPanel = new JPanel();
+        resultPanel.setOpaque(false);
+
+        // 🟩 Input Panel with validation and search logic
+        JPanel inputPanel = createValidatedIntInputField(
+                "Next", 1, 9999,
+                enteredNumber -> {
+                    Pokemon result = searchByPokedexNumber(pokemonList, enteredNumber);
+                    resultPanel.removeAll(); // clear previous results
+
+                    if (result != null) {
+                        JPanel pokemonCard = DisplayPokemonSearch(result); // ✅ fixed here
+                        resultPanel.add(pokemonCard);
+                        ButtonBg subButton = new ButtonBg("BACK", new Dimension(100, 50), Color.RED);
+
+                        subButton.addActionListener(e -> {
+                            SearchMenu(); // Return to management
+                        });
+                        resultPanel.add(subButton);
+                    } else {
+                        JLabel notFoundLabel = new JLabel("No Pokémon found");
+                        notFoundLabel.setForeground(Color.RED);
+                        notFoundLabel.setFont(new Font("Arial", Font.BOLD, 16));
+                        resultPanel.add(notFoundLabel);
+                        ButtonBg subButton = new ButtonBg("BACK", new Dimension(100, 50), Color.RED);
+                        subButton.addActionListener(e -> {
+                            SearchMenu(); // Return to management
+                        });
+                        resultPanel.add(subButton);
+                    }
+                    resultPanel.revalidate();
+                    resultPanel.repaint();
+                }
+        );
+
+        // 🧩 Assemble layout
+        mainPanel.add(Box.createVerticalStrut(100));
+        mainPanel.add(promptLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(inputPanel);
+        mainPanel.add(Box.createVerticalStrut(30));
+        mainPanel.add(resultPanel);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(180, 0, 0, 0);
+
+        backgroundPanel2.add(mainPanel, gbc);
+
+        pokFrame2.setContentPane(backgroundPanel2);
+        pokFrame2.setLocationRelativeTo(null);
+        pokFrame2.setVisible(true);
+    }
+
+    public static Pokemon searchByName(Pokemon[] pokemonList, String nameToSearch) {
+        for (Pokemon p : pokemonList) {
+            if (p != null && p.getName().equalsIgnoreCase(nameToSearch.trim())) {
+                return p; // Found matching name
+            }
         }
-    };
-    backgroundPanel2.setOpaque(false);
+        return null; // Not found
+    }
 
-    JPanel mainPanel = new JPanel();
-    mainPanel.setOpaque(false);
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+    public static void SearchPokName(Pokemon[] pokemonList) {
+        JFrame pokFrame2 = new JFrame();
+        pokFrame2.setSize(1300, 700);
+        pokFrame2.setUndecorated(true);
+        pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    // 🟨 Prompt Label
-    JLabel promptLabel = new JLabel("Search Pokedex Number:");
-    promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    promptLabel.setForeground(Color.BLACK);
-    promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        ImageIcon pokBg = new ImageIcon("searchName.png");
 
-    // 🟦 Result Panel placeholder
-    JPanel resultPanel = new JPanel();
-    resultPanel.setOpaque(false);
+        JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel2.setOpaque(false);
 
-   // 🟩 Input Panel with validation and search logic
-JPanel inputPanel = createValidatedIntInputField(
-    "Next", 1, 9999,
-    enteredNumber -> {
-        Pokemon result = searchByPokedexNumber(pokemonList, enteredNumber);
-        resultPanel.removeAll(); // clear previous results
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        if (result != null) {
-            JPanel pokemonCard = DisplayPokemonSearch(result); // ✅ fixed here
-            resultPanel.add(pokemonCard);
-            ButtonBg subButton = new ButtonBg("BACK", new Dimension(100, 50), Color.RED);
+        JLabel promptLabel = new JLabel("Search Pokémon Name:");
+        promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        promptLabel.setForeground(Color.BLACK);
+        promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-            subButton.addActionListener(e -> {
-                SearchMenu(); // Return to management
+        JPanel resultPanel = new JPanel();
+        resultPanel.setOpaque(false);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setOpaque(false);
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+
+        JTextField nameField = new JTextField();
+        nameField.setMaximumSize(new Dimension(200, 30));
+        inputPanel.add(nameField);
+
+        inputPanel.add(Box.createHorizontalStrut(10));
+
+        JButton submitButton = new JButton("Search");
+        submitButton.setPreferredSize(new Dimension(100, 30));
+        submitButton.addActionListener(e -> {
+            String nameInput = nameField.getText().trim();
+            resultPanel.removeAll();
+
+            Pokemon result = searchByName(pokemonList, nameInput);
+
+            if (result != null) {
+                JPanel pokemonCard = DisplayPokemonSearch(result);
+                resultPanel.add(pokemonCard);
+            } else {
+                JLabel notFoundLabel = new JLabel("No Pokémon found");
+                notFoundLabel.setForeground(Color.RED);
+                notFoundLabel.setFont(new Font("Arial", Font.BOLD, 16));
+                resultPanel.add(notFoundLabel);
+            }
+
+            resultPanel.add(Box.createVerticalStrut(10));
+            ButtonBg backButton = new ButtonBg("BACK", new Dimension(100, 50), Color.RED);
+            backButton.addActionListener(ev -> {
+                SearchMenu();
             });
-            resultPanel.add(subButton);
-        } else {
-            JLabel notFoundLabel = new JLabel("No Pokémon found");
-            notFoundLabel.setForeground(Color.RED);
-            notFoundLabel.setFont(new Font("Arial", Font.BOLD, 16));
-            resultPanel.add(notFoundLabel);
-            ButtonBg subButton = new ButtonBg("BACK", new Dimension(100, 50), Color.RED);
-            subButton.addActionListener(e -> {
-                SearchMenu(); // Return to management
-            });
-            resultPanel.add(subButton);
-        }
-        resultPanel.revalidate();
-        resultPanel.repaint();
-    }
-);
+            resultPanel.add(backButton);
 
-    // 🧩 Assemble layout
-    mainPanel.add(Box.createVerticalStrut(100));
-    mainPanel.add(promptLabel);
-    mainPanel.add(Box.createVerticalStrut(20));
-    mainPanel.add(inputPanel);
-    mainPanel.add(Box.createVerticalStrut(30));
-    mainPanel.add(resultPanel);
-
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.insets = new Insets(180, 0, 0, 0);
-
-    backgroundPanel2.add(mainPanel, gbc);
-
-    pokFrame2.setContentPane(backgroundPanel2);
-    pokFrame2.setLocationRelativeTo(null);
-    pokFrame2.setVisible(true);
-}
-
-public static Pokemon searchByName(Pokemon[] pokemonList, String nameToSearch) {
-    for (Pokemon p : pokemonList) {
-        if (p != null && p.getName().equalsIgnoreCase(nameToSearch.trim())) {
-            return p; // Found matching name
-        }
-    }
-    return null; // Not found
-}
-
-public static void SearchPokName(Pokemon[] pokemonList) {
-    JFrame pokFrame2 = new JFrame();
-    pokFrame2.setSize(1300, 700);
-    pokFrame2.setUndecorated(true);
-    pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    ImageIcon pokBg = new ImageIcon("searchName.png");
-
-    JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-    };
-    backgroundPanel2.setOpaque(false);
-
-    JPanel mainPanel = new JPanel();
-    mainPanel.setOpaque(false);
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-    JLabel promptLabel = new JLabel("Search Pokémon Name:");
-    promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    promptLabel.setForeground(Color.BLACK);
-    promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-    JPanel resultPanel = new JPanel();
-    resultPanel.setOpaque(false);
-
-    JPanel inputPanel = new JPanel();
-    inputPanel.setOpaque(false);
-    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
-
-    JTextField nameField = new JTextField();
-    nameField.setMaximumSize(new Dimension(200, 30));
-    inputPanel.add(nameField);
-
-    inputPanel.add(Box.createHorizontalStrut(10));
-
-    JButton submitButton = new JButton("Search");
-    submitButton.setPreferredSize(new Dimension(100, 30));
-    submitButton.addActionListener(e -> {
-        String nameInput = nameField.getText().trim();
-        resultPanel.removeAll();
-
-        Pokemon result = searchByName(pokemonList, nameInput);
-
-        if (result != null) {
-            JPanel pokemonCard = DisplayPokemonSearch(result);
-            resultPanel.add(pokemonCard);
-        } else {
-            JLabel notFoundLabel = new JLabel("No Pokémon found");
-            notFoundLabel.setForeground(Color.RED);
-            notFoundLabel.setFont(new Font("Arial", Font.BOLD, 16));
-            resultPanel.add(notFoundLabel);
-        }
-
-        resultPanel.add(Box.createVerticalStrut(10));
-        ButtonBg backButton = new ButtonBg("BACK", new Dimension(100, 50), Color.RED);
-        backButton.addActionListener(ev -> {
-           SearchMenu();
+            resultPanel.revalidate();
+            resultPanel.repaint();
         });
-        resultPanel.add(backButton);
+        inputPanel.add(submitButton);
 
-        resultPanel.revalidate();
-        resultPanel.repaint();
-    });
-    inputPanel.add(submitButton);
+        // Assemble layout
+        mainPanel.add(Box.createVerticalStrut(100));
+        mainPanel.add(promptLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(inputPanel);
+        mainPanel.add(Box.createVerticalStrut(30));
+        mainPanel.add(resultPanel);
 
-    // Assemble layout
-    mainPanel.add(Box.createVerticalStrut(100));
-    mainPanel.add(promptLabel);
-    mainPanel.add(Box.createVerticalStrut(20));
-    mainPanel.add(inputPanel);
-    mainPanel.add(Box.createVerticalStrut(30));
-    mainPanel.add(resultPanel);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(180, 0, 0, 0);
 
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.insets = new Insets(180, 0, 0, 0);
+        backgroundPanel2.add(mainPanel, gbc);
 
-    backgroundPanel2.add(mainPanel, gbc);
-
-    pokFrame2.setContentPane(backgroundPanel2);
-    pokFrame2.setLocationRelativeTo(null);
-    pokFrame2.setVisible(true);
-}
-
-public static void SearchPokType(Pokemon[] pokemonList) {
-    JFrame pokFrame2 = new JFrame();
-    pokFrame2.setSize(1300, 700);
-    pokFrame2.setUndecorated(true);
-    pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    ImageIcon pokBg = new ImageIcon("searchType.png");
-
-    JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-    };
-    backgroundPanel2.setOpaque(false);
-
-    JPanel mainPanel = new JPanel();
-    mainPanel.setOpaque(false);
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-    JLabel promptLabel = new JLabel("Search Pokémon by Type:");
-    promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    promptLabel.setForeground(Color.BLACK);
-    promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-    JPanel inputPanel = new JPanel();
-    inputPanel.setOpaque(false);
-    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
-
-    JTextField typeField = new JTextField();
-    typeField.setMaximumSize(new Dimension(200, 30));
-    inputPanel.add(typeField);
-
-    inputPanel.add(Box.createHorizontalStrut(10));
-
-    JButton submitButton = new JButton("Search");
-    submitButton.setPreferredSize(new Dimension(100, 30));
-    submitButton.addActionListener(e -> {
-        String typeInput = typeField.getText().trim();
-        if (!typeInput.isEmpty()) {
-            displayPokemonsByType(typeInput, pokemonList);
-        }
-    });
-    inputPanel.add(submitButton);
-
-    // Assemble layout
-    mainPanel.add(Box.createVerticalStrut(100));
-    mainPanel.add(promptLabel);
-    mainPanel.add(Box.createVerticalStrut(20));
-    mainPanel.add(inputPanel);
-
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.insets = new Insets(180, 200, 0, 0);
-
-    backgroundPanel2.add(mainPanel, gbc);
-
-    pokFrame2.setContentPane(backgroundPanel2);
-    pokFrame2.setLocationRelativeTo(null);
-    pokFrame2.setVisible(true);
-}
-
-   public static void displayPokemonsByType(String typeInput, Pokemon[] pokemonList) {
-    JFrame frame = new JFrame("Pokémon Type Search Results");
-    frame.setSize(900, 600);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    mainPanel.setBackground(Color.WHITE);
-
-    boolean found = false;
-
-    for (Pokemon p : pokemonList) {
-        if (p == null) continue;
-
-        String t1 = p.getType1().toLowerCase();
-        String t2 = p.getType2().toLowerCase();
-        String input = typeInput.toLowerCase();
-
-        if (t1.equals(input) || t2.equals(input)) {
-            JPanel pokemonCard = DisplayPokemonSearch(p);
-            mainPanel.add(pokemonCard);
-            mainPanel.add(Box.createVerticalStrut(10));
-            found = true;
-        }
+        pokFrame2.setContentPane(backgroundPanel2);
+        pokFrame2.setLocationRelativeTo(null);
+        pokFrame2.setVisible(true);
     }
 
-     if (!found) {
-        JLabel notFoundLabel = new JLabel("No Pokémon found with type: " + typeInput);
-        notFoundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        notFoundLabel.setForeground(Color.RED);
-        notFoundLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        mainPanel.add(Box.createVerticalStrut(50));
-        mainPanel.add(notFoundLabel);
+    public static void SearchPokType(Pokemon[] pokemonList) {
+        JFrame pokFrame2 = new JFrame();
+        pokFrame2.setSize(1300, 700);
+        pokFrame2.setUndecorated(true);
+        pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ImageIcon pokBg = new ImageIcon("searchType.png");
+
+        JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel2.setOpaque(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        JLabel promptLabel = new JLabel("Search Pokémon by Type:");
+        promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        promptLabel.setForeground(Color.BLACK);
+        promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setOpaque(false);
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+
+        JTextField typeField = new JTextField();
+        typeField.setMaximumSize(new Dimension(200, 30));
+        inputPanel.add(typeField);
+
+        inputPanel.add(Box.createHorizontalStrut(10));
+
+        JButton submitButton = new JButton("Search");
+        submitButton.setPreferredSize(new Dimension(100, 30));
+        submitButton.addActionListener(e -> {
+            String typeInput = typeField.getText().trim();
+            if (!typeInput.isEmpty()) {
+                displayPokemonsByType(typeInput, pokemonList);
+            }
+        });
+        inputPanel.add(submitButton);
+
+        // Assemble layout
+        mainPanel.add(Box.createVerticalStrut(100));
+        mainPanel.add(promptLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(inputPanel);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(180, 200, 0, 0);
+
+        backgroundPanel2.add(mainPanel, gbc);
+
+        pokFrame2.setContentPane(backgroundPanel2);
+        pokFrame2.setLocationRelativeTo(null);
+        pokFrame2.setVisible(true);
     }
 
-    // Add Back Button
-    JButton backButton = new JButton("Back");
-    backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    backButton.setPreferredSize(new Dimension(100, 30));
-    backButton.addActionListener(e -> {
-        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
-        topFrame.dispose();
-        SearchMenu();
-    });
+    public static void displayPokemonsByType(String typeInput, Pokemon[] pokemonList) {
+        JFrame frame = new JFrame("Pokémon Type Search Results");
+        frame.setSize(900, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    mainPanel.add(Box.createVerticalStrut(30));
-    mainPanel.add(backButton);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(Color.WHITE);
 
-    JScrollPane scrollPane = new JScrollPane(mainPanel);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-    scrollPane.setBorder(null);
+        boolean found = false;
 
-    if (found) {
-        frame.setSize(900, 600); // normal size
-    } else {
-        frame.setSize(400, 200); // smaller frame for "not found" message
+        for (Pokemon p : pokemonList) {
+            if (p == null) continue;
+
+            String t1 = p.getType1().toLowerCase();
+            String t2 = p.getType2().toLowerCase();
+            String input = typeInput.toLowerCase();
+
+            if (t1.equals(input) || t2.equals(input)) {
+                JPanel pokemonCard = DisplayPokemonSearch(p);
+                mainPanel.add(pokemonCard);
+                mainPanel.add(Box.createVerticalStrut(10));
+                found = true;
+            }
+        }
+
+        if (!found) {
+            JLabel notFoundLabel = new JLabel("No Pokémon found with type: " + typeInput);
+            notFoundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            notFoundLabel.setForeground(Color.RED);
+            notFoundLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            mainPanel.add(Box.createVerticalStrut(50));
+            mainPanel.add(notFoundLabel);
+        }
+
+        // Add Back Button
+        JButton backButton = new JButton("Back");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.setPreferredSize(new Dimension(100, 30));
+        backButton.addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
+            topFrame.dispose();
+            SearchMenu();
+        });
+
+        mainPanel.add(Box.createVerticalStrut(30));
+        mainPanel.add(backButton);
+
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBorder(null);
+
+        if (found) {
+            frame.setSize(900, 600); // normal size
+        } else {
+            frame.setSize(400, 200); // smaller frame for "not found" message
+        }
+
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.add(scrollPane);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
-
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.add(scrollPane);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-}
 
     private static void addTrainerMenu(){
         JFrame pokFrame = new JFrame();
@@ -2439,6 +2439,7 @@ public static void SearchPokType(Pokemon[] pokemonList) {
             subButton.addActionListener(e -> {
                 switch (currentLabel) {
                     case "ADD NEW TRAINER":
+                        AddTrainer();
                         break;
                     case "MANAGE TRAINER PROFILE":
                         ManageTrainerProf();
@@ -2464,7 +2465,179 @@ public static void SearchPokType(Pokemon[] pokemonList) {
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
     }
+    public static void AddTrainer() {
+        JFrame addFrame = new JFrame("Add New Trainer");
+        addFrame.setSize(900, 700);
+        addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Form panel
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridLayout(9, 2, 10, 10));
+
+        // Form fields
+        JLabel idLabel = new JLabel("Trainer ID (5 digits):");
+        JTextField idField = new JTextField();
+
+        JLabel nameLabel = new JLabel("Trainer Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel sexLabel = new JLabel("Sex:");
+        JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
+
+        JLabel descLabel = new JLabel("Description:");
+        JTextArea descArea = new JTextArea(3, 20);
+        JScrollPane descScroll = new JScrollPane(descArea);
+
+        JLabel homeLabel = new JLabel("Hometown:");
+        JTextField homeField = new JTextField();
+
+        JLabel birthLabel = new JLabel("Birth Date:");
+        JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
+        JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
+        JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
+        birthPanel.add(new JLabel("Month:"));
+        birthPanel.add(monthSpinner);
+        birthPanel.add(new JLabel("Day:"));
+        birthPanel.add(daySpinner);
+        birthPanel.add(new JLabel("Year:"));
+        birthPanel.add(yearSpinner);
+
+        // Add components to form panel
+        formPanel.add(idLabel);
+        formPanel.add(idField);
+        formPanel.add(nameLabel);
+        formPanel.add(nameField);
+        formPanel.add(sexLabel);
+        formPanel.add(sexCombo);
+        formPanel.add(descLabel);
+        formPanel.add(descScroll);
+        formPanel.add(homeLabel);
+        formPanel.add(homeField);
+        formPanel.add(birthLabel);
+        formPanel.add(birthPanel);
+        formPanel.add(new JLabel()); // Empty cell
+        formPanel.add(new JLabel()); // Empty cell
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton addButton = new JButton("Add Trainer");
+        JButton backButton = new JButton("Back");
+
+        // Result area
+        JTextArea resultArea = new JTextArea();
+        resultArea.setEditable(false);
+        JScrollPane resultScroll = new JScrollPane(resultArea);
+
+        // Add action listeners
+        addButton.addActionListener(e -> {
+            String id = idField.getText().trim();
+            String name = nameField.getText().trim();
+            String sex = (String) sexCombo.getSelectedItem();
+            String description = descArea.getText().trim();
+            String home = homeField.getText().trim();
+            int month = (int) monthSpinner.getValue();
+            int day = (int) daySpinner.getValue();
+            int year = (int) yearSpinner.getValue();
+
+            // Validation
+            StringBuilder errors = new StringBuilder();
+
+            // ID validation
+            if (id.isEmpty()) {
+                errors.append("• Trainer ID cannot be blank\n");
+            } else if (id.length() != 5) {
+                errors.append("• Trainer ID must be exactly 5 digits\n");
+            } else {
+                for (char c : id.toCharArray()) {
+                    if (!Character.isDigit(c)) {
+                        errors.append("• Trainer ID must contain only digits\n");
+                        break;
+                    }
+                }
+            }
+
+            // Name validation
+            if (name.isEmpty()) {
+                errors.append("• Trainer name cannot be blank\n");
+            } else {
+                for (char c : name.toCharArray()) {
+                    if (Character.isDigit(c)) {
+                        errors.append("• Trainer name cannot contain numbers\n");
+                        break;
+                    }
+                }
+            }
+
+            // Description validation
+            if (description.isEmpty()) {
+                errors.append("• Description cannot be blank\n");
+            }
+
+            // Hometown validation
+            if (home.isEmpty()) {
+                errors.append("• Hometown cannot be blank\n");
+            }
+
+            // Check for errors
+            if (errors.length() > 0) {
+                resultArea.setText("Please correct the following errors:\n" + errors.toString());
+                return;
+            }
+
+            // Check if trainer already exists (you'll need to implement this check)
+            // if (trainerExists(id)) {
+            //     resultArea.setText("Error: A trainer with this ID already exists.");
+            //     return;
+            // }
+
+            // Add the trainer (you'll need to implement this part)
+            // new Trainer(id, name, sex, description, home, month, day, year);
+
+            resultArea.setText("Trainer added successfully!\n\n" +
+                    "ID: " + id + "\n" +
+                    "Name: " + name + "\n" +
+                    "Sex: " + sex + "\n" +
+                    "Hometown: " + home + "\n" +
+                    "Birth Date: " + month + "/" + day + "/" + year + "\n" +
+                    "Description: " + description);
+
+            // Save to file
+            try {
+                FileWriter writer = new FileWriter("trainers.txt", true);
+                writer.append("\n" + id + "-" + name + "-" + month + "-" + day + "-" +
+                        year + "-" + sex + "-" + home + "-" + description + "-");
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            // Clear fields for next entry
+            idField.setText("");
+            nameField.setText("");
+            descArea.setText("");
+            homeField.setText("");
+            monthSpinner.setValue(1);
+            daySpinner.setValue(1);
+            yearSpinner.setValue(2000);
+        });
+
+        backButton.addActionListener(e -> addFrame.dispose());
+
+        buttonPanel.add(addButton);
+        buttonPanel.add(backButton);
+
+        mainPanel.add(formPanel, BorderLayout.NORTH);
+        mainPanel.add(resultScroll, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        addFrame.add(mainPanel);
+        addFrame.setLocationRelativeTo(null);
+        addFrame.setVisible(true);
+    }
     private static void ManageTrainerProf(){
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
@@ -2526,94 +2699,94 @@ public static void SearchPokType(Pokemon[] pokemonList) {
     }
 
     private static void ManageTrainerPok() {
-    JFrame pokFrame = new JFrame();
-    pokFrame.setSize(1300, 700);
-    pokFrame.setUndecorated(true);
-    pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame pokFrame = new JFrame();
+        pokFrame.setSize(1300, 700);
+        pokFrame.setUndecorated(true);
+        pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    // Load background image
-    ImageIcon pokBg = new ImageIcon("managetrainerpok.png");
+        // Load background image
+        ImageIcon pokBg = new ImageIcon("managetrainerpok.png");
 
-    // Custom panel to paint background
-    JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-    };
-
-    // Main vertical container
-    JPanel contentPanel = new JPanel();
-    contentPanel.setOpaque(false);
-    contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-
-    // Top button panel
-    JPanel topButtons = new JPanel();
-    topButtons.setOpaque(false);
-    topButtons.setLayout(new GridLayout(3, 2, 20, 30)); // 6 buttons in a grid
-
-    // Button labels excluding BACK
-    String[] labels = {
-        "ADD POKEMON TO STORAGE", 
-        "ADD POKEMON TO LINEUP",
-        "SWITCH POKEMON FROM STORAGE",
-        "RELEASE POKEMON",
-        "TEACH MOVES",
-        "UNLEARN MOVES"
-    };
-
-    for (String label : labels) {
-        ButtonBg subButton = new ButtonBg(label, new Dimension(400, 60), Color.RED);
-        final String currentLabel = label;
-
-        subButton.addActionListener(e -> {
-            switch (currentLabel) {
-                case "ADD POKEMON TO STORAGE":
-                    break;
-                case "ADD POKEMON TO LINEUP":
-                    break;
-                case "SWITCH POKEMON FROM STORAGE":
-                    break;
-                case "RELEASE POKEMON":
-                    break;
-                case "TEACH MOVES":
-                    break;
-                case "UNLEARN MOVES":
-                    break;
+        // Custom panel to paint background
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
-        });
+        };
 
-        topButtons.add(subButton);
+        // Main vertical container
+        JPanel contentPanel = new JPanel();
+        contentPanel.setOpaque(false);
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+        // Top button panel
+        JPanel topButtons = new JPanel();
+        topButtons.setOpaque(false);
+        topButtons.setLayout(new GridLayout(3, 2, 20, 30)); // 6 buttons in a grid
+
+        // Button labels excluding BACK
+        String[] labels = {
+                "ADD POKEMON TO STORAGE",
+                "ADD POKEMON TO LINEUP",
+                "SWITCH POKEMON FROM STORAGE",
+                "RELEASE POKEMON",
+                "TEACH MOVES",
+                "UNLEARN MOVES"
+        };
+
+        for (String label : labels) {
+            ButtonBg subButton = new ButtonBg(label, new Dimension(400, 60), Color.RED);
+            final String currentLabel = label;
+
+            subButton.addActionListener(e -> {
+                switch (currentLabel) {
+                    case "ADD POKEMON TO STORAGE":
+                        break;
+                    case "ADD POKEMON TO LINEUP":
+                        break;
+                    case "SWITCH POKEMON FROM STORAGE":
+                        break;
+                    case "RELEASE POKEMON":
+                        break;
+                    case "TEACH MOVES":
+                        break;
+                    case "UNLEARN MOVES":
+                        break;
+                }
+            });
+
+            topButtons.add(subButton);
+        }
+
+        // Back button panel
+        JPanel backPanel = new JPanel();
+        backPanel.setOpaque(false);
+        ButtonBg backButton = new ButtonBg("BACK", new Dimension(300, 80), Color.RED);
+        backButton.addActionListener(e -> ManageTrainerProf());
+        backPanel.add(backButton);
+
+        // Combine all panels
+        contentPanel.add(topButtons);
+        contentPanel.add(Box.createVerticalStrut(40)); // spacing between top buttons and back
+        contentPanel.add(backPanel);
+
+        // Center contentPanel using GridBagConstraints
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(230, 0, 0, 0); // adjust to shift vertically
+        backgroundPanel.add(contentPanel, gbc);
+
+        // Final setup
+        pokFrame.setContentPane(backgroundPanel);
+        pokFrame.setLocationRelativeTo(null);
+        pokFrame.setVisible(true);
     }
 
-    // Back button panel
-    JPanel backPanel = new JPanel();
-    backPanel.setOpaque(false);
-    ButtonBg backButton = new ButtonBg("BACK", new Dimension(300, 80), Color.RED);
-    backButton.addActionListener(e -> ManageTrainerProf());
-    backPanel.add(backButton);
-
-    // Combine all panels
-    contentPanel.add(topButtons);
-    contentPanel.add(Box.createVerticalStrut(40)); // spacing between top buttons and back
-    contentPanel.add(backPanel);
-
-    // Center contentPanel using GridBagConstraints
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.insets = new Insets(230, 0, 0, 0); // adjust to shift vertically
-    backgroundPanel.add(contentPanel, gbc);
-
-    // Final setup
-    pokFrame.setContentPane(backgroundPanel);
-    pokFrame.setLocationRelativeTo(null);
-    pokFrame.setVisible(true);
-}
-
-private static void ManageTrainerItem(){
-     JFrame pokFrame = new JFrame();
+    private static void ManageTrainerItem(){
+        JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
         pokFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -2647,10 +2820,10 @@ private static void ManageTrainerItem(){
                     case "BUY ITEM":
                         break;
                     case "USE ITEM":
-                        
+
                         break;
                     case "SELL ITEM":
-                        
+
                         break;
                     case "BACK":
                         ManageTrainerProf();
@@ -2672,8 +2845,7 @@ private static void ManageTrainerItem(){
         pokFrame.setContentPane(backgroundPanel);
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
-}
+    }
 }
 
 
-    
