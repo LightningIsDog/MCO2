@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.function.Consumer;
 
 public class DexGui {
@@ -268,10 +269,10 @@ public class DexGui {
         StringBuilder movesText = new StringBuilder();
         for (Moves move : Moves.moveList) {
             if (move != null) {
-                movesText.append("Move: ").append(move.getName()).append("\n");
-                movesText.append("Description: ").append(move.getDesc()).append("\n");
-                movesText.append("Machine: ").append(move.getMachine()).append("\n");
-                movesText.append("Type: ").append(move.getType1());
+                movesText.append("  Move: ").append(move.getName()).append("\n");
+                movesText.append("  Description: ").append(move.getDesc()).append("\n");
+                movesText.append("  Machine: ").append(move.getMachine()).append("\n");
+                movesText.append("  Type: ").append(move.getType1());
                 if (!move.getType2().contains("0")) {
                     movesText.append("/").append(move.getType2());
                 }
@@ -574,19 +575,19 @@ public class DexGui {
         itemsText.append("========== AVAILABLE ITEMS ==========\n\n");
         for (Items item : Items.itemList) {
             if (item != null && !item.getForEvo()) {
-                itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
-                itemsText.append("Name: ").append(item.getitemName()).append("\n");
-                itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
-                itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
-                itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append("  Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("  Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("  Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("  Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("  Effects: ").append(item.getitemEffects()).append("\n");
 
                 if (item.getToSold()) {
-                    itemsText.append(String.format("Buying Price: P %.2f\n", item.getstartBuyingPrice()));
+                    itemsText.append(String.format("  Buying Price: P %.2f\n", item.getstartBuyingPrice()));
                 } else {
-                    itemsText.append("Buying Price: Not Sold\n");
+                    itemsText.append("  Buying Price: Not Sold\n");
                 }
 
-                itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append(String.format("  Selling Price: P %.2f\n", item.getsellingPrice()));
                 itemsText.append("\n----------------------------------------\n\n");
             }
         }
@@ -595,20 +596,20 @@ public class DexGui {
         itemsText.append("========== EVOLUTION STONES ==========\n\n");
         for (Items item : Items.itemList) {
             if (item != null && item.getForEvo()) {
-                itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
-                itemsText.append("Name: ").append(item.getitemName()).append("\n");
-                itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
-                itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
-                itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append("  Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("  Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("  Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("  Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("  Effects: ").append(item.getitemEffects()).append("\n");
 
                 if (item.getToSold()) {
-                    itemsText.append(String.format("Buying Price: P %.2f - P %.2f\n",
+                    itemsText.append(String.format("  Buying Price: P %.2f - P %.2f\n",
                             item.getstartBuyingPrice(), item.getendBuyingPrice()));
                 } else {
-                    itemsText.append("Buying Price: Not Sold\n");
+                    itemsText.append("  Buying Price: Not Sold\n");
                 }
 
-                itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append(String.format("  Selling Price: P %.2f\n", item.getsellingPrice()));
                 itemsText.append("\n----------------------------------------\n\n");
             }
         }
@@ -740,6 +741,7 @@ public class DexGui {
                         addTrainerMenu();
                         break;
                     case "VIEW TRAINER":
+                        viewTrainers();
                         break;
                     case "SEARCH TRAINER":
                         break;
@@ -2486,152 +2488,145 @@ public class DexGui {
     }
 
     public static void AddTrainer() {
-        JFrame addFrame = new JFrame("Add New Trainer");
-        addFrame.setSize(900, 800);
-        addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    JFrame addFrame = new JFrame("Add New Trainer");
+    addFrame.setSize(800, 600);
+    addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPanel formPanel = new JPanel(new GridLayout(9, 2, 10, 10));
+    JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
 
-        // Form fields
-        JLabel idLabel = new JLabel("Trainer ID (5 digits):");
-        JTextField idField = new JTextField();
+    // Form fields
+    JLabel idLabel = new JLabel("Trainer ID (5 digits):");
+    JTextField idField = new JTextField();
 
-        JLabel nameLabel = new JLabel("Trainer Name:");
-        JTextField nameField = new JTextField();
+    JLabel nameLabel = new JLabel("Trainer Name:");
+    JTextField nameField = new JTextField();
 
-        JLabel sexLabel = new JLabel("Sex:");
-        JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
+    JLabel sexLabel = new JLabel("Sex:");
+    JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
 
-        JLabel descLabel = new JLabel("Description:");
-        JTextArea descArea = new JTextArea(3, 20);
-        JScrollPane descScroll = new JScrollPane(descArea);
+    JLabel descLabel = new JLabel("Description:");
+    JTextArea descArea = new JTextArea(3, 20);
+    JScrollPane descScroll = new JScrollPane(descArea);
 
-        JLabel homeLabel = new JLabel("Hometown:");
-        JTextField homeField = new JTextField();
+    JLabel homeLabel = new JLabel("Hometown:");
+    JTextField homeField = new JTextField();
 
-        JLabel birthLabel = new JLabel("Birth Date:");
-        JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
-        JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
-        JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
-        birthPanel.add(new JLabel("Month:"));
-        birthPanel.add(monthSpinner);
-        birthPanel.add(new JLabel("Day:"));
-        birthPanel.add(daySpinner);
-        birthPanel.add(new JLabel("Year:"));
-        birthPanel.add(yearSpinner);
+    JLabel birthLabel = new JLabel("Birth Date:");
+    JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
+    JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 31, 1));
+    JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
+    birthPanel.add(new JLabel("Month:")); birthPanel.add(monthSpinner);
+    birthPanel.add(new JLabel("Day:"));   birthPanel.add(daySpinner);
+    birthPanel.add(new JLabel("Year:"));  birthPanel.add(yearSpinner);
 
-        formPanel.add(idLabel); formPanel.add(idField);
-        formPanel.add(nameLabel); formPanel.add(nameField);
-        formPanel.add(sexLabel); formPanel.add(sexCombo);
-        formPanel.add(descLabel); formPanel.add(descScroll);
-        formPanel.add(homeLabel); formPanel.add(homeField);
-        formPanel.add(birthLabel); formPanel.add(birthPanel);
+    // Add form elements to panel
+    formPanel.add(idLabel);     formPanel.add(idField);
+    formPanel.add(nameLabel);   formPanel.add(nameField);
+    formPanel.add(sexLabel);    formPanel.add(sexCombo);
+    formPanel.add(descLabel);   formPanel.add(descScroll);
+    formPanel.add(homeLabel);   formPanel.add(homeField);
+    formPanel.add(birthLabel);  formPanel.add(birthPanel);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton addButton = new JButton("Add Trainer");
-        JButton backButton = new JButton("Back");
+    // Result area
+    JTextArea resultArea = new JTextArea(8, 50);
+    resultArea.setEditable(false);
+    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    resultArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        // Updated Result Area - Now taller
-        JTextArea resultArea = new JTextArea(20, 70);  // This is the actual text component
-        resultArea.setEditable(false);
-        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        resultArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    JScrollPane resultScroll = new JScrollPane(resultArea);
 
-        // Make the scroll pane taller
-        JScrollPane resultScroll = new JScrollPane(resultArea);
-        resultScroll.setPreferredSize(new Dimension(800, 500));
+    // Buttons
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    JButton addButton = new JButton("Add Trainer");
+    JButton backButton = new JButton("Back");
+    buttonPanel.add(addButton);
+    buttonPanel.add(backButton);
 
-        addButton.addActionListener(e -> {
-            String id = idField.getText().trim();
-            String name = nameField.getText().trim();
-            String sex = (String) sexCombo.getSelectedItem();
-            String description = descArea.getText().trim();
-            String home = homeField.getText().trim();
-            int month = (int) monthSpinner.getValue();
-            int day = (int) daySpinner.getValue();
-            int year = (int) yearSpinner.getValue();
+    // Add button logic
+    addButton.addActionListener(e -> {
+        String id = idField.getText().trim();
+        String name = nameField.getText().trim();
+        String sex = (String) sexCombo.getSelectedItem();
+        String description = descArea.getText().trim();
+        String home = homeField.getText().trim();
+        int month = (int) monthSpinner.getValue();
+        int day = (int) daySpinner.getValue();
+        int year = (int) yearSpinner.getValue();
 
-            StringBuilder errors = new StringBuilder();
+        StringBuilder errors = new StringBuilder();
 
-            // ID Validation
-            if (id.isEmpty()) {
-                errors.append("• Trainer ID cannot be blank\n");
-            } else if (id.length() != 5) {
-                errors.append("• Trainer ID must be exactly 5 digits\n");
-            } else {
-                for (char c : id.toCharArray()) {
-                    if (!Character.isDigit(c)) {
-                        errors.append("• Trainer ID must contain only digits\n");
-                        break;
-                    }
+        // Validation
+        if (id.isEmpty()) {
+            errors.append("• Trainer ID cannot be blank\n");
+        } else if (id.length() != 5) {
+            errors.append("• Trainer ID must be exactly 5 digits\n");
+        } else {
+            for (char c : id.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    errors.append("• Trainer ID must contain only digits\n");
+                    break;
                 }
             }
+        }
 
-            // Name Validation
-            if (name.isEmpty()) {
-                errors.append("• Trainer name cannot be blank\n");
-            } else {
-                for (char c : name.toCharArray()) {
-                    if (Character.isDigit(c)) {
-                        errors.append("• Trainer name cannot contain numbers\n");
-                        break;
-                    }
+        if (name.isEmpty()) {
+            errors.append("• Trainer name cannot be blank\n");
+        } else {
+            for (char c : name.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    errors.append("• Trainer name cannot contain numbers\n");
+                    break;
                 }
             }
+        }
 
-            // Description and Hometown Validation
-            if (description.isEmpty()) errors.append("• Description cannot be blank\n");
-            if (home.isEmpty()) errors.append("• Hometown cannot be blank\n");
+        if (description.isEmpty()) errors.append("• Description cannot be blank\n");
+        if (home.isEmpty()) errors.append("• Hometown cannot be blank\n");
 
-            // Check for duplicate Trainer ID and Name
-            if (trainerExists(id, name)) {
-                errors.append("• A trainer with this ID or Name already exists\n");
-            }
+        if (trainerExists(id, name)) {
+            errors.append("• A trainer with this ID or Name already exists\n");
+        }
 
-            // Show errors
-            if (errors.length() > 0) {
-                resultArea.setText("Please correct the following errors:\n" + errors);
-                return;
-            }
+        if (errors.length() > 0) {
+            resultArea.setText("Please correct the following errors:\n" + errors);
+            return;
+        }
 
-            // Save to file
-            try (FileWriter writer = new FileWriter("trainers.txt", true)) {
-                writer.append("\n").append(id).append("-").append(name).append("-")
-                        .append(String.valueOf(month)).append("-").append(String.valueOf(day)).append("-")
-                        .append(String.valueOf(year)).append("-").append(sex).append("-")
-                        .append(home).append("-").append(description).append("-");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        try (FileWriter writer = new FileWriter("trainers.txt", true)) {
+            writer.append("\n").append(id).append("-").append(name).append("-")
+                    .append(month + "-").append(day + "-").append(year + "-")
+                    .append(sex).append("-").append(home).append("-").append(description).append("-");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-            resultArea.setText("Trainer added successfully!\n\n" +
-                    "ID: " + id + "\n" +
-                    "Name: " + name + "\n" +
-                    "Sex: " + sex + "\n" +
-                    "Hometown: " + home + "\n" +
-                    "Birth Date: " + month + "/" + day + "/" + year + "\n" +
-                    "Description: " + description);
+        resultArea.setText("Trainer added successfully!\n\n" +
+                "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Sex: " + sex + "\n" +
+                "Hometown: " + home + "\n" +
+                "Birth Date: " + month + "/" + day + "/" + year + "\n" +
+                "Description: " + description);
 
-            idField.setText(""); nameField.setText(""); descArea.setText(""); homeField.setText("");
-            monthSpinner.setValue(1); daySpinner.setValue(1); yearSpinner.setValue(2000);
-        });
+        idField.setText(""); nameField.setText(""); descArea.setText(""); homeField.setText("");
+        monthSpinner.setValue(1); daySpinner.setValue(1); yearSpinner.setValue(2000);
+    });
 
-        backButton.addActionListener(e -> addFrame.dispose());
-        buttonPanel.add(addButton);
-        buttonPanel.add(backButton);
+    backButton.addActionListener(e -> addFrame.dispose());
 
-        mainPanel.add(formPanel, BorderLayout.NORTH);
-        mainPanel.add(resultScroll, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+    // Layout
+    mainPanel.add(formPanel, BorderLayout.NORTH);
+    mainPanel.add(resultScroll, BorderLayout.CENTER);
+    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        addFrame.add(mainPanel);
-        addFrame.setLocationRelativeTo(null);
-        addFrame.setVisible(true);
-    }
+    addFrame.add(mainPanel);
+    addFrame.setLocationRelativeTo(null);
+    addFrame.setVisible(true);
+}
 
     private static boolean isTrainerIdValid(String id) {
         try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
@@ -2982,5 +2977,105 @@ public class DexGui {
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
     }
+
+   private static void viewTrainers() {
+    JFrame frame = new JFrame("All Trainers");
+    frame.setSize(800, 600);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+    JTextArea textArea = new JTextArea();
+    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    textArea.setEditable(false);
+
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setPreferredSize(new Dimension(780, 500)); // Space for back button
+
+    // Panel to hold text area
+    JPanel centerPanel = new JPanel(new BorderLayout());
+    centerPanel.add(scrollPane, BorderLayout.CENTER);
+
+    // Back button
+    JButton backButton = new JButton("Back");
+    backButton.addActionListener(e -> frame.dispose());
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonPanel.add(backButton);
+
+    // Main panel
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.add(centerPanel, BorderLayout.CENTER);
+    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+    try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
+        String line;
+        int index = 0;
+
+        while ((line = reader.readLine()) != null) {
+            if (!line.trim().isEmpty()) {
+                String[] parts = line.split("-");
+                if (parts.length >= 8) {
+                    String id = parts[0];
+                    String name = parts[1];
+                    int month = Integer.parseInt(parts[2]);
+                    int day = Integer.parseInt(parts[3]);
+                    int year = Integer.parseInt(parts[4]);
+                    String sex = parts[5];
+                    String home = parts[6];
+                    String description = parts[7];
+
+                    Trainers trainer = new Trainers(id, name, month, day, year, sex, home, description);
+
+                    textArea.append("   Trainer Card\n");
+                    textArea.append("   ID No.      : " + trainer.getID() + "\n");
+                    textArea.append("   Name        : " + trainer.getName() + "\n");
+
+                    // Display custom-formatted birthdate
+                    Date birth = trainer.getBirth();
+                    textArea.append("   Birth Date  : " + birth.getMonth() + "/" + birth.getDay() + "/" + birth.getYear() + "\n");
+
+                    textArea.append("   Sex         : " + trainer.getSex() + "\n");
+                    textArea.append("   Hometown    : " + trainer.getHome() + "\n");
+                    textArea.append("   Description : " + trainer.getDescription() + "\n");
+                    textArea.append("   Money       : " + trainer.getMoney() + "\n\n");
+
+                    textArea.append("   Pokemon in Lineup:");
+                    Pokemon[] team = trainer.getPokemonLineup();
+                    boolean hasTeam = false;
+                    for (Pokemon p : team) {
+                        if (p != null) {
+                            textArea.append("     - " + p.getName() + "\n");
+                            hasTeam = true;
+                        }
+                    }
+                    if (!hasTeam) textArea.append(" None\n");
+
+                    textArea.append("   Pokemon in Storage:");
+                    Pokemon[] pc = trainer.getPokemonStorage();
+                    boolean hasStorage = false;
+                    for (Pokemon p : pc) {
+                        if (p != null) {
+                            textArea.append("     - " + p.getName() + "\n");
+                            hasStorage = true;
+                        }
+                    }
+                    if (!hasStorage) textArea.append(" None\n");
+
+                    textArea.append("----------------------------\n\n");
+                    index++;
+                } else {
+                    textArea.append("   Invalid trainer format: " + line + "\n\n");
+                }
+            }
+        }
+    } catch (IOException e) {
+        textArea.setText("Error reading trainers.txt: " + e.getMessage());
+    }
+
+    frame.add(mainPanel);
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
 }
+}
+
+
 

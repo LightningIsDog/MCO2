@@ -22,12 +22,16 @@ public class Date {
         return year;
     }
 
-
     public void display() {
         String m = String.valueOf(month);
         String d = String.valueOf(day);
         String y = String.valueOf(year);
 
         System.out.println(m + "/" + d + "/" + y);
+    }
+
+     @Override
+    public String toString() {
+        return String.format("%02d/%02d/%04d", month, day, year);
     }
 }
