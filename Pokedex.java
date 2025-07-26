@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /** This class is a collection of all classes (Pokemon, Move, and Item) as well as all of the methods needed to forming a functional Pokedex Menu
@@ -1276,7 +1277,14 @@ public class               Pokedex {
             e.printStackTrace();
         }
     }
-
+    public static ArrayList<Pokemon> getAvailablePokemon() {
+        ArrayList<Pokemon> availablePokemon = new ArrayList<>();
+        for (Pokemon pokemon : pokemon)
+        {
+            availablePokemon.add(pokemon);
+        }
+        return availablePokemon;
+    }
 
 
     /**
@@ -1293,6 +1301,7 @@ public class               Pokedex {
         Scanner input2 = new Scanner(new File("moves.txt"));
         Scanner input3 = new Scanner(new File("trainers.txt"));
         input2.useDelimiter("-");
+        input3.useDelimiter("-");
         availItems[0]= new Items("01","HP Up", "Vitamin", "A nutritious drink for Pokemon", "+10 HP EVs",true,false,10000,10000,5000);
         availItems[1]= new Items("02","Protein","Vitamin", "A nutritious drink for Pokemon", "+10 Attack EVs",true,false, 10000,10000, 5000);
         availItems[2] = new Items("03","Iron", "Vitamin", "A nutritious drink for Pokemon", "+10 Defense EVs",true,false,10000,10000,5000);

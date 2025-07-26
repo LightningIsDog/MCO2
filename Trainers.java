@@ -19,8 +19,8 @@ public class Trainers {
 
     private Pokemon[] pokemonTeam; // Set to 6 max
     private Pokemon[] pokemonPC; // Set to 10 max
-    private int lineupCount; // Counter; 6 max
-    private int storageCount; // Counter; 10 max
+    private static int lineupCount; // Counter; 6 max
+    private static int storageCount; // Counter; 10 max
 
     private Items[] bag; // Set to 50 max
     private Items[] uniqueItems; // To track which items are already in the bag
@@ -149,7 +149,7 @@ public class Trainers {
      *
      * @return pokemonCount: a Trainer object's lineupCount
      */
-    public int getLineupCount() {
+    public static int getLineupCount() {
         return lineupCount;
     }
 
@@ -157,7 +157,7 @@ public class Trainers {
      *
      * @return pokemonCount: a Trainer object's storageCount
      */
-    public int getStorageCount() {
+    public static int getStorageCount() {
         return storageCount;
     }
 
@@ -303,5 +303,48 @@ public class Trainers {
         System.out.println("----------------------------");
 
     }
-}
+    public boolean canAddToTeam() {
+        return lineupCount < 6;
+    }
 
+    public boolean canAddToPC() {
+        return storageCount < 10;
+    }
+
+    public String addPokemon(Pokemon pokemon) {
+        if (canAddToTeam()) {
+            pokemonTeam[lineupCount++] = pokemon;
+            return pokemon.getName() + " was added to your team!";
+        } else if (canAddToPC()) {
+            pokemonPC[storageCount++] = pokemon;
+            return pokemon.getName() + " was sent to your PC (team was full)!";
+        }
+        return "Both your team and PC are full!";
+    }
+    // In Trainers.java
+    public String addPokemonToLineup(Pokemon pokemon) {
+        if (lineupCount >= 6) {
+            return "Error: Your team is already full (6/6).";
+        }
+
+        pokemonTeam[lineupCount] = pokemon;
+        lineupCount++;
+        return "Successfully added " + pokemon.getName() + " to your team!";
+    }
+
+    public String addPokemonToStorage(Pokemon pokemon) {
+        if (storageCount >= 10) {
+            return "Error: Your PC storage is full (10/10).";
+        }
+
+        pokemonPC[storageCount] = pokemon;
+        storageCount++;
+        return "Successfully added " + pokemon.getName() + " to your PC storage!";
+    }
+
+
+    public void saveToFile() {
+        // Implement saving trainer data to file
+        // This should update the trainer's Pokémon lineup and storage
+    }
+}

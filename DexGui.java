@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class DexGui {
@@ -269,10 +269,10 @@ public class DexGui {
         StringBuilder movesText = new StringBuilder();
         for (Moves move : Moves.moveList) {
             if (move != null) {
-                movesText.append("  Move: ").append(move.getName()).append("\n");
-                movesText.append("  Description: ").append(move.getDesc()).append("\n");
-                movesText.append("  Machine: ").append(move.getMachine()).append("\n");
-                movesText.append("  Type: ").append(move.getType1());
+                movesText.append("Move: ").append(move.getName()).append("\n");
+                movesText.append("Description: ").append(move.getDesc()).append("\n");
+                movesText.append("Machine: ").append(move.getMachine()).append("\n");
+                movesText.append("Type: ").append(move.getType1());
                 if (!move.getType2().contains("0")) {
                     movesText.append("/").append(move.getType2());
                 }
@@ -575,19 +575,19 @@ public class DexGui {
         itemsText.append("========== AVAILABLE ITEMS ==========\n\n");
         for (Items item : Items.itemList) {
             if (item != null && !item.getForEvo()) {
-                itemsText.append("  Item ID: ").append(item.getitemID()).append("\n");
-                itemsText.append("  Name: ").append(item.getitemName()).append("\n");
-                itemsText.append("  Category: ").append(item.getitemCategory()).append("\n");
-                itemsText.append("  Description: ").append(item.getitemDesc()).append("\n");
-                itemsText.append("  Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
 
                 if (item.getToSold()) {
-                    itemsText.append(String.format("  Buying Price: P %.2f\n", item.getstartBuyingPrice()));
+                    itemsText.append(String.format("Buying Price: P %.2f\n", item.getstartBuyingPrice()));
                 } else {
-                    itemsText.append("  Buying Price: Not Sold\n");
+                    itemsText.append("Buying Price: Not Sold\n");
                 }
 
-                itemsText.append(String.format("  Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
                 itemsText.append("\n----------------------------------------\n\n");
             }
         }
@@ -596,20 +596,20 @@ public class DexGui {
         itemsText.append("========== EVOLUTION STONES ==========\n\n");
         for (Items item : Items.itemList) {
             if (item != null && item.getForEvo()) {
-                itemsText.append("  Item ID: ").append(item.getitemID()).append("\n");
-                itemsText.append("  Name: ").append(item.getitemName()).append("\n");
-                itemsText.append("  Category: ").append(item.getitemCategory()).append("\n");
-                itemsText.append("  Description: ").append(item.getitemDesc()).append("\n");
-                itemsText.append("  Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append("Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("Effects: ").append(item.getitemEffects()).append("\n");
 
                 if (item.getToSold()) {
-                    itemsText.append(String.format("  Buying Price: P %.2f - P %.2f\n",
+                    itemsText.append(String.format("Buying Price: P %.2f - P %.2f\n",
                             item.getstartBuyingPrice(), item.getendBuyingPrice()));
                 } else {
-                    itemsText.append("  Buying Price: Not Sold\n");
+                    itemsText.append("Buying Price: Not Sold\n");
                 }
 
-                itemsText.append(String.format("  Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append(String.format("Selling Price: P %.2f\n", item.getsellingPrice()));
                 itemsText.append("\n----------------------------------------\n\n");
             }
         }
@@ -741,10 +741,8 @@ public class DexGui {
                         addTrainerMenu();
                         break;
                     case "VIEW TRAINER":
-                        viewTrainers();
                         break;
                     case "SEARCH TRAINER":
-                        SearchTrainer();
                         break;
                     case "MAIN-MENU":
                         new DexGui("Main Menu");
@@ -2489,145 +2487,152 @@ public class DexGui {
     }
 
     public static void AddTrainer() {
-    JFrame addFrame = new JFrame("Add New Trainer");
-    addFrame.setSize(800, 600);
-    addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame addFrame = new JFrame("Add New Trainer");
+        addFrame.setSize(900, 800);
+        addFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-    JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+        JPanel formPanel = new JPanel(new GridLayout(9, 2, 10, 10));
 
-    // Form fields
-    JLabel idLabel = new JLabel("Trainer ID (5 digits):");
-    JTextField idField = new JTextField();
+        // Form fields
+        JLabel idLabel = new JLabel("Trainer ID (5 digits):");
+        JTextField idField = new JTextField();
 
-    JLabel nameLabel = new JLabel("Trainer Name:");
-    JTextField nameField = new JTextField();
+        JLabel nameLabel = new JLabel("Trainer Name:");
+        JTextField nameField = new JTextField();
 
-    JLabel sexLabel = new JLabel("Sex:");
-    JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
+        JLabel sexLabel = new JLabel("Sex:");
+        JComboBox<String> sexCombo = new JComboBox<>(new String[]{"Male", "Female"});
 
-    JLabel descLabel = new JLabel("Description:");
-    JTextArea descArea = new JTextArea(3, 20);
-    JScrollPane descScroll = new JScrollPane(descArea);
+        JLabel descLabel = new JLabel("Description:");
+        JTextArea descArea = new JTextArea(3, 20);
+        JScrollPane descScroll = new JScrollPane(descArea);
 
-    JLabel homeLabel = new JLabel("Hometown:");
-    JTextField homeField = new JTextField();
+        JLabel homeLabel = new JLabel("Hometown:");
+        JTextField homeField = new JTextField();
 
-    JLabel birthLabel = new JLabel("Birth Date:");
-    JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
-    JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 31, 1));
-    JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
-    birthPanel.add(new JLabel("Month:")); birthPanel.add(monthSpinner);
-    birthPanel.add(new JLabel("Day:"));   birthPanel.add(daySpinner);
-    birthPanel.add(new JLabel("Year:"));  birthPanel.add(yearSpinner);
+        JLabel birthLabel = new JLabel("Birth Date:");
+        JPanel birthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
+        JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
+        JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2000, 1900, 2025, 1));
+        birthPanel.add(new JLabel("Month:"));
+        birthPanel.add(monthSpinner);
+        birthPanel.add(new JLabel("Day:"));
+        birthPanel.add(daySpinner);
+        birthPanel.add(new JLabel("Year:"));
+        birthPanel.add(yearSpinner);
 
-    // Add form elements to panel
-    formPanel.add(idLabel);     formPanel.add(idField);
-    formPanel.add(nameLabel);   formPanel.add(nameField);
-    formPanel.add(sexLabel);    formPanel.add(sexCombo);
-    formPanel.add(descLabel);   formPanel.add(descScroll);
-    formPanel.add(homeLabel);   formPanel.add(homeField);
-    formPanel.add(birthLabel);  formPanel.add(birthPanel);
+        formPanel.add(idLabel); formPanel.add(idField);
+        formPanel.add(nameLabel); formPanel.add(nameField);
+        formPanel.add(sexLabel); formPanel.add(sexCombo);
+        formPanel.add(descLabel); formPanel.add(descScroll);
+        formPanel.add(homeLabel); formPanel.add(homeField);
+        formPanel.add(birthLabel); formPanel.add(birthPanel);
 
-    // Result area
-    JTextArea resultArea = new JTextArea(8, 50);
-    resultArea.setEditable(false);
-    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    resultArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton addButton = new JButton("Add Trainer");
+        JButton backButton = new JButton("Back");
 
-    JScrollPane resultScroll = new JScrollPane(resultArea);
+        // Updated Result Area - Now taller
+        JTextArea resultArea = new JTextArea(20, 70);  // This is the actual text component
+        resultArea.setEditable(false);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        resultArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-    // Buttons
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JButton addButton = new JButton("Add Trainer");
-    JButton backButton = new JButton("Back");
-    buttonPanel.add(addButton);
-    buttonPanel.add(backButton);
+        // Make the scroll pane taller
+        JScrollPane resultScroll = new JScrollPane(resultArea);
+        resultScroll.setPreferredSize(new Dimension(800, 500));
 
-    // Add button logic
-    addButton.addActionListener(e -> {
-        String id = idField.getText().trim();
-        String name = nameField.getText().trim();
-        String sex = (String) sexCombo.getSelectedItem();
-        String description = descArea.getText().trim();
-        String home = homeField.getText().trim();
-        int month = (int) monthSpinner.getValue();
-        int day = (int) daySpinner.getValue();
-        int year = (int) yearSpinner.getValue();
+        addButton.addActionListener(e -> {
+            String id = idField.getText().trim();
+            String name = nameField.getText().trim();
+            String sex = (String) sexCombo.getSelectedItem();
+            String description = descArea.getText().trim();
+            String home = homeField.getText().trim();
+            int month = (int) monthSpinner.getValue();
+            int day = (int) daySpinner.getValue();
+            int year = (int) yearSpinner.getValue();
 
-        StringBuilder errors = new StringBuilder();
+            StringBuilder errors = new StringBuilder();
 
-        // Validation
-        if (id.isEmpty()) {
-            errors.append("• Trainer ID cannot be blank\n");
-        } else if (id.length() != 5) {
-            errors.append("• Trainer ID must be exactly 5 digits\n");
-        } else {
-            for (char c : id.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    errors.append("• Trainer ID must contain only digits\n");
-                    break;
+            // ID Validation
+            if (id.isEmpty()) {
+                errors.append("• Trainer ID cannot be blank\n");
+            } else if (id.length() != 5) {
+                errors.append("• Trainer ID must be exactly 5 digits\n");
+            } else {
+                for (char c : id.toCharArray()) {
+                    if (!Character.isDigit(c)) {
+                        errors.append("• Trainer ID must contain only digits\n");
+                        break;
+                    }
                 }
             }
-        }
 
-        if (name.isEmpty()) {
-            errors.append("• Trainer name cannot be blank\n");
-        } else {
-            for (char c : name.toCharArray()) {
-                if (Character.isDigit(c)) {
-                    errors.append("• Trainer name cannot contain numbers\n");
-                    break;
+            // Name Validation
+            if (name.isEmpty()) {
+                errors.append("• Trainer name cannot be blank\n");
+            } else {
+                for (char c : name.toCharArray()) {
+                    if (Character.isDigit(c)) {
+                        errors.append("• Trainer name cannot contain numbers\n");
+                        break;
+                    }
                 }
             }
-        }
 
-        if (description.isEmpty()) errors.append("• Description cannot be blank\n");
-        if (home.isEmpty()) errors.append("• Hometown cannot be blank\n");
+            // Description and Hometown Validation
+            if (description.isEmpty()) errors.append("• Description cannot be blank\n");
+            if (home.isEmpty()) errors.append("• Hometown cannot be blank\n");
 
-        if (trainerExists(id, name)) {
-            errors.append("• A trainer with this ID or Name already exists\n");
-        }
+            // Check for duplicate Trainer ID and Name
+            if (trainerExists(id, name)) {
+                errors.append("• A trainer with this ID or Name already exists\n");
+            }
 
-        if (errors.length() > 0) {
-            resultArea.setText("Please correct the following errors:\n" + errors);
-            return;
-        }
+            // Show errors
+            if (errors.length() > 0) {
+                resultArea.setText("Please correct the following errors:\n" + errors);
+                return;
+            }
 
-        try (FileWriter writer = new FileWriter("trainers.txt", true)) {
-            writer.append("\n").append(id).append("-").append(name).append("-")
-                    .append(month + "-").append(day + "-").append(year + "-")
-                    .append(sex).append("-").append(home).append("-").append(description).append("-");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+            // Save to file
+            try (FileWriter writer = new FileWriter("trainers.txt", true)) {
+                writer.append("\n").append(id).append("-").append(name).append("-")
+                        .append(String.valueOf(month)).append("-").append(String.valueOf(day)).append("-")
+                        .append(String.valueOf(year)).append("-").append(sex).append("-")
+                        .append(home).append("-").append(description).append("-");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
-        resultArea.setText("Trainer added successfully!\n\n" +
-                "ID: " + id + "\n" +
-                "Name: " + name + "\n" +
-                "Sex: " + sex + "\n" +
-                "Hometown: " + home + "\n" +
-                "Birth Date: " + month + "/" + day + "/" + year + "\n" +
-                "Description: " + description);
+            resultArea.setText("Trainer added successfully!\n\n" +
+                    "ID: " + id + "\n" +
+                    "Name: " + name + "\n" +
+                    "Sex: " + sex + "\n" +
+                    "Hometown: " + home + "\n" +
+                    "Birth Date: " + month + "/" + day + "/" + year + "\n" +
+                    "Description: " + description);
 
-        idField.setText(""); nameField.setText(""); descArea.setText(""); homeField.setText("");
-        monthSpinner.setValue(1); daySpinner.setValue(1); yearSpinner.setValue(2000);
-    });
+            idField.setText(""); nameField.setText(""); descArea.setText(""); homeField.setText("");
+            monthSpinner.setValue(1); daySpinner.setValue(1); yearSpinner.setValue(2000);
+        });
 
-    backButton.addActionListener(e -> addFrame.dispose());
+        backButton.addActionListener(e -> addFrame.dispose());
+        buttonPanel.add(addButton);
+        buttonPanel.add(backButton);
 
-    // Layout
-    mainPanel.add(formPanel, BorderLayout.NORTH);
-    mainPanel.add(resultScroll, BorderLayout.CENTER);
-    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(formPanel, BorderLayout.NORTH);
+        mainPanel.add(resultScroll, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    addFrame.add(mainPanel);
-    addFrame.setLocationRelativeTo(null);
-    addFrame.setVisible(true);
-}
+        addFrame.add(mainPanel);
+        addFrame.setLocationRelativeTo(null);
+        addFrame.setVisible(true);
+    }
 
     private static boolean isTrainerIdValid(String id) {
         try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
@@ -2716,7 +2721,6 @@ public class DexGui {
         inputPanel.add(trainerIdField);
         inputPanel.add(Box.createVerticalStrut(20));
         inputPanel.add(submitButton);
-        // ===============================================================
 
         // Welcome label (shown after login)
         JLabel welcomeLabel = new JLabel();
@@ -2856,7 +2860,7 @@ public class DexGui {
         // Top button panel
         JPanel topButtons = new JPanel();
         topButtons.setOpaque(false);
-        topButtons.setLayout(new GridLayout(3, 2, 20, 30)); // 6 buttons in a grid
+        topButtons.setLayout(new GridLayout(3, 2, 20, 30));
 
         // Button labels excluding BACK
         String[] labels = {
@@ -2875,16 +2879,22 @@ public class DexGui {
             subButton.addActionListener(e -> {
                 switch (currentLabel) {
                     case "ADD POKEMON TO STORAGE":
+                        showAddPokemonToTrainer(trainer, false); // false = add to storage
                         break;
                     case "ADD POKEMON TO LINEUP":
+                        showAddPokemonToTrainer(trainer, true); // true = add to lineup
                         break;
                     case "SWITCH POKEMON FROM STORAGE":
+                        showSwitchPokemon(trainer);
                         break;
                     case "RELEASE POKEMON":
+                        //showReleasePokemon(trainer);
                         break;
                     case "TEACH MOVES":
+                      //  showTeachMoves(trainer);
                         break;
                     case "UNLEARN MOVES":
+                       // showUnlearnMoves(trainer);
                         break;
                 }
             });
@@ -2901,22 +2911,195 @@ public class DexGui {
 
         // Combine all panels
         contentPanel.add(topButtons);
-        contentPanel.add(Box.createVerticalStrut(40)); // spacing between top buttons and back
+        contentPanel.add(Box.createVerticalStrut(40));
         contentPanel.add(backPanel);
 
         // Center contentPanel using GridBagConstraints
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(230, 0, 0, 0); // adjust to shift vertically
+        gbc.insets = new Insets(230, 0, 0, 0);
         backgroundPanel.add(contentPanel, gbc);
 
-        // Final setup
         pokFrame.setContentPane(backgroundPanel);
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
     }
 
+    public static void showAddPokemonToTrainer(Trainers trainer, boolean addToLineup) {
+        JFrame frame = new JFrame("Add Pokémon to " + trainer.getName());
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        // Form Panel
+        JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
+
+        // Pokémon Selection
+        JLabel pokemonLabel = new JLabel("Select Pokémon:");
+        JComboBox<String> pokemonCombo = new JComboBox<>();
+
+        // Populate with available Pokémon from Pokedex
+        for (int i = 0; i < Pokedex.pokemonCount; i++) {
+            Pokemon p = Pokedex.pokemon[i];
+            if (p != null) {
+                pokemonCombo.addItem(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+            }
+        }
+
+        // Level Input
+        JLabel levelLabel = new JLabel("Level:");
+        JSpinner levelSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+
+        // Nickname Input
+        JLabel nicknameLabel = new JLabel("Nickname (optional):");
+        JTextField nicknameField = new JTextField();
+
+        formPanel.add(pokemonLabel);
+        formPanel.add(pokemonCombo);
+        formPanel.add(levelLabel);
+        formPanel.add(levelSpinner);
+        formPanel.add(nicknameLabel);
+        formPanel.add(nicknameField);
+
+        // Team/PC Status
+        JLabel statusLabel = new JLabel();
+        if (addToLineup) {
+            statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
+        } else {
+            statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
+        }
+        formPanel.add(new JLabel("Status:"));
+        formPanel.add(statusLabel);
+
+        // Result Area
+        JTextArea resultArea = new JTextArea(10, 50);
+        resultArea.setEditable(false);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane resultScroll = new JScrollPane(resultArea);
+        resultScroll.setPreferredSize(new Dimension(700, 200));
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton addButton = new JButton(addToLineup ? "Add to Team" : "Add to Storage");
+        JButton cancelButton = new JButton("Cancel");
+
+        addButton.addActionListener(e -> {
+            int selectedIndex = pokemonCombo.getSelectedIndex();
+            int level = (int) levelSpinner.getValue();
+            String nickname = nicknameField.getText().trim();
+
+            if (selectedIndex >= 0 && selectedIndex < Pokedex.pokemonCount) {
+                Pokemon selectedPokemon = Pokedex.pokemon[selectedIndex];
+
+                // Create a new instance with the specified level
+                Pokemon newPokemon = new Pokemon(
+                        selectedPokemon.getPokedexNo(),
+                        selectedPokemon.getName(),
+                        selectedPokemon.getType1(),
+                        selectedPokemon.getType2(),
+                        level,
+                        selectedPokemon.getFrom(),
+                        selectedPokemon.getTo(),
+                        selectedPokemon.getEvoLevel(),
+                        selectedPokemon.getHP(),
+                        selectedPokemon.getAtk(),
+                        selectedPokemon.getDef(),
+                        selectedPokemon.getSpd()
+                );
+
+                // Set nickname if provided
+              //  if (!nickname.isEmpty()) {
+               //     newPokemon.setNickname(nickname);
+               // }
+
+                // Copy moves from the base Pokémon
+                for (int i = 0; i < selectedPokemon.getPMoves(); i++) {
+                    Moves move = selectedPokemon.getMoves()[i];
+                    if (move != null) {
+                        newPokemon.teachMove(move.getName(), false);
+                    }
+                }
+
+                String result;
+                if (addToLineup) {
+                    result = trainer.addPokemonToLineup(newPokemon);
+                } else {
+                    result = trainer.addPokemonToStorage(newPokemon);
+                }
+
+                resultArea.setText(result);
+
+                // Update status label
+                if (addToLineup) {
+                    statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
+                } else {
+                    statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
+                }
+
+                // Save trainer data
+                trainer.saveToFile();
+            }
+        });
+
+        cancelButton.addActionListener(e -> frame.dispose());
+
+        buttonPanel.add(addButton);
+        buttonPanel.add(cancelButton);
+
+        // Layout
+        mainPanel.add(formPanel, BorderLayout.NORTH);
+        mainPanel.add(resultScroll, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    private static void showSwitchPokemon(Trainers trainer) {
+        JFrame frame = new JFrame("Switch Pokémon for " + trainer.getName());
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        // Create panels for lineup and storage
+        JPanel lineupPanel = new JPanel(new GridLayout(6, 1));
+        JPanel storagePanel = new JPanel(new GridLayout(10, 1));
+
+        // Populate lineup
+        lineupPanel.add(new JLabel("=== Current Team ==="));
+        for (int i = 0; i < trainer.getLineupCount(); i++) {
+            Pokemon p = trainer.getPokemonLineup()[i];
+            JCheckBox checkBox = new JCheckBox(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+            lineupPanel.add(checkBox);
+        }
+
+        // Populate storage
+        storagePanel.add(new JLabel("=== PC Storage ==="));
+        for (int i = 0; i < trainer.getStorageCount(); i++) {
+            Pokemon p = trainer.getPokemonStorage()[i];
+            JCheckBox checkBox = new JCheckBox(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+            storagePanel.add(checkBox);
+        }
+
+        // Button to perform switch
+        JButton switchButton = new JButton("Switch Selected Pokémon");
+        switchButton.addActionListener(e -> {
+            // Implement switching logic here
+        });
+
+        mainPanel.add(lineupPanel, BorderLayout.WEST);
+        mainPanel.add(storagePanel, BorderLayout.EAST);
+        mainPanel.add(switchButton, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
     private static void ManageTrainerItem(Trainers trainer){
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
@@ -2978,228 +3161,5 @@ public class DexGui {
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
     }
-
-   private static void viewTrainers() {
-    JFrame frame = new JFrame("All Trainers");
-    frame.setSize(800, 600);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-    JTextArea textArea = new JTextArea();
-    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    textArea.setEditable(false);
-
-    JScrollPane scrollPane = new JScrollPane(textArea);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    scrollPane.setPreferredSize(new Dimension(780, 500)); // Space for back button
-
-    // Panel to hold text area
-    JPanel centerPanel = new JPanel(new BorderLayout());
-    centerPanel.add(scrollPane, BorderLayout.CENTER);
-
-    // Back button
-    JButton backButton = new JButton("Back");
-    backButton.addActionListener(e -> frame.dispose());
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    buttonPanel.add(backButton);
-
-    // Main panel
-    JPanel mainPanel = new JPanel(new BorderLayout());
-    mainPanel.add(centerPanel, BorderLayout.CENTER);
-    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-    try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
-        String line;
-        int index = 0;
-
-        while ((line = reader.readLine()) != null) {
-            if (!line.trim().isEmpty()) {
-                String[] parts = line.split("-");
-                if (parts.length >= 8) {
-                    String id = parts[0];
-                    String name = parts[1];
-                    int month = Integer.parseInt(parts[2]);
-                    int day = Integer.parseInt(parts[3]);
-                    int year = Integer.parseInt(parts[4]);
-                    String sex = parts[5];
-                    String home = parts[6];
-                    String description = parts[7];
-
-                    Trainers trainer = new Trainers(id, name, month, day, year, sex, home, description);
-
-                    textArea.append("   Trainer Card\n");
-                    textArea.append("   ID No.      : " + trainer.getID() + "\n");
-                    textArea.append("   Name        : " + trainer.getName() + "\n");
-
-                    // Display custom-formatted birthdate
-                    Date birth = trainer.getBirth();
-                    textArea.append("   Birth Date  : " + birth.getMonth() + "/" + birth.getDay() + "/" + birth.getYear() + "\n");
-
-                    textArea.append("   Sex         : " + trainer.getSex() + "\n");
-                    textArea.append("   Hometown    : " + trainer.getHome() + "\n");
-                    textArea.append("   Description : " + trainer.getDescription() + "\n");
-                    textArea.append("   Money       : " + trainer.getMoney() + "\n\n");
-
-                    textArea.append("   Pokemon in Lineup:");
-                    Pokemon[] team = trainer.getPokemonLineup();
-                    boolean hasTeam = false;
-                    for (Pokemon p : team) {
-                        if (p != null) {
-                            textArea.append("     - " + p.getName() + "\n");
-                            hasTeam = true;
-                        }
-                    }
-                    if (!hasTeam) textArea.append(" None\n");
-
-                    textArea.append("   Pokemon in Storage:");
-                    Pokemon[] pc = trainer.getPokemonStorage();
-                    boolean hasStorage = false;
-                    for (Pokemon p : pc) {
-                        if (p != null) {
-                            textArea.append("     - " + p.getName() + "\n");
-                            hasStorage = true;
-                        }
-                    }
-                    if (!hasStorage) textArea.append(" None\n");
-
-                    textArea.append("----------------------------\n\n");
-                    index++;
-                } else {
-                    textArea.append("   Invalid trainer format: " + line + "\n\n");
-                }
-            }
-        }
-    } catch (IOException e) {
-        textArea.setText("Error reading trainers.txt: " + e.getMessage());
-    }
-
-    frame.add(mainPanel);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
 }
-
-public static void SearchTrainer() {
-    JFrame searchFrame = new JFrame("Search Trainer");
-    searchFrame.setSize(600, 400);
-    searchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-    JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JLabel searchLabel = new JLabel("Enter Trainer Keyword:");
-    JTextField searchField = new JTextField(20);
-    JButton searchButton = new JButton("Search");
-
-    inputPanel.add(searchLabel);
-    inputPanel.add(searchField);
-    inputPanel.add(searchButton);
-
-    JTextArea resultArea = new JTextArea();
-    resultArea.setEditable(false);
-    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    JScrollPane scrollPane = new JScrollPane(resultArea);
-
-    JButton backButton = new JButton("Back");
-    backButton.addActionListener(e -> searchFrame.dispose());
-
-    searchButton.addActionListener(e -> {
-        String keyword = searchField.getText().trim().toLowerCase();
-        if (keyword.isEmpty()) {
-            resultArea.setText("Please enter a trainer keyword to search.");
-            return;
-        }
-
-        StringBuilder result = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
-            String line;
-            boolean found = false;
-
-            while ((line = reader.readLine()) != null) {
-                if (!line.trim().isEmpty()) {
-                    String[] parts = line.split("-");
-                    if (parts.length >= 8) {
-                        String id = parts[0];
-                        String name = parts[1];
-                        String month = parts[2];
-                        String day = parts[3];
-                        String year = parts[4];
-                        String sex = parts[5];
-                        String home = parts[6];
-                        String description = parts[7];
-
-                        // Check if any field matches the keyword
-                        if (id.toLowerCase().contains(keyword) ||
-                            name.toLowerCase().contains(keyword) ||
-                            month.toLowerCase().contains(keyword) ||
-                            day.toLowerCase().contains(keyword) ||
-                            year.toLowerCase().contains(keyword) ||
-                            sex.toLowerCase().contains(keyword) ||
-                            home.toLowerCase().contains(keyword) ||
-                            description.toLowerCase().contains(keyword)) {
-
-                            Trainers trainer = new Trainers(id, name, Integer.parseInt(month), Integer.parseInt(day), Integer.parseInt(year), sex, home, description);
-
-                            result.append("   Trainer Card\n");
-                            result.append("   ID No.      : ").append(trainer.getID()).append("\n");
-                            result.append("   Name        : ").append(trainer.getName()).append("\n");
-                            Date birth = trainer.getBirth();
-                            result.append("   Birth Date  : ").append(birth.getMonth()).append("/")
-                                  .append(birth.getDay()).append("/").append(birth.getYear()).append("\n");
-                            result.append("   Sex         : ").append(trainer.getSex()).append("\n");
-                            result.append("   Hometown    : ").append(trainer.getHome()).append("\n");
-                            result.append("   Description : ").append(trainer.getDescription()).append("\n");
-                            result.append("   Money       : ").append(trainer.getMoney()).append("\n");
-
-                            result.append("   Pokemon in Lineup:");
-                            Pokemon[] team = trainer.getPokemonLineup();
-                            boolean hasTeam = false;
-                            for (Pokemon p : team) {
-                                if (p != null) {
-                                    result.append("     - ").append(p.getName()).append("\n");
-                                    hasTeam = true;
-                                }
-                            }
-                            if (!hasTeam) result.append(" None\n");
-
-                            result.append("   Pokemon in Storage:");
-                            Pokemon[] pc = trainer.getPokemonStorage();
-                            boolean hasStorage = false;
-                            for (Pokemon p : pc) {
-                                if (p != null) {
-                                    result.append("     - ").append(p.getName()).append("\n");
-                                    hasStorage = true;
-                                }
-                            }
-                            if (!hasStorage) result.append(" None\n");
-
-                            result.append("----------------------------\n\n");
-                            found = true;
-                        }
-                    }
-                }
-            }
-
-            if (!found) {
-                resultArea.setText("No trainer matches the keyword: " + keyword);
-            } else {
-                resultArea.setText(result.toString());
-            }
-
-        } catch (IOException ex) {
-            resultArea.setText("Error reading trainers.txt: " + ex.getMessage());
-        }
-    });
-
-    mainPanel.add(inputPanel, BorderLayout.NORTH);
-    mainPanel.add(scrollPane, BorderLayout.CENTER);
-    mainPanel.add(backButton, BorderLayout.SOUTH);
-
-    searchFrame.add(mainPanel);
-    searchFrame.setLocationRelativeTo(null);
-    searchFrame.setVisible(true);
-}
-
-}
-
-
 
