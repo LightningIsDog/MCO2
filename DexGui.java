@@ -744,6 +744,7 @@ public class DexGui {
                         viewTrainers();
                         break;
                     case "SEARCH TRAINER":
+                        SearchTrainer();
                         break;
                     case "MAIN-MENU":
                         new DexGui("Main Menu");
@@ -3075,6 +3076,129 @@ public class DexGui {
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
 }
+
+public static void SearchTrainer() {
+    JFrame searchFrame = new JFrame("Search Trainer");
+    searchFrame.setSize(600, 400);
+    searchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    JLabel searchLabel = new JLabel("Enter Trainer Keyword:");
+    JTextField searchField = new JTextField(20);
+    JButton searchButton = new JButton("Search");
+
+    inputPanel.add(searchLabel);
+    inputPanel.add(searchField);
+    inputPanel.add(searchButton);
+
+    JTextArea resultArea = new JTextArea();
+    resultArea.setEditable(false);
+    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    JScrollPane scrollPane = new JScrollPane(resultArea);
+
+    JButton backButton = new JButton("Back");
+    backButton.addActionListener(e -> searchFrame.dispose());
+
+    searchButton.addActionListener(e -> {
+        String keyword = searchField.getText().trim().toLowerCase();
+        if (keyword.isEmpty()) {
+            resultArea.setText("Please enter a trainer keyword to search.");
+            return;
+        }
+
+        StringBuilder result = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
+            String line;
+            boolean found = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    String[] parts = line.split("-");
+                    if (parts.length >= 8) {
+                        String id = parts[0];
+                        String name = parts[1];
+                        String month = parts[2];
+                        String day = parts[3];
+                        String year = parts[4];
+                        String sex = parts[5];
+                        String home = parts[6];
+                        String description = parts[7];
+
+                        // Check if any field matches the keyword
+                        if (id.toLowerCase().contains(keyword) ||
+                            name.toLowerCase().contains(keyword) ||
+                            month.toLowerCase().contains(keyword) ||
+                            day.toLowerCase().contains(keyword) ||
+                            year.toLowerCase().contains(keyword) ||
+                            sex.toLowerCase().contains(keyword) ||
+                            home.toLowerCase().contains(keyword) ||
+                            description.toLowerCase().contains(keyword)) {
+
+                            Trainers trainer = new Trainers(id, name, Integer.parseInt(month), Integer.parseInt(day), Integer.parseInt(year), sex, home, description);
+
+                            result.append("   Trainer Card\n");
+                            result.append("   ID No.      : ").append(trainer.getID()).append("\n");
+                            result.append("   Name        : ").append(trainer.getName()).append("\n");
+                            Date birth = trainer.getBirth();
+                            result.append("   Birth Date  : ").append(birth.getMonth()).append("/")
+                                  .append(birth.getDay()).append("/").append(birth.getYear()).append("\n");
+                            result.append("   Sex         : ").append(trainer.getSex()).append("\n");
+                            result.append("   Hometown    : ").append(trainer.getHome()).append("\n");
+                            result.append("   Description : ").append(trainer.getDescription()).append("\n");
+                            result.append("   Money       : ").append(trainer.getMoney()).append("\n");
+
+                            result.append("   Pokemon in Lineup:");
+                            Pokemon[] team = trainer.getPokemonLineup();
+                            boolean hasTeam = false;
+                            for (Pokemon p : team) {
+                                if (p != null) {
+                                    result.append("     - ").append(p.getName()).append("\n");
+                                    hasTeam = true;
+                                }
+                            }
+                            if (!hasTeam) result.append(" None\n");
+
+                            result.append("   Pokemon in Storage:");
+                            Pokemon[] pc = trainer.getPokemonStorage();
+                            boolean hasStorage = false;
+                            for (Pokemon p : pc) {
+                                if (p != null) {
+                                    result.append("     - ").append(p.getName()).append("\n");
+                                    hasStorage = true;
+                                }
+                            }
+                            if (!hasStorage) result.append(" None\n");
+
+                            result.append("----------------------------\n\n");
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            if (!found) {
+                resultArea.setText("No trainer matches the keyword: " + keyword);
+            } else {
+                resultArea.setText(result.toString());
+            }
+
+        } catch (IOException ex) {
+            resultArea.setText("Error reading trainers.txt: " + ex.getMessage());
+        }
+    });
+
+    mainPanel.add(inputPanel, BorderLayout.NORTH);
+    mainPanel.add(scrollPane, BorderLayout.CENTER);
+    mainPanel.add(backButton, BorderLayout.SOUTH);
+
+    searchFrame.add(mainPanel);
+    searchFrame.setLocationRelativeTo(null);
+    searchFrame.setVisible(true);
+}
+
 }
 
 
