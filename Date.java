@@ -34,4 +34,14 @@ public class Date {
     public String toString() {
         return String.format("%02d/%02d/%04d", month, day, year);
     }
+
+    // Add this new method:
+    /**
+     * Formats the date as a String in "MM-dd-yyyy" format for file output.
+     * @return The formatted date string.
+     */
+    public String toFileString() {
+        // Use String.format to ensure leading zeros for month and day if needed
+        return String.format("%02d-%02d-%04d", month, day, year);
+    }
 }

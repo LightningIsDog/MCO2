@@ -13,10 +13,8 @@ public class Items {
     private String itemDesc;
     private String itemEffects;
     private double startBuyingPrice;
-    private double endBuyingPrice;
-    private double sellingPrice;
-    private boolean toSold;
     private boolean forEvo;
+    private double sellingPrice;
     /**
      * Array to store Items objects.
      */
@@ -35,24 +33,19 @@ public class Items {
         @param itemCategory      the category/type of the item
         @param itemDesc          a description of the item
         @param itemEffects       the effect or bonus provided by the item
-        @param toSold            true if the item is available for sale
-        @param forEvo            true if the item is used for evolution
         @param startBuyingPrice  the minimum price if range-based, or the fixed price
-        @param endBuyingPrice    the maximum price for buying (same as start if not a range)
+        @param forEvo            whether the item is used for evolution
         @param sellingPrice      the selling price of the item
     */
-    public Items(String itemID,String itemName,String itemCategory, String itemDesc, String itemEffects,boolean toSold,boolean forEvo,
-                 double startBuyingPrice,double endBuyingPrice, double sellingPrice)
+    public Items(String itemID,String itemName,String itemCategory, String itemDesc, String itemEffects, boolean forEvo,
+                 double startBuyingPrice, double sellingPrice)
     {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemCategory = itemCategory;
         this.itemDesc = itemDesc;
         this.itemEffects = itemEffects;
-        this.toSold = toSold;
-        this.forEvo = forEvo;
         this.startBuyingPrice = startBuyingPrice;
-        this.endBuyingPrice = endBuyingPrice;
         this.sellingPrice = sellingPrice;
         registerItem(this);
     }
@@ -65,28 +58,28 @@ public class Items {
     itemCount = 0;
 
     // Fill availItems
-    availItems[0] = new Items("01", "HP Up", "Vitamin", "A nutritious drink for Pokemon", "+10 HP EVs", true, false, 10000, 10000, 5000);
-    availItems[1] = new Items("02", "Protein", "Vitamin", "A nutritious drink for Pokemon", "+10 Attack EVs", true, false, 10000, 10000, 5000);
-    availItems[2] = new Items("03", "Iron", "Vitamin", "A nutritious drink for Pokemon", "+10 Defense EVs", true, false, 10000, 10000, 5000);
-    availItems[3] = new Items("04", "Carbos", "Vitamin", "A nutritious drink for Pokemon", "+10 Speed EVs", true, false, 10000, 10000, 5000);
-    availItems[4] = new Items("05", "Rare Candy", "Leveling Item", "A candy that is packed with energy", "Increases level by 1", false, false, 0, 0, 2400);
-    availItems[5] = new Items("06", "Health Feather", "Feather", "A feather that slightly increases HP", "+1 HP EV", true, false, 300, 300, 150);
-    availItems[6] = new Items("07", "Muscle Feather", "Feather", "A feather that slightly increases Attack", "+1 Attack EV", true, false, 300, 300, 150);
-    availItems[7] = new Items("08", "Resist Feather", "Feather", "A feather that slightly increases Defense", "+1 Defense EV", true, false, 300, 300, 150);
-    availItems[8] = new Items("09", "Swift Feather", "Feather", "A feather that slightly increases Speed", "+1 Speed EV", true, false, 300, 300, 150);
-    availItems[9] = new Items("10", "Zinc", "Vitamin", "A nutritious drink for Pokemon", "+10 Special Defense EVs", true, false, 10000, 10000, 5000);
+    availItems[0] = new Items("01", "HP Up", "Vitamin", "A nutritious drink for Pokemon", "+10 HP EVs",false,10000,5000);
+    availItems[1] = new Items("02", "Protein", "Vitamin", "A nutritious drink for Pokemon", "+10 Attack EVs",false,10000, 5000);
+    availItems[2] = new Items("03", "Iron", "Vitamin", "A nutritious drink for Pokemon", "+10 Defense EVs",false,10000, 5000);
+    availItems[3] = new Items("04", "Carbos", "Vitamin", "A nutritious drink for Pokemon", "+10 Speed EVs",false, 10000, 5000);
+    availItems[4] = new Items("05", "Rare Candy", "Leveling Item", "A candy that is packed with energy", "Increases level by 1",false,4800, 2400);
+    availItems[5] = new Items("06", "Health Feather", "Feather", "A feather that slightly increases HP", "+1 HP EV",false, 300, 150);
+    availItems[6] = new Items("07", "Muscle Feather", "Feather", "A feather that slightly increases Attack", "+1 Attack EV",false,300, 150);
+    availItems[7] = new Items("08", "Resist Feather", "Feather", "A feather that slightly increases Defense", "+1 Defense EV",false,300, 150);
+    availItems[8] = new Items("09", "Swift Feather", "Feather", "A feather that slightly increases Speed", "+1 Speed EV",false, 300, 150);
+    availItems[9] = new Items("10", "Zinc", "Vitamin", "A nutritious drink for Pokemon", "+10 Special Defense EVs",false, 10000, 5000);
 
     // Fill evolutionItems
-    evolutionItems[0] = new Items("01", "Fire Stone", "Evolution Stone", "A stone that radiates heat", "Evolves Pokemon like Vulpix, Growlithe, Eevee", true, true, 3000, 5000, 1500);
-    evolutionItems[1] = new Items("02", "Water Stone", "Evolution Stone", "A stone with a blue watery appearance", "Evolves Pokemon like Poliwhirl, Shellder, Eevee", true, true, 3000, 5000, 1500);
-    evolutionItems[2] = new Items("03", "Thunder Stone", "Evolution Stone", "A stone that sparkles with electricity", "Evolves Pokemon like Pikachu, Eevee", true, true, 3000, 5000, 1500);
-    evolutionItems[3] = new Items("04", "Leaf Stone", "Evolution Stone", "A stone with a leaf pattern", "Evolves Pokemon like Gloom, Weepinbell, Exeggcute", true, true, 3000, 5000, 1500);
-    evolutionItems[4] = new Items("05", "Moon Stone", "Evolution Stone", "A stone that glows faintly in the moonlight", "Evolves Pokemon like Nidorina, Clefairy, Jigglypuff, etc.", false, true, 0, 0, 1500);
-    evolutionItems[5] = new Items("06", "Sun Stone", "Evolution Stone", "A stone that glows like the sun", "Evolves Pokemon like Gloom, Sunkern, Cottonee, etc.", true, true, 3000, 5000, 1500);
-    evolutionItems[6] = new Items("07", "Shiny Stone", "Evolution Stone", "A stone that sparkles brightly", "Evolves Pokemon like Togetic, Roselia, Minccino, etc.", true, true, 3000, 5000, 1500);
-    evolutionItems[7] = new Items("08", "Dusk Stone", "Evolution Stone", "A dark stone that is ominous in appearance", "Evolves Pokemon like Murkrow, Misdreavus, Doublade, etc.", true, true, 3000, 5000, 1500);
-    evolutionItems[8] = new Items("09", "Dawn Stone", "Evolution Stone", "A stone that sparkles like the morning sky", "Evolves male Kirlia into Gallade, female Snorunt into Froslass", true, true, 3000, 5000, 1500);
-    evolutionItems[9] = new Items("10", "Ice Stone", "Evolution Stone", "A stone that is cold to the touch", "Evolves Pokemon like Alolan Vulpix, Galarian Darumaka, Eevee", true, true, 3000, 5000, 1500);
+    evolutionItems[0] = new Items("01", "Fire Stone", "Evolution Stone", "A stone that radiates heat", "Evolves Pokemon like Vulpix, Growlithe, Eevee",true,3000, 1500);
+    evolutionItems[1] = new Items("02", "Water Stone", "Evolution Stone", "A stone with a blue watery appearance", "Evolves Pokemon like Poliwhirl, Shellder, Eevee",true,3000,1500);
+    evolutionItems[2] = new Items("03", "Thunder Stone", "Evolution Stone", "A stone that sparkles with electricity", "Evolves Pokemon like Pikachu, Eevee",true,3000,1500);
+    evolutionItems[3] = new Items("04", "Leaf Stone", "Evolution Stone", "A stone with a leaf pattern", "Evolves Pokemon like Gloom, Weepinbell, Exeggcute",true, 3000,1500);
+    evolutionItems[4] = new Items("05", "Moon Stone", "Evolution Stone", "A stone that glows faintly in the moonlight", "Evolves Pokemon like Nidorina, Clefairy, Jigglypuff, etc.",true,3000, 1500);
+    evolutionItems[5] = new Items("06", "Sun Stone", "Evolution Stone", "A stone that glows like the sun", "Evolves Pokemon like Gloom, Sunkern, Cottonee, etc.",true,3000,1500);
+    evolutionItems[6] = new Items("07", "Shiny Stone", "Evolution Stone", "A stone that sparkles brightly", "Evolves Pokemon like Togetic, Roselia, Minccino, etc.",true, 3000,1500);
+    evolutionItems[7] = new Items("08", "Dusk Stone", "Evolution Stone", "A dark stone that is ominous in appearance", "Evolves Pokemon like Murkrow, Misdreavus, Doublade, etc.",true,3000,1500);
+    evolutionItems[8] = new Items("09", "Dawn Stone", "Evolution Stone", "A stone that sparkles like the morning sky", "Evolves male Kirlia into Gallade, female Snorunt into Froslass",true,3000,1500);
+    evolutionItems[9] = new Items("10", "Ice Stone", "Evolution Stone", "A stone that is cold to the touch", "Evolves Pokemon like Alolan Vulpix, Galarian Darumaka, Eevee",true,3000,1500);
 
     // Merge all into itemList
     for (int i = 0; i < 10; i++) {
@@ -140,24 +133,11 @@ public class Items {
         return itemEffects;
     }
 
-    /**
-       Returns whether the item is marked to be sold in shops.
-       @return true if the item can be sold; false otherwise
-    */
-    public boolean getToSold()
-    {
-        return toSold;
-    }
-
-    /**
-       Returns whether the item is marked for evolution use.
-       @return true if the item is associated with evolution stones; false otherwise
-    */
     public boolean getForEvo()
     {
         return forEvo;
     }
-
+  
     /**
     Returns the starting buying price of the item.
     @return the minimum or fixed buying price as a double
@@ -165,15 +145,6 @@ public class Items {
     public double getstartBuyingPrice()
     {
         return startBuyingPrice;
-    }
-
-     /**
-    Returns the end buying price of the item.
-    @return the maximum or fixed buying price as a double
-    */
-    public double getendBuyingPrice()
-    {
-        return endBuyingPrice;
     }
 
      /**
@@ -185,10 +156,11 @@ public class Items {
         return sellingPrice;
     }
 
+    /* 
     /**
     This method displays the details of the item in a formatted manner.
     It includes the item ID, name, category, description, effects, buying price
-    */
+    
     public void displayItems()
     {
         System.out.println("\n ================================================================================================");
@@ -214,7 +186,7 @@ public class Items {
         }
         System.out.printf("\n\tSelling Price: P %.2f", getsellingPrice());
         System.out.println("\n\n ================================================================================================");
-    }
+    }  */
 
     /**
     Searches for an item in the item list by its name.

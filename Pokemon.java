@@ -25,10 +25,6 @@ public class Pokemon
     private Items heldItem;
     private int pItems = 0;
     private int pMoves = 0;
-    /**
-     * Array to store the types of Pokémon.
-     */
-    public  static final String[] TYPES = { "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy" };
     
         // ✅ Default (no-arg) constructor
     public Pokemon() {
@@ -78,6 +74,11 @@ public class Pokemon
     }
 
     /**
+     * Array to store the types of Pokémon.
+     */
+    public  static final String[] TYPES = { "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy" };
+
+    /**
         Returns the Dex No. of the Pokemon.
         @return the item ID as an int
     */
@@ -85,22 +86,14 @@ public class Pokemon
     {
         return PokedexNo;
     }
-    public void setPokedexNo(int pokedexNo) 
-    {
-        this.PokedexNo = pokedexNo;
-    }
 
-    /**
+     /**
         Returns the name of the Pokemon.
         @return the Pokemon's name as a String
     */
     public String getName() 
     {
         return Name;
-    }
-    public void setName(String name) 
-    {
-        this.Name = name;
     }
 
     /**
@@ -110,10 +103,6 @@ public class Pokemon
     public String getType1() 
     {
         return Type1;
-    }
-    public void setType1(String type1) 
-    {
-        this.Type1 = type1;
     }
 
     /**
@@ -125,11 +114,6 @@ public class Pokemon
         return Type2;
     }
 
-    public void setType2(String type2) 
-    {
-        this.Type2 = type2;
-    }
-
     /**
         Returns the base level of the Pokemon.
         @return the base level of the Pokemon as an int
@@ -139,7 +123,7 @@ public class Pokemon
         return BaseLevel;
     }
 
-    /**
+     /**
         Returns the Pokédex number that this Pokémon evolves from.
         @return the Pokédex number it evolves from, or 0 if it does not evolve from another Pokémon
     */
@@ -148,23 +132,13 @@ public class Pokemon
         return From;
     }
 
-    public void setFrom(int from) 
-    {
-        this.From = from;
-    }
-
-    /**
+      /**
         Returns the Pokédex number that this Pokémon evolves to.
         @return the Pokédex number it evolves to or 0 if it does not evolve into another Pokémon
     */
     public int getTo() 
     {
         return To;
-    }
-
-    public void setTo(int to) 
-    {
-        this.To = to;
     }
 
     /**
@@ -176,11 +150,7 @@ public class Pokemon
         return EvoLevel;
     }
 
-    public void setEvoLevel(int evoLevel) 
-    {
-        this.EvoLevel = evoLevel;
-    }
-    /**
+     /**
         Returns the Pokémon's (HP).
         @return the hit points (health) of the Pokémon as an int
     */
@@ -189,12 +159,7 @@ public class Pokemon
         return HP;
     }
 
-    public void setHP(int hp) 
-    {
-        this.HP = hp;
-    }
-
-    /**
+     /**
         Returns the Pokémon's Attack.
         @return the attack stat of the Pokémon as an int
     */
@@ -203,12 +168,7 @@ public class Pokemon
         return Atk;
     }
 
-    public void setAtk(int atk) 
-    {                               
-        this.Atk = atk;
-    }
-
-     /**
+    /**
         Returns the Pokemon's defend stat.
         @return the defend stat of the Pokémon as an int
     */
@@ -217,12 +177,7 @@ public class Pokemon
         return Def;
     }
 
-    public void setDef(int def) 
-    {
-        this.Def = def;
-    }
-
-    /**
+      /**
         Returns the Pokémon's Speed.
         @return the speed stat of the Pokémon as an int
     */
@@ -231,18 +186,77 @@ public class Pokemon
         return Spd;
     }
 
-    public void setSpd(int spd) 
-    {                       
-        this.Spd = spd;
-    }
-
-     /**
+        /**
         Returns the item that the Pokémon is currently holding.
         @return the held item as an Items object, or null if not holding any item
     */
     public Items getHeldItem() 
     {
         return heldItem;
+    }
+
+      public int getPMoves() {
+        return pMoves;
+    }
+
+    public Moves[] getMoves() {
+        return moves;
+    }
+
+    public void setPokedexNo(int pokedexNo) 
+    {
+        this.PokedexNo = pokedexNo;
+    }
+
+   
+    public void setName(String name) 
+    {
+        this.Name = name;
+    }
+
+    public void setType1(String type1) 
+    {
+        this.Type1 = type1;
+    }
+
+    public void setType2(String type2) 
+    {
+        this.Type2 = type2;
+    }
+
+    public void setFrom(int from) 
+    {
+        this.From = from;
+    }
+
+    public void setTo(int to) 
+    {
+        this.To = to;
+    }
+
+    public void setEvoLevel(int evoLevel) 
+    {
+        this.EvoLevel = evoLevel;
+    }
+   
+    public void setHP(int hp) 
+    {
+        this.HP = hp;
+    }
+
+    public void setAtk(int atk) 
+    {                               
+        this.Atk = atk;
+    }
+
+    public void setDef(int def) 
+    {
+        this.Def = def;
+    }
+
+    public void setSpd(int spd) 
+    {                       
+        this.Spd = spd;
     }
 
     public void setMoves(Moves[] moves) {
@@ -252,6 +266,73 @@ public class Pokemon
 public void setPMoves(int pMoves) {
     this.pMoves = pMoves;
 }
+
+ /**
+        Teaches a move to the Pokémon if it doesn't already know it and if it can learn it.
+        @param moveName the name of the move to teach
+        @param show     whether to display a message when the move is learned
+    */
+    public void teachMove(String moveName,boolean show)
+    {
+        if (pMoves >= 4) 
+        {
+            System.out.println(Name + " already knows 4 moves.");
+            return;
+        }
+        Moves move = Moves.getMoveByName(moveName);
+        if (move == null) 
+        {
+            System.out.println("Move '" + moveName + "' not found in database.");
+            return;
+        }
+        if (!move.getType1().equalsIgnoreCase(getType1())&&!move.getType1().equalsIgnoreCase(getType2())&&!move.getType1().equalsIgnoreCase("Normal")){
+            System.out.println(Name + " cannot learn " + move.getName() + " because it is not " + move.getType1() + " Type ");
+            return;
+        }
+        for (int i = 0; i < pMoves; i++) 
+        {
+            if (moves[i].getName().equalsIgnoreCase(moveName)) 
+            {
+                System.out.println(Name + " already knows " + moveName);
+                return;
+            }
+        }
+        moves[pMoves++] = move;
+        if(show == true)
+        {
+            System.out.println(Name + " learned " + moveName + "!");
+        }
+    }
+
+     /**
+        Forgets a move by its name if the Pokémon knows it and if it is not a Hidden Machine (HM).
+        @param moveName the name of the move to forget
+        @return true if the move was successfully forgotten, false otherwise
+    */
+    public boolean forgetMove(String moveName) 
+    {
+        for (int i = 0; i < pMoves; i++) 
+        {
+            if (moves[i] != null && moves[i].getName().equalsIgnoreCase(moveName)) 
+            {
+                if(moves[i].getMachine().equalsIgnoreCase("HM"))
+                {
+                    System.out.println(moveName + " cannot be forgottem! ");
+                    return false;
+                }
+                for (int j = i; j < pMoves - 1; j++) 
+                {
+                    moves[j] = moves[j + 1];
+                }
+                moves[pMoves - 1] = null; // Clear last slot
+                pMoves--;
+                System.out.println(Name + " forgot " + moveName + "!");
+                return true;
+            }
+        }
+        System.out.println(Name + " doesn't know " + moveName + "!");
+        return false;
+    }
 
     /**
        Displays the details of the Pokémon in a formatted manner.
@@ -445,82 +526,7 @@ public void setPMoves(int pMoves) {
         }
         System.out.println("\n ================================================================================================");
     }
-
-     public int getPMoves() {
-        return pMoves;
-    }
-
-    public Moves[] getMoves() {
-        return moves;
-    }
-
-    /**
-        Teaches a move to the Pokémon if it doesn't already know it and if it can learn it.
-        @param moveName the name of the move to teach
-        @param show     whether to display a message when the move is learned
-    */
-    public void teachMove(String moveName,boolean show)
-    {
-        if (pMoves >= 4) 
-        {
-            System.out.println(Name + " already knows 4 moves.");
-            return;
-        }
-        Moves move = Moves.getMoveByName(moveName);
-        if (move == null) 
-        {
-            System.out.println("Move '" + moveName + "' not found in database.");
-            return;
-        }
-        if (!move.getType1().equalsIgnoreCase(getType1())&&!move.getType1().equalsIgnoreCase(getType2())&&!move.getType1().equalsIgnoreCase("Normal")){
-            System.out.println(Name + " cannot learn " + move.getName() + " because it is not " + move.getType1() + " Type ");
-            return;
-        }
-        for (int i = 0; i < pMoves; i++) 
-        {
-            if (moves[i].getName().equalsIgnoreCase(moveName)) 
-            {
-                System.out.println(Name + " already knows " + moveName);
-                return;
-            }
-        }
-        moves[pMoves++] = move;
-        if(show == true)
-        {
-            System.out.println(Name + " learned " + moveName + "!");
-        }
-    }
-    
-    /**
-        Forgets a move by its name if the Pokémon knows it and if it is not a Hidden Machine (HM).
-        @param moveName the name of the move to forget
-        @return true if the move was successfully forgotten, false otherwise
-    */
-    public boolean forgetMove(String moveName) 
-    {
-        for (int i = 0; i < pMoves; i++) 
-        {
-            if (moves[i] != null && moves[i].getName().equalsIgnoreCase(moveName)) 
-            {
-                if(moves[i].getMachine().equalsIgnoreCase("HM"))
-                {
-                    System.out.println(moveName + " cannot be forgottem! ");
-                    return false;
-                }
-                for (int j = i; j < pMoves - 1; j++) 
-                {
-                    moves[j] = moves[j + 1];
-                }
-                moves[pMoves - 1] = null; // Clear last slot
-                pMoves--;
-                System.out.println(Name + " forgot " + moveName + "!");
-                return true;
-            }
-        }
-        System.out.println(Name + " doesn't know " + moveName + "!");
-        return false;
-    }
-
+ 
     /**
         Gives a held item to the Pokémon if it is not already holding one.
         @param itemName the name of the item to give

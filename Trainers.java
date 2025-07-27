@@ -1,3 +1,11 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.text.ParseException; // Make sure this is imported
+import java.text.SimpleDateFormat; // <--- YOU NEED THIS IMPORT
+import java.util.Calendar; // <--- YOU NEED THIS IMPORT for java.util.Calendar
+
 /** This class represents a collection of trainers in the game.
  *  @author Justin Miguel Agustin L. Lotilla
  *  @author Maurienne Marie M. Mojica
@@ -15,7 +23,7 @@ public class Trainers {
     private String sex;
     private String home;
     private String description;
-    private long money;
+    private double money;
 
     private Pokemon[] pokemonTeam; // Set to 6 max
     private Pokemon[] pokemonPC; // Set to 10 max
@@ -26,6 +34,7 @@ public class Trainers {
     private Items[] uniqueItems; // To track which items are already in the bag
     private int uniqueCount; // Set to 10 max; unique means that Trainers can only have 10 kinds of items max
     private int itemCount; // Track number of items in bag; 50 max
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
 
     /** This method initializes a Trainer object
      *
@@ -54,6 +63,71 @@ public class Trainers {
         this.uniqueItems = new Items[10];
         this.uniqueCount = 0;
         this.itemCount = 0;
+
+        this.trainerNumber = trainerCount++;
+    }
+
+     public Trainers(String ID, String name, String birthDateString, String sex, String home, String description,
+                    double money, List<String> itemNamesFromBag) {
+        this.ID = ID;
+        this.name = name;
+        this.sex = sex;
+        this.home = home;
+        this.description = description; // This holds the 'occupation' from the file
+        this.money = money;
+
+        // Parse birthDateString into your Date object
+        try {
+            java.util.Date parsedUtilDate = DATE_FORMAT.parse(birthDateString);
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setTime(parsedUtilDate);
+            int month = cal.get(java.util.Calendar.MONTH) + 1; // Calendar.MONTH is 0-indexed
+            int day = cal.get(java.util.Calendar.DAY_OF_MONTH);
+            int year = cal.get(java.util.Calendar.YEAR);
+            this.birth = new Date(month, day, year); // Assuming Date(month, day, year) constructor
+
+        } catch (ParseException e) {
+            System.err.println("Error parsing birth date string: '" + birthDateString + "' for trainer " + name + ". Setting default date.");
+            this.birth = new Date(1, 1, 2000); // Fallback if parsing fails
+        }
+
+        // Initialize Pokemon arrays (not loaded from trainers.txt in this format)
+        this.pokemonTeam = new Pokemon[6];
+        this.pokemonPC = new Pokemon[10];
+        // FIX: lineupCount and storageCount should be instance variables, not static.
+        this.lineupCount = 0; // Fix here as well
+        this.storageCount = 0; // Fix here as well
+
+        // Initialize item arrays
+        this.bag = new Items[50];
+        this.uniqueItems = new Items[10];
+        this.uniqueCount = 0;
+        this.itemCount = 0;
+
+        // Populate the bag and uniqueItems arrays from the loaded item names
+        if (itemNamesFromBag != null && !itemNamesFromBag.isEmpty()) {
+            Set<String> tempUniqueNames = new HashSet<>();
+            for (String itemName : itemNamesFromBag) {
+                if (this.itemCount < 50) {
+                    // *** THE FIX IS HERE ***
+                    Items loadedItem = Items.getItemByName(itemName); // CALL YOUR STATIC METHOD IN ITEMS CLASS
+
+                    if (loadedItem != null) {
+                        this.bag[this.itemCount] = loadedItem;
+                        this.itemCount++;
+
+                        if (tempUniqueNames.add(itemName)) {
+                            if (this.uniqueCount < 10) {
+                                this.uniqueItems[this.uniqueCount] = loadedItem;
+                                this.uniqueCount++;
+                            }
+                        }
+                    } else {
+                        System.err.println("Warning: Item '" + itemName + "' not found when loading trainer " + name + " (ID: " + ID + ").");
+                    }
+                }
+            }
+        }
 
         this.trainerNumber = trainerCount++;
     }
@@ -125,7 +199,7 @@ public class Trainers {
      *
      * @return money: a Trainer object's money
      */
-    public long getMoney() {
+    public double getMoney() {
         return money;
     }
 
@@ -198,7 +272,7 @@ public class Trainers {
      *
      * @param money: the amount of money to set
      */
-    public void setMoney(long money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 
@@ -347,4 +421,113 @@ public class Trainers {
         // Implement saving trainer data to file
         // This should update the trainer's Pokémon lineup and storage
     }
+
+      public boolean isItemUnique(Items item) {
+        for (int i = 0; i < uniqueCount; i++) {
+            if (uniqueItems[i] != null && uniqueItems[i].getitemName().equals(item.getitemName())) {
+                return false; // Already exists
+            }
+        }
+        return true; // New unique item
+    }
+
+    public String addItemToBag(Items item) {
+        if (itemCount >= 50) {
+            return "You cannot add more items. Bag is full (50/50).";
+        }
+
+        boolean isUnique = isItemUnique(item);
+        if (isUnique && uniqueCount >= 10) {
+            return "You cannot add more unique item types. Limit is 10.";
+        }
+
+        // Add item to bag
+        bag[itemCount] = item;
+        itemCount++;
+
+        // Add to unique items if it's new
+        if (isUnique) {
+            uniqueItems[uniqueCount] = item;
+            uniqueCount++;
+        }
+
+        return item.getitemName() + " was successfully added to your bag.";
+    }
+
+  /**
+     * Converts the current Trainer object into a string format suitable for saving to a file.
+     * Format: ID-Name-Birthday(MM-dd-yyyy)-Sex-Home-Description(Occupation)-Money-Item1,Item2,Item3,...
+     * Items part will be omitted if no items are present.
+     * @return A string representation of the Trainer.
+     */
+    public String toFileString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ID).append("-");
+        sb.append(name).append("-");
+        // Use your Date object's method to get the birthday string or format it
+        // Assuming your Date class has a meaningful toString() for "MM-dd-yyyy"
+        sb.append(birth.toFileString()).append("-"); // Assuming you add a toFileString to your Date class
+        sb.append(sex).append("-");
+        sb.append(home).append("-");
+        sb.append(description).append("-"); // This field holds the 'occupation' from file
+        sb.append(String.format("%.2f", money)); // Money is the last fixed field
+
+        // Append items if any, separated by commas, preceded by a hyphen
+        // We need to iterate through your 'bag' array to get item names
+        List<String> currentBagItemNames = new ArrayList<>();
+        for (int i = 0; i < itemCount; i++) { // Iterate up to itemCount, not bag.length
+            if (bag[i] != null) {
+                currentBagItemNames.add(bag[i].getitemName()); // Assuming Items has getitemName()
+            }
+        }
+
+        if (!currentBagItemNames.isEmpty()) { // <--- FIXED: Now using currentBagItemNames
+            sb.append("-"); // Add the hyphen separator for the items section
+            sb.append(String.join(",", currentBagItemNames)); // <--- FIXED: Now using currentBagItemNames
+        }
+        return sb.toString();
+    }
+
+   /**
+     * Parses a line from trainers.txt into a Trainers object.
+     * Expected Format: ID-Name-Birthday(MM-dd-yyyy)-Sex-Home-Description(Occupation)-Money[-Item1,Item2,...]
+     * @param line The line string from the file.
+     * @return A Trainers object, or null if parsing fails.
+     */
+    public static Trainers fromFileString(String line) {
+        String[] parts = line.split("-", 8); // Limit to 8 to keep the item string as one part
+
+        if (parts.length < 7) {
+            System.err.println("Malformed trainer line (too few parts): " + line);
+            return null;
+        }
+
+        try {
+            String trainerID = parts[0];
+            String name = parts[1];
+            String birthDateString = parts[2]; // Keep as String for the constructor
+            String sex = parts[3];
+            String home = parts[4];
+            String description = parts[5]; // This corresponds to 'Occupation' in your file
+            double money = Double.parseDouble(parts[6]);
+
+            List<String> items = new ArrayList<>();
+            if (parts.length == 8 && !parts[7].trim().isEmpty()) {
+                String[] itemNames = parts[7].split(",");
+                for (String itemName : itemNames) {
+                    items.add(itemName.trim());
+                }
+            }
+            // THIS LINE WILL NOW CALL THE NEW OVERLOADED CONSTRUCTOR
+            return new Trainers(trainerID, name, birthDateString, sex, home, description, money, items);
+
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing money or other number for trainer: " + line + ". Error: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("Unexpected error parsing trainer line: " + line + ". Error: " + e.getMessage());
+            return null;
+        }
+    }
+
 }
