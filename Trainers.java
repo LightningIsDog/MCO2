@@ -67,7 +67,7 @@ public class Trainers {
         this.trainerNumber = trainerCount++;
     }
 
-     public Trainers(String ID, String name, String birthDateString, String sex, String home, String description,
+    public Trainers(String ID, String name, String birthDateString, String sex, String home, String description,
                     double money, List<String> itemNamesFromBag) {
         this.ID = ID;
         this.name = name;
@@ -211,12 +211,20 @@ public class Trainers {
         return pokemonTeam;
     }
 
+    public Pokemon getPokemonFromLineup(int i) {
+        return pokemonTeam[i];
+    }
+
     /** This method returns a Trainer object's Pokemon storage
      *
      * @return pokemonCount: a Trainer object's Pokemon storage
      */
     public Pokemon[] getPokemonStorage() {
         return pokemonPC;
+    }
+
+    public Pokemon getPokemonFromStorage(int i) {
+        return pokemonPC[i];
     }
 
     /** This method returns a Trainer object's lineupCount
@@ -416,13 +424,127 @@ public class Trainers {
         return "Successfully added " + pokemon.getName() + " to your PC storage!";
     }
 
+    public String switchPokemon(int lineupIndex, int storageIndex) {
+        // Validate indices
+        if (lineupIndex == -1 && storageIndex == -1) {
+            return "Error: No Pokémon selected!";
+        }
+
+        // Moving from lineup to storage
+        if (lineupIndex >= 0 && storageIndex == -1) {
+            if (lineupIndex >= lineupCount) {
+                return "Error: Invalid lineup index!";
+            }
+            if (storageCount >= pokemonPC.length) {
+                return "Error: Storage is full!";
+            }
+
+            // Move to storage
+            Pokemon pokemon = pokemonTeam[lineupIndex];
+            pokemonPC[storageCount++] = pokemon;
+
+            // Shift lineup to fill gap
+            for (int i = lineupIndex; i < lineupCount - 1; i++) {
+                pokemonTeam[i] = pokemonTeam[i + 1];
+            }
+            pokemonTeam[--lineupCount] = null;
+
+            return pokemon.getName() + " moved to storage!";
+        }
+        // Moving from storage to lineup
+        else if (storageIndex >= 0 && lineupIndex == -1) {
+            if (storageIndex >= storageCount) {
+                return "Error: Invalid storage index!";
+            }
+            if (lineupCount >= pokemonTeam.length) {
+                return "Error: Lineup is full!";
+            }
+
+            // Move to lineup
+            Pokemon pokemon = pokemonPC[storageIndex];
+            pokemonTeam[lineupCount++] = pokemon;
+
+            // Shift storage to fill gap
+            for (int i = storageIndex; i < storageCount - 1; i++) {
+                pokemonPC[i] = pokemonPC[i + 1];
+            }
+            pokemonPC[--storageCount] = null;
+
+            return pokemon.getName() + " added to your team!";
+        }
+        // Direct swap between lineup and storage
+        else if (lineupIndex >= 0 && storageIndex >= 0) {
+            if (lineupIndex >= lineupCount || storageIndex >= storageCount) {
+                return "Error: Invalid indices!";
+            }
+
+            // Perform swap
+            Pokemon temp = pokemonTeam[lineupIndex];
+            pokemonTeam[lineupIndex] = pokemonPC[storageIndex];
+            pokemonPC[storageIndex] = temp;
+
+            return "Swapped " + temp.getName() + " and " + pokemonTeam[lineupIndex].getName();
+        }
+
+        return "Error: Invalid operation!";
+    }
+    public boolean canReleaseFromLineup() {
+        return lineupCount > 1; // Must keep at least 1 Pokémon in team
+    }
+
+    public boolean canReleaseFromStorage() {
+        return true; // Can always release from storage
+    }
+    public Pokemon releasePokemon(boolean fromLineup, int index) {
+        if (fromLineup) {
+            if (index < 0 || index >= lineupCount || lineupCount <= 1) {
+                return null; // Must keep at least 1 Pokémon in team
+            }
+
+            Pokemon released = pokemonTeam[index];
+            System.arraycopy(pokemonTeam, index + 1, pokemonTeam, index, lineupCount - index - 1);
+            pokemonTeam[--lineupCount] = null;
+            return released;
+        } else {
+            if (index < 0 || index >= storageCount) {
+                return null;
+            }
+
+            Pokemon released = pokemonPC[index];
+            System.arraycopy(pokemonPC, index + 1, pokemonPC, index, storageCount - index - 1);
+            pokemonPC[--storageCount] = null;
+            return released;
+        }
+    }
+
+
+    /**
+     * Releases a Pokémon from storage
+     * @param index Index of Pokémon in storage to release
+     * @return The released Pokémon (or null if invalid index)
+     */
+    public Pokemon releaseFromStorage(int index) {
+        if (index < 0 || index >= storageCount) {
+            return null;
+        }
+
+        Pokemon released = pokemonPC[index];
+
+        // Shift remaining Pokémon to fill the gap
+        for (int i = index; i < storageCount - 1; i++) {
+            pokemonPC[i] = pokemonPC[i + 1];
+        }
+        pokemonPC[--storageCount] = null;
+
+        return released;
+    }
 
     public void saveToFile() {
         // Implement saving trainer data to file
         // This should update the trainer's Pokémon lineup and storage
     }
 
-      public boolean isItemUnique(Items item) {
+    public boolean isItemUnique(Items item) {
         for (int i = 0; i < uniqueCount; i++) {
             if (uniqueItems[i] != null && uniqueItems[i].getitemName().equals(item.getitemName())) {
                 return false; // Already exists
@@ -454,7 +576,7 @@ public class Trainers {
         return item.getitemName() + " was successfully added to your bag.";
     }
 
-  /**
+    /**
      * Converts the current Trainer object into a string format suitable for saving to a file.
      * Format: ID-Name-Birthday(MM-dd-yyyy)-Sex-Home-Description(Occupation)-Money-Item1,Item2,Item3,...
      * Items part will be omitted if no items are present.
@@ -488,7 +610,7 @@ public class Trainers {
         return sb.toString();
     }
 
-   /**
+    /**
      * Parses a line from trainers.txt into a Trainers object.
      * Expected Format: ID-Name-Birthday(MM-dd-yyyy)-Sex-Home-Description(Occupation)-Money[-Item1,Item2,...]
      * @param line The line string from the file.
