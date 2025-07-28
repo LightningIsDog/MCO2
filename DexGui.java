@@ -1702,88 +1702,105 @@ public class DexGui {
     }
 
     public static void Speed() {
-        JFrame pokFrame2 = new JFrame();
-        pokFrame2.setSize(1300, 700);
-        pokFrame2.setUndecorated(true);
-        pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JFrame pokFrame2 = new JFrame();
+    pokFrame2.setSize(1300, 700);
+    pokFrame2.setUndecorated(true);
+    pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        ImageIcon pokBg = new ImageIcon("speed.png");
+    ImageIcon pokBg = new ImageIcon("speed.png");
 
-        JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        backgroundPanel2.setOpaque(false);
+    JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+    backgroundPanel2.setOpaque(false);
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setOpaque(false);
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+    JPanel mainPanel = new JPanel();
+    mainPanel.setOpaque(false);
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        JLabel promptLabel = new JLabel("Enter Speed Stats (1–2000):");
-        promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        promptLabel.setForeground(Color.BLACK);
-        promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    JLabel promptLabel = new JLabel("Enter Speed Stats (1–2000):");
+    promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    promptLabel.setForeground(Color.BLACK);
+    promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel promptLabel2 = new JLabel("Pokemon added successfully!");
-        promptLabel2.setFont(new Font("Arial", Font.BOLD, 18));
-        promptLabel2.setForeground(Color.GREEN);
-        promptLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        promptLabel2.setVisible(false); // Hidden initially
-        pokemon[pokemonCount] = new Pokemon(tempPokemon.getPokedexNo(),tempPokemon.getName(),tempPokemon.getType1(),
-                tempPokemon.getType2(),1,tempPokemon.getFrom(),
-                tempPokemon.getTo(),tempPokemon.getEvoLevel(),tempPokemon.getHP(),tempPokemon.getAtk(),
-                tempPokemon.getDef(),tempPokemon.getSpd()); // Create a new Pokemon instance
-        pokemon[pokemonCount].teachMove("Tackle",false);
-        pokemon[pokemonCount].teachMove("Defend",false);
-        saveToFile(pokemon[pokemonCount]);
-        pokemonCount++; // Increment the count after adding a new Pokemon
+    JLabel promptLabel2 = new JLabel("Pokemon added successfully!");
+    promptLabel2.setFont(new Font("Arial", Font.BOLD, 18));
+    promptLabel2.setForeground(Color.GREEN);
+    promptLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    promptLabel2.setVisible(false); // Hidden initially
 
-        // 🔙 Back button (initially hidden)
-        ButtonBg backButton = new ButtonBg("Back to Pokemon Management", new Dimension(500, 30), new Color(128, 128, 128));
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.setVisible(false); // Hidden initially
-        backButton.addActionListener(e -> {
-            PokemonManagement(); // Return to management
-        });
+    // 🔙 Back button (initially hidden)
+    ButtonBg backButton = new ButtonBg("Back to Pokemon Management", new Dimension(500, 30), new Color(128, 128, 128));
+    backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    backButton.setVisible(false); // Hidden initially
+    backButton.addActionListener(e -> {
+        PokemonManagement(); // Return to management
+    });
 
-        // 🟩 Input Panel
-        JPanel inputPanel = createValidatedIntInputField(
-                "Next", 1, 2000, level -> {
-                    System.out.println("Speed received: " + level);
-                    tempPokemon.setSpd(level);
-                    promptLabel2.setVisible(true);
-                    backButton.setVisible(true); // Show back button
-                }
-        );
+    // 🟩 Input Panel
+    JPanel inputPanel = createValidatedIntInputField(
+        "Next", 1, 2000, level -> {
+            System.out.println("Speed received: " + level);
+            tempPokemon.setSpd(level);
 
-        // 🧩 Add all to main panel
-        mainPanel.add(Box.createVerticalStrut(100));
-        mainPanel.add(promptLabel);
-        mainPanel.add(Box.createVerticalStrut(20));
-        mainPanel.add(inputPanel);
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(promptLabel2);
-        mainPanel.add(Box.createVerticalStrut(60));
-        mainPanel.add(backButton);
+            // ✅ Finalize and save the Pokemon only after Speed is entered
+            pokemon[pokemonCount] = new Pokemon(
+                tempPokemon.getPokedexNo(),
+                tempPokemon.getName(),
+                tempPokemon.getType1(),
+                tempPokemon.getType2(),
+                1,
+                tempPokemon.getFrom(),
+                tempPokemon.getTo(),
+                tempPokemon.getEvoLevel(),
+                tempPokemon.getHP(),
+                tempPokemon.getAtk(),
+                tempPokemon.getDef(),
+                tempPokemon.getSpd()
+            );
 
-        // 🎨 Add to background
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(200, 0, 0, 0);
+            pokemon[pokemonCount].teachMove("Tackle", false);
+            pokemon[pokemonCount].teachMove("Defend", false);
+            saveToFile(pokemon[pokemonCount]);
+            pokemonCount++;
+            Pokedex.pokemon[Pokedex.pokemonCount] = pokemon[pokemonCount - 1]; // Access the Pokémon just saved
+            Pokedex.pokemonCount++;
 
-        backgroundPanel2.add(mainPanel, gbc);
+            // 🎉 Feedback
+            promptLabel2.setVisible(true);
+            backButton.setVisible(true);
+        }
+    );
 
-        pokFrame2.setContentPane(backgroundPanel2);
-        pokFrame2.setLocationRelativeTo(null);
-        pokFrame2.setVisible(true);
-    }
+    // 🧩 Add all to main panel
+    mainPanel.add(Box.createVerticalStrut(100));
+    mainPanel.add(promptLabel);
+    mainPanel.add(Box.createVerticalStrut(20));
+    mainPanel.add(inputPanel);
+    mainPanel.add(Box.createVerticalStrut(15));
+    mainPanel.add(promptLabel2);
+    mainPanel.add(Box.createVerticalStrut(60));
+    mainPanel.add(backButton);
+
+    // 🎨 Add to background
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 1.0;
+    gbc.anchor = GridBagConstraints.NORTH;
+    gbc.insets = new Insets(200, 0, 0, 0);
+
+    backgroundPanel2.add(mainPanel, gbc);
+
+    pokFrame2.setContentPane(backgroundPanel2);
+    pokFrame2.setLocationRelativeTo(null);
+    pokFrame2.setVisible(true);
+}
 
     public static JLabel buildMoveLabel(Pokemon currentPokemon) {
         StringBuilder movesTextBuilder = new StringBuilder();
@@ -1818,7 +1835,6 @@ public class DexGui {
         return new JLabel(movesTextBuilder.toString());
     }
 
-    // may kulang pa
     public static void ViewPokemon() {
         JFrame frame = new JFrame("Pokédex Viewer");
         frame.setSize(900, 600);
@@ -1854,14 +1870,15 @@ public class DexGui {
                 // Create Pokémon object
                 Pokemon currentPokemon = new Pokemon(pokedexNo, name, type1, type2, baseLevel, from, to, evoLevel, hp, atk, def, spd);
 
-                // 🔁 Copy moves if present in Pokedex.pokemon
-                if (pokedexNo <= Pokedex.pokemonCount) {
-                    Pokemon original = Pokedex.pokemon[pokedexNo - 1];
-                    if (original != null) {
-                        currentPokemon.setMoves(original.getMoves());
-                        currentPokemon.setPMoves(original.getPMoves());
-                    }
+                        // 🔁 Copy moves from memory if Pokémon was added earlier
+            for (int i = 0; i < Pokedex.pokemonCount; i++) {
+                Pokemon original = Pokedex.pokemon[i];
+                if (original != null && original.getPokedexNo() == currentPokemon.getPokedexNo()) {
+                    currentPokemon.setMoves(original.getMoves());
+                    currentPokemon.setPMoves(original.getPMoves());
+                    break;
                 }
+            }
 
                 // 🔁 Use the exact layout logic from DisplayPokemonSearch()
                 JPanel pokemonCard = new JPanel();
