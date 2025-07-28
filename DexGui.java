@@ -3239,137 +3239,142 @@ public class DexGui {
         searchFrame.setVisible(true);
     }
     public static void showAddPokemonToTrainer(Trainers trainer, boolean addToLineup) {
-        JFrame frame = new JFrame("Add Pokémon to " + trainer.getName());
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    JFrame frame = new JFrame("Add Pokémon to " + trainer.getName());
+    frame.setSize(800, 600);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Form Panel
-        JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
+    // Form Panel
+    JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
 
-        // Pokémon Selection
-        JLabel pokemonLabel = new JLabel("Select Pokémon:");
-        JComboBox<String> pokemonCombo = new JComboBox<>();
+    // Pokémon Selection
+    JLabel pokemonLabel = new JLabel("Select Pokémon:");
+    JComboBox<String> pokemonCombo = new JComboBox<>();
 
-        // Populate with available Pokémon from Pokedex
-        for (int i = 0; i < Pokedex.pokemonCount; i++) {
-            Pokemon p = Pokedex.pokemon[i];
-            if (p != null) {
-                pokemonCombo.addItem(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+    for (int i = 0; i < Pokedex.pokemonCount; i++) {
+        Pokemon p = Pokedex.pokemon[i];
+        if (p != null) {
+            pokemonCombo.addItem(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+        }
+    }
+
+    // Team/PC Status
+    JLabel statusLabel = new JLabel();
+    if (addToLineup) {
+        statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
+    } else {
+        statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
+    }
+
+    formPanel.add(pokemonLabel);
+    formPanel.add(pokemonCombo);
+    formPanel.add(new JLabel("Status:"));
+    formPanel.add(statusLabel);
+
+    // Result Area
+    JTextArea resultArea = new JTextArea(10, 50);
+    resultArea.setEditable(false);
+    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    JScrollPane resultScroll = new JScrollPane(resultArea);
+    resultScroll.setPreferredSize(new Dimension(700, 200));
+
+    // Button Panel
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    JButton addButton = new JButton(addToLineup ? "Add to Team" : "Add to Storage");
+    JButton cancelButton = new JButton("Cancel");
+
+    addButton.addActionListener(e -> {
+        int selectedIndex = pokemonCombo.getSelectedIndex();
+
+        if (selectedIndex >= 0 && selectedIndex < Pokedex.pokemonCount) {
+            Pokemon selectedPokemon = Pokedex.pokemon[selectedIndex];
+
+            // Check if Pokémon already exists
+            boolean alreadyExists = false;
+            for (Pokemon p : trainer.getPokemonLineup()) {
+                if (p != null && p.getPokedexNo() == selectedPokemon.getPokedexNo()) {
+                    alreadyExists = true;
+                    break;
+                }
             }
-        }
-
-        // Level Input
-        JLabel levelLabel = new JLabel("Level:");
-        JSpinner levelSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
-
-        // Nickname Input
-        JLabel nicknameLabel = new JLabel("Nickname (optional):");
-        JTextField nicknameField = new JTextField();
-
-        formPanel.add(pokemonLabel);
-        formPanel.add(pokemonCombo);
-        formPanel.add(levelLabel);
-        formPanel.add(levelSpinner);
-        formPanel.add(nicknameLabel);
-        formPanel.add(nicknameField);
-
-        // Team/PC Status
-        JLabel statusLabel = new JLabel();
-        if (addToLineup) {
-            statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
-        } else {
-            statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
-        }
-        formPanel.add(new JLabel("Status:"));
-        formPanel.add(statusLabel);
-
-        // Result Area
-        JTextArea resultArea = new JTextArea(10, 50);
-        resultArea.setEditable(false);
-        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        JScrollPane resultScroll = new JScrollPane(resultArea);
-        resultScroll.setPreferredSize(new Dimension(700, 200));
-
-        // Button Panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton addButton = new JButton(addToLineup ? "Add to Team" : "Add to Storage");
-        JButton cancelButton = new JButton("Cancel");
-
-        addButton.addActionListener(e -> {
-            int selectedIndex = pokemonCombo.getSelectedIndex();
-            int level = (int) levelSpinner.getValue();
-            String nickname = nicknameField.getText().trim();
-
-            if (selectedIndex >= 0 && selectedIndex < Pokedex.pokemonCount) {
-                Pokemon selectedPokemon = Pokedex.pokemon[selectedIndex];
-
-                // Create a new instance with the specified level
-                Pokemon newPokemon = new Pokemon(
-                        selectedPokemon.getPokedexNo(),
-                        selectedPokemon.getName(),
-                        selectedPokemon.getType1(),
-                        selectedPokemon.getType2(),
-                        level,
-                        selectedPokemon.getFrom(),
-                        selectedPokemon.getTo(),
-                        selectedPokemon.getEvoLevel(),
-                        selectedPokemon.getHP(),
-                        selectedPokemon.getAtk(),
-                        selectedPokemon.getDef(),
-                        selectedPokemon.getSpd()
-                );
-
-                // Set nickname if provided
-              //  if (!nickname.isEmpty()) {
-               //     newPokemon.setNickname(nickname);
-               // }
-
-                // Copy moves from the base Pokémon
-                for (int i = 0; i < selectedPokemon.getPMoves(); i++) {
-                    Moves move = selectedPokemon.getMoves()[i];
-                    if (move != null) {
-                        newPokemon.teachMove(move.getName(), false);
+            if (!alreadyExists) {
+                for (Pokemon p : trainer.getPokemonStorage()) {
+                    if (p != null && p.getPokedexNo() == selectedPokemon.getPokedexNo()) {
+                        alreadyExists = true;
+                        break;
                     }
                 }
-
-                String result;
-                if (addToLineup) {
-                    result = trainer.addPokemonToLineup(newPokemon);
-                } else {
-                    result = trainer.addPokemonToStorage(newPokemon);
-                }
-
-                resultArea.setText(result);
-
-                // Update status label
-                if (addToLineup) {
-                    statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
-                } else {
-                    statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
-                }
-
-                // Save trainer data
-                trainer.saveToFile();
             }
-        });
 
-        cancelButton.addActionListener(e -> frame.dispose());
+            if (alreadyExists) {
+                resultArea.setText("❌ This Pokémon already exists in the trainer’s team or PC storage.");
+                return;
+            }
 
-        buttonPanel.add(addButton);
-        buttonPanel.add(cancelButton);
+            // Create a new instance using base level from selected Pokémon
+            Pokemon newPokemon = new Pokemon(
+                    selectedPokemon.getPokedexNo(),
+                    selectedPokemon.getName(),
+                    selectedPokemon.getType1(),
+                    selectedPokemon.getType2(),
+                    selectedPokemon.getBaseLevel(),
+                    selectedPokemon.getFrom(),
+                    selectedPokemon.getTo(),
+                    selectedPokemon.getEvoLevel(),
+                    selectedPokemon.getHP(),
+                    selectedPokemon.getAtk(),
+                    selectedPokemon.getDef(),
+                    selectedPokemon.getSpd()
+            );
 
-        // Layout
-        mainPanel.add(formPanel, BorderLayout.NORTH);
-        mainPanel.add(resultScroll, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+            // Always teach default moves
+            newPokemon.teachMove("Tackle", false);
+            newPokemon.teachMove("Defend", false);
 
-        frame.add(mainPanel);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
+            // Copy other moves (skip duplicates)
+            for (int i = 0; i < selectedPokemon.getPMoves(); i++) {
+                Moves move = selectedPokemon.getMoves()[i];
+                if (move != null && !move.getName().equalsIgnoreCase("Tackle") && !move.getName().equalsIgnoreCase("Defend")) {
+                    newPokemon.teachMove(move.getName(), false);
+                }
+            }
+
+            String result;
+            if (addToLineup) {
+                result = trainer.addPokemonToLineup(newPokemon);
+            } else {
+                result = trainer.addPokemonToStorage(newPokemon);
+            }
+
+            resultArea.setText(result);
+
+            // Update status
+            if (addToLineup) {
+                statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
+            } else {
+                statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
+            }
+
+            trainer.saveToFile();
+        }
+    });
+
+    cancelButton.addActionListener(e -> frame.dispose());
+
+    buttonPanel.add(addButton);
+    buttonPanel.add(cancelButton);
+
+    mainPanel.add(formPanel, BorderLayout.NORTH);
+    mainPanel.add(resultScroll, BorderLayout.CENTER);
+    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+    frame.add(mainPanel);
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
+}
+
     private static String getPokemonDetails(Pokemon p) {
         return String.format(
                 "Name: %s\nLevel: %d\nType: %s%s\nHP: %d\nAttack: %d\nDefense: %d\nSpeed: %d\n\nMoves:\n%s",
@@ -3745,12 +3750,11 @@ public class DexGui {
             }
         });
 
-        // Populate with trainer's Pokémon
-        for (int i = 0; i < trainer.getLineupCount(); i++) {
-            pokemonCombo.addItem(trainer.getPokemonFromLineup(i));
-        }
-        for (int i = 0; i < trainer.getStorageCount(); i++) {
-            pokemonCombo.addItem(trainer.getPokemonFromStorage(i));
+                for (int i = 0; i < trainer.getLineupCount(); i++) {
+            Pokemon p = trainer.getPokemonFromLineup(i);
+            if (p != null) {
+                pokemonCombo.addItem(p);
+            }
         }
 
         // Move selection
@@ -3902,14 +3906,12 @@ public class DexGui {
             }
         });
 
-        // Populate with trainer's Pokémon
-        for (int i = 0; i < trainer.getLineupCount(); i++) {
-            pokemonCombo.addItem(trainer.getPokemonFromLineup(i));
+           for (int i = 0; i < trainer.getLineupCount(); i++) {
+            Pokemon p = trainer.getPokemonFromLineup(i);
+            if (p != null) {
+                pokemonCombo.addItem(p);
+            }
         }
-        for (int i = 0; i < trainer.getStorageCount(); i++) {
-            pokemonCombo.addItem(trainer.getPokemonFromStorage(i));
-        }
-
         // Move selection
         JPanel movePanel = new JPanel(new FlowLayout());
         JLabel moveLabel = new JLabel("Select Move to Unlearn:");

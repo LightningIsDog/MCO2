@@ -696,4 +696,22 @@ public class Trainers {
         }
     }
 }
+
+public boolean hasPokemon(Pokemon p) {
+    // Check lineup
+    for (Pokemon teamMember : pokemonTeam) {
+        if (teamMember != null && teamMember.getPokedexNo() == p.getPokedexNo()) {
+            return true;
+        }
+    }
+
+    // Check storage
+    for (Pokemon stored : pokemonPC) {
+        if (stored != null && stored.getPokedexNo() == p.getPokedexNo()) {
+            return true;
+        }
+    }
+
+    return false;
+}
 }
