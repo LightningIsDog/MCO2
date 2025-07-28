@@ -3398,20 +3398,28 @@ public class DexGui {
         );
     }
 
-    private static String getMovesAsString(Pokemon p) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < p.getPMoves(); i++) {
-            Moves m = p.getMoves()[i];
-            if (m != null) {
-                sb.append("- ").append(m.getName()).append(" (").append(m.getType1());
-                if (!m.getType2().equals("0")) {
-                    sb.append("/").append(m.getType2());
-                }
-                sb.append(")\n");
+   private static String getMovesAsString(Pokemon p) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < p.getPMoves(); i++) {
+        Moves m = p.getMoves()[i];
+        if (m != null) {
+            sb.append("- ").append(m.getName()).append(" (").append(m.getType1());
+            if (!m.getType2().equals("0") && !m.getType2().isEmpty()) {
+                sb.append("/").append(m.getType2());
             }
+            sb.append(")");
+
+            // Append machine (TM/HM) info if available
+            if (m.getMachine() != null && !m.getMachine().isEmpty()) {
+                sb.append(" [").append(m.getMachine()).append("]");
+            }
+
+            sb.append("\n");
         }
-        return sb.toString();
     }
+    return sb.toString();
+}
+
     public static void showSwitchPokemon(Trainers trainer) {
         JFrame frame = new JFrame("Switch Pokémon - " + trainer.getName());
         frame.setSize(900, 600);
@@ -3723,7 +3731,7 @@ public class DexGui {
             return this;
         }
     }
-    public static void showTeachMove(Trainers trainer) {
+     public static void showTeachMove(Trainers trainer) {
         JFrame frame = new JFrame("Teach Moves");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -3731,12 +3739,11 @@ public class DexGui {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Pokémon selection - now with custom renderer
         JPanel pokemonPanel = new JPanel(new FlowLayout());
         JLabel pokemonLabel = new JLabel("Select Pokémon:");
         JComboBox<Pokemon> pokemonCombo = new JComboBox<>();
 
-        // Set custom renderer to show Pokémon names
+        // Custom renderer for Pokémon names
         pokemonCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -3744,90 +3751,113 @@ public class DexGui {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof Pokemon) {
                     Pokemon p = (Pokemon) value;
-                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+                    String types = p.getType1();
+                    if (!p.getType2().equals("0")) { // Assuming "0" means no second type
+                        types += "/" + p.getType2();
+                    }
+                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + " | " + types + ")");
                 }
                 return this;
             }
         });
 
-                for (int i = 0; i < trainer.getLineupCount(); i++) {
+        // Only add lineup Pokémon
+        for (int i = 0; i < trainer.getLineupCount(); i++) {
             Pokemon p = trainer.getPokemonFromLineup(i);
             if (p != null) {
                 pokemonCombo.addItem(p);
             }
         }
 
-        // Move selection
-        JPanel movePanel = new JPanel(new FlowLayout());
+        JPanel moveSelectionPanel = new JPanel(new FlowLayout()); // Changed name from movePanel to be more descriptive
         JLabel moveLabel = new JLabel("Select Move:");
         JComboBox<String> moveCombo = new JComboBox<>();
 
-        // Options
-        JCheckBox overwriteCheck = new JCheckBox("Overwrite last move if full");
+        // Add a text area to display selected Pokémon's types and current moves
+        JTextArea pokemonInfoArea = new JTextArea(6, 30); // Increased rows to show types + moves
+        pokemonInfoArea.setEditable(false);
+        pokemonInfoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        pokemonInfoArea.setBorder(BorderFactory.createTitledBorder("Pokémon Info & Current Moves"));
 
-        // Current moves display
-        JTextArea currentMovesArea = new JTextArea(5, 30);
-        currentMovesArea.setEditable(false);
 
-        // Update current moves when Pokémon changes
+        // Update current moves and Pokémon types when Pokémon changes
         pokemonCombo.addActionListener(e -> {
             Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
             if (selected != null) {
-                currentMovesArea.setText(String.join("\n", selected.getKnownMoves()));
+                StringBuilder info = new StringBuilder();
+                info.append("Name: ").append(selected.getName()).append("\n");
+                info.append("Level: ").append(selected.getBaseLevel()).append("\n");
+                String types = selected.getType1();
+                if (!selected.getType2().equals("0")) {
+                    types += "/" + selected.getType2();
+                }
+                info.append("Type(s): ").append(types).append("\n\n");
+                info.append("Known Moves:\n");
+                info.append(String.join("\n", selected.getKnownMoves()));
+                pokemonInfoArea.setText(info.toString());
+            } else {
+                pokemonInfoArea.setText(""); // Clear if no Pokémon is selected
             }
         });
 
-        // Populate moves combo when Pokémon is selected
+        // Populate move list with compatible moves and their types/classification
+        // This listener must be AFTER the initial setup of pokemonCombo, and
+        // potentially AFTER the listener that updates pokemonInfoArea,
+        // so that pokemonCombo.getSelectedItem() is correctly initialized.
         pokemonCombo.addActionListener(e -> {
             moveCombo.removeAllItems();
-            Pokemon selectedPokemon = (Pokemon) pokemonCombo.getSelectedItem();
-            if (selectedPokemon != null) {
+            Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
+            if (selected != null) {
                 for (Moves move : Moves.moveList) {
                     if (move != null) {
-                        // Only show moves that match the Pokémon's type
-                        if (move.getType1().equalsIgnoreCase(selectedPokemon.getType1()) ||
-                                (!selectedPokemon.getType2().equals("0") &&
-                                        move.getType1().equalsIgnoreCase(selectedPokemon.getType2())) ||
-                                (!move.getType2().equals("0") &&
-                                        move.getType2().equalsIgnoreCase(selectedPokemon.getType1())) ||
-                                (!selectedPokemon.getType2().equals("0") && !move.getType2().equals("0") &&
-                                        move.getType2().equalsIgnoreCase(selectedPokemon.getType2()))) {
-                            moveCombo.addItem(move.getName());
+                        boolean isNormal = move.getType1().equalsIgnoreCase("Normal");
+                        boolean matchType1 = move.getType1().equalsIgnoreCase(selected.getType1()) ||
+                                (!selected.getType2().equals("0") && move.getType1().equalsIgnoreCase(selected.getType2()));
+                        boolean matchType2 = (!move.getType2().equals("0") &&
+                                (move.getType2().equalsIgnoreCase(selected.getType1()) ||
+                                 (!selected.getType2().equals("0") && move.getType2().equalsIgnoreCase(selected.getType2()))));
+
+                        if (isNormal || matchType1 || matchType2) {
+                            // Display move name, type, and classification
+                            String moveDisplayName = String.format("%s (%s | %s)",
+                                move.getName(),
+                                move.getType1() + (move.getType2().equals("0") ? "" : "/" + move.getType2()),
+                                move.getMachine()); // Assuming getClassification() exists
+                            moveCombo.addItem(moveDisplayName);
                         }
                     }
                 }
             }
         });
 
-        // Teach button
         JButton teachButton = new JButton("Teach Move");
         teachButton.addActionListener(e -> {
             Pokemon pokemon = (Pokemon) pokemonCombo.getSelectedItem();
-            String moveName = (String) moveCombo.getSelectedItem();
-            boolean overwrite = overwriteCheck.isSelected();
+            String selectedMoveDisplay = (String) moveCombo.getSelectedItem(); // Get the display string
 
-            if (pokemon == null || moveName == null) {
+            if (pokemon == null || selectedMoveDisplay == null) {
                 JOptionPane.showMessageDialog(frame, "Please select both a Pokémon and a move!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Get the full move object
+            // Extract the actual move name from the display string (e.g., "Tackle (Normal | Physical)" -> "Tackle")
+            String moveName = selectedMoveDisplay.split(" \\(")[0];
+
             Moves moveToTeach = Moves.getMoveByName(moveName);
             if (moveToTeach == null) {
                 JOptionPane.showMessageDialog(frame, "Invalid move selected!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Check type compatibility
-            boolean typeMatch = moveToTeach.getType1().equalsIgnoreCase(pokemon.getType1()) ||
-                    (!pokemon.getType2().equals("0") &&
-                            moveToTeach.getType1().equalsIgnoreCase(pokemon.getType2())) ||
-                    (!moveToTeach.getType2().equals("0") &&
-                            moveToTeach.getType2().equalsIgnoreCase(pokemon.getType1())) ||
-                    (!pokemon.getType2().equals("0") && !moveToTeach.getType2().equals("0") &&
-                            moveToTeach.getType2().equalsIgnoreCase(pokemon.getType2()));
+            // Compatibility check (this logic remains the same as it's correct)
+            boolean isNormal = moveToTeach.getType1().equalsIgnoreCase("Normal");
+            boolean matchType1 = moveToTeach.getType1().equalsIgnoreCase(pokemon.getType1()) ||
+                    (!pokemon.getType2().equals("0") && moveToTeach.getType1().equalsIgnoreCase(pokemon.getType2()));
+            boolean matchType2 = (!moveToTeach.getType2().equals("0") &&
+                    (moveToTeach.getType2().equalsIgnoreCase(pokemon.getType1()) ||
+                     (!pokemon.getType2().equals("0") && moveToTeach.getType2().equalsIgnoreCase(pokemon.getType2()))));
 
-            if (!typeMatch) {
+            if (!(isNormal || matchType1 || matchType2)) {
                 JOptionPane.showMessageDialog(frame,
                         "Cannot teach this move!\n" +
                                 pokemon.getName() + " is " + pokemon.getType1() +
@@ -3836,49 +3866,75 @@ public class DexGui {
                                 moveToTeach.getName() + " is " + moveToTeach.getType1() +
                                 (moveToTeach.getType2().equals("0") ? "" : "/" + moveToTeach.getType2()) +
                                 " type\n" +
-                                "Pokémon can only learn moves that match their type(s).",
+                                "Pokémon can only learn moves that match their type(s) or are Normal type.",
                         "Type Mismatch", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (pokemon.teachMove(moveName, overwrite)) {
-                currentMovesArea.setText(String.join("\n", pokemon.getKnownMoves()));
+            // --- REMOVED OVERWRITE CHECK AND LOGIC ---
+            // If the Pokémon already knows 4 moves, the teachMove method should handle it
+            // by returning false (if no space) or indicating that an HM cannot be overwritten.
+
+            if (pokemon.teachMove(moveName, false)) { // Always pass false for overwrite
+                // Update the info area after teaching
+                StringBuilder info = new StringBuilder();
+                info.append("Name: ").append(pokemon.getName()).append("\n");
+                info.append("Level: ").append(pokemon.getBaseLevel()).append("\n");
+                String types = pokemon.getType1();
+                if (!pokemon.getType2().equals("0")) {
+                    types += "/" + pokemon.getType2();
+                }
+                info.append("Type(s): ").append(types).append("\n\n");
+                info.append("Known Moves:\n");
+                info.append(String.join("\n", pokemon.getKnownMoves()));
+                pokemonInfoArea.setText(info.toString());
+
                 JOptionPane.showMessageDialog(frame,
                         moveName + " was successfully taught to " + pokemon.getName() + "!",
                         "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                // Update trainer data in file
+                // Save changes to trainer data
                 trainer.saveToFile();
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Failed to teach move!\n" +
                                 "Possible reasons:\n" +
-                                "- Pokémon already knows this move\n" +
-                                "- No empty move slots and overwrite not checked",
+                                "- Already knows this move\n" +
+                                "- No space (max 4 moves) - use 'Unlearn Move' first!\n" +
+                                "- Cannot overwrite HM move", // Removed overwrite not enabled
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Layout
+        // Layout setup
         pokemonPanel.add(pokemonLabel);
         pokemonPanel.add(pokemonCombo);
 
-        movePanel.add(moveLabel);
-        movePanel.add(moveCombo);
-        movePanel.add(overwriteCheck);
+        moveSelectionPanel.add(moveLabel);
+        moveSelectionPanel.add(moveCombo);
+        // Removed overwriteCheck and overwriteButton
 
         JPanel topPanel = new JPanel(new GridLayout(2, 1));
         topPanel.add(pokemonPanel);
-        topPanel.add(movePanel);
+        topPanel.add(moveSelectionPanel); // Use the renamed panel
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(new JScrollPane(currentMovesArea), BorderLayout.CENTER);
+        mainPanel.add(new JScrollPane(pokemonInfoArea), BorderLayout.CENTER); // Use the new info area
         mainPanel.add(teachButton, BorderLayout.SOUTH);
 
         frame.add(mainPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        // Manually trigger the action listener for initial display
+        // after all components are added and visible
+        if (pokemonCombo.getSelectedItem() != null) {
+             pokemonCombo.setSelectedItem(pokemonCombo.getSelectedItem()); // This triggers the listener
+        } else if (pokemonCombo.getItemCount() > 0) {
+            pokemonCombo.setSelectedIndex(0); // Select first if available
+        }
     }
+
     public static void showUnlearnMove(Trainers trainer) {
         JFrame frame = new JFrame("Unlearn Moves");
         frame.setSize(800, 600);
@@ -3887,12 +3943,12 @@ public class DexGui {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Pokémon selection - now with custom renderer
+        // Pokémon selection - now with custom renderer for types
         JPanel pokemonPanel = new JPanel(new FlowLayout());
         JLabel pokemonLabel = new JLabel("Select Pokémon:");
         JComboBox<Pokemon> pokemonCombo = new JComboBox<>();
 
-        // Set custom renderer to show Pokémon names
+        // Set custom renderer to show Pokémon name, level, AND types
         pokemonCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -3900,43 +3956,75 @@ public class DexGui {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof Pokemon) {
                     Pokemon p = (Pokemon) value;
-                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
+                    String types = p.getType1();
+                    if (!p.getType2().equals("0")) { // Assuming "0" means no second type
+                        types += "/" + p.getType2();
+                    }
+                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + " | " + types + ")");
                 }
                 return this;
             }
         });
 
-           for (int i = 0; i < trainer.getLineupCount(); i++) {
+        for (int i = 0; i < trainer.getLineupCount(); i++) {
             Pokemon p = trainer.getPokemonFromLineup(i);
             if (p != null) {
                 pokemonCombo.addItem(p);
             }
         }
+
         // Move selection
         JPanel movePanel = new JPanel(new FlowLayout());
         JLabel moveLabel = new JLabel("Select Move to Unlearn:");
         JComboBox<String> moveCombo = new JComboBox<>();
 
-        // Current moves display
-        JTextArea currentMovesArea = new JTextArea(5, 30);
-        currentMovesArea.setEditable(false);
+        // Current moves display - now also includes Pokémon's type info
+        JTextArea pokemonInfoArea = new JTextArea(6, 30); // Increased rows for more info
+        pokemonInfoArea.setEditable(false);
+        pokemonInfoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        pokemonInfoArea.setBorder(BorderFactory.createTitledBorder("Pokémon Info & Known Moves"));
 
-        // Update moves when Pokémon changes
+        // Update Pokémon info and populate unlearnable moves when Pokémon changes
         pokemonCombo.addActionListener(e -> {
-            moveCombo.removeAllItems();
+            moveCombo.removeAllItems(); // Clear previous moves
             Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
             if (selected != null) {
-                // Get all known moves
-                String[] knownMoves = selected.getKnownMoves();
-                currentMovesArea.setText(String.join("\n", knownMoves));
+                // Update Pokémon info area
+                StringBuilder info = new StringBuilder();
+                info.append("Name: ").append(selected.getName()).append("\n");
+                info.append("Level: ").append(selected.getBaseLevel()).append("\n");
+                String types = selected.getType1();
+                if (!selected.getType2().equals("0")) {
+                    types += "/" + selected.getType2();
+                }
+                info.append("Type(s): ").append(types).append("\n\n");
+                info.append("Known Moves:\n");
+                pokemonInfoArea.setText(info.toString() + String.join("\n", selected.getKnownMoves()));
+
 
                 // Populate move combo (excluding HM moves)
-                for (String moveName : knownMoves) {
+                for (String moveName : selected.getKnownMoves()) { // Iterate directly from known moves
                     Moves move = Moves.getMoveByName(moveName);
-                    if (move != null && !move.getMachine().equalsIgnoreCase("HM")) {
-                        moveCombo.addItem(moveName);
+                    if (move != null && !move.getMachine().equalsIgnoreCase("HM")) { // Check for HM property
+                        // Format: MoveName (Type | Classification)
+                        String moveDisplayName = String.format("%s (%s | %s)",
+                            move.getName(),
+                            move.getType1() + (move.getType2().equals("0") ? "" : "/" + move.getType2()),
+                            move.getMachine()); // Assuming getClassification() exists
+                        moveCombo.addItem(moveDisplayName);
                     }
                 }
+                if (moveCombo.getItemCount() == 0 && selected.getKnownMoves().length > 0) {
+                     // If a Pokemon has moves but none are unlearnable (e.g., all are HMs)
+                     moveCombo.addItem("No unlearnable moves");
+                     moveCombo.setEnabled(false); // Disable selection
+                     // Potentially disable the unlearn button too
+                } else {
+                    moveCombo.setEnabled(true);
+                }
+            } else {
+                pokemonInfoArea.setText(""); // Clear if no Pokémon is selected
+                moveCombo.removeAllItems();
             }
         });
 
@@ -3944,37 +4032,59 @@ public class DexGui {
         JButton unlearnButton = new JButton("Unlearn Move");
         unlearnButton.addActionListener(e -> {
             Pokemon pokemon = (Pokemon) pokemonCombo.getSelectedItem();
-            String moveName = (String) moveCombo.getSelectedItem();
+            String selectedMoveDisplay = (String) moveCombo.getSelectedItem();
 
-            if (pokemon == null || moveName == null) {
-                JOptionPane.showMessageDialog(frame, "Please select both a Pokémon and a move!", "Error", JOptionPane.ERROR_MESSAGE);
+            if (pokemon == null || selectedMoveDisplay == null || selectedMoveDisplay.equals("No unlearnable moves")) {
+                JOptionPane.showMessageDialog(frame, "Please select a Pokémon and a valid move to unlearn!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Check if move is an HM
+            // Extract the actual move name from the display string
+            String moveName = selectedMoveDisplay.split(" \\(")[0];
+
+            // Re-check if move is an HM (redundant if combo is filtered, but good for robustness)
             Moves move = Moves.getMoveByName(moveName);
             if (move != null && move.getMachine().equalsIgnoreCase("HM")) {
                 JOptionPane.showMessageDialog(frame,
                         "Cannot unlearn HM moves!\n" +
-                                moveName + " is an HM move and cannot be forgotten.",
+                        moveName + " is an HM move and cannot be forgotten.",
                         "HM Move Protection", JOptionPane.ERROR_MESSAGE);
-                return;
+                return; // Should not be reached if combo is filtered correctly
             }
 
             if (pokemon.unlearnMove(moveName)) {
-                // Refresh move combo
-                moveCombo.removeAllItems();
-                Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
-                if (selected != null) {
-                    // Re-populate with updated moves (excluding HMs)
-                    for (String updatedMove : selected.getKnownMoves()) {
-                        Moves m = Moves.getMoveByName(updatedMove);
-                        if (m != null && !m.getMachine().equalsIgnoreCase("HM")) {
-                            moveCombo.addItem(updatedMove);
-                        }
-                    }
-                    currentMovesArea.setText(String.join("\n", selected.getKnownMoves()));
+                // Refresh both the info area and the move combo
+                pokemonInfoArea.setText(""); // Clear before repopulating
+                moveCombo.removeAllItems(); // Clear before repopulating
+
+                StringBuilder info = new StringBuilder();
+                info.append("Name: ").append(pokemon.getName()).append("\n");
+                info.append("Level: ").append(pokemon.getBaseLevel()).append("\n");
+                String types = pokemon.getType1();
+                if (!pokemon.getType2().equals("0")) {
+                    types += "/" + pokemon.getType2();
                 }
+                info.append("Type(s): ").append(types).append("\n\n");
+                info.append("Known Moves:\n");
+                pokemonInfoArea.setText(info.toString() + String.join("\n", pokemon.getKnownMoves()));
+
+
+                // Re-populate move combo with updated list (excluding HMs)
+                for (String updatedMoveName : pokemon.getKnownMoves()) {
+                    Moves m = Moves.getMoveByName(updatedMoveName);
+                    if (m != null && !m.getMachine().equalsIgnoreCase("HM")) {
+                        String updatedMoveDisplay = String.format("%s (%s | %s)",
+                            m.getName(),
+                            m.getType1() + (m.getType2().equals("0") ? "" : "/" + m.getType2()),
+                            m.getMachine());
+                        moveCombo.addItem(updatedMoveDisplay);
+                    }
+                }
+                if (moveCombo.getItemCount() == 0 && pokemon.getKnownMoves().length > 0) {
+                     moveCombo.addItem("No unlearnable moves");
+                     moveCombo.setEnabled(false);
+                }
+
 
                 JOptionPane.showMessageDialog(frame,
                         moveName + " was successfully unlearned!",
@@ -3985,9 +4095,9 @@ public class DexGui {
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Failed to unlearn move!\n" +
-                                "Possible reasons:\n" +
-                                "- Pokémon must keep at least 1 move\n" +
-                                "- Move is an HM and cannot be forgotten",
+                        "Possible reasons:\n" +
+                        "- Pokémon must keep at least 1 move (cannot have 0 moves)\n" +
+                        "- Move is an HM and cannot be forgotten",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -4004,12 +4114,19 @@ public class DexGui {
         topPanel.add(movePanel);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(new JScrollPane(currentMovesArea), BorderLayout.CENTER);
+        mainPanel.add(new JScrollPane(pokemonInfoArea), BorderLayout.CENTER);
         mainPanel.add(unlearnButton, BorderLayout.SOUTH);
 
         frame.add(mainPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        // Manually trigger the action listener for initial display
+        if (pokemonCombo.getSelectedItem() != null) {
+            pokemonCombo.setSelectedItem(pokemonCombo.getSelectedItem()); // This triggers the listener
+        } else if (pokemonCombo.getItemCount() > 0) {
+            pokemonCombo.setSelectedIndex(0); // Select first if available
+        }
     }
     
     private static void BuyItem(Trainers trainer) {
