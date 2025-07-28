@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -582,32 +583,39 @@ public class DexGui {
 
         // Available Items section
         itemsText.append("========== AVAILABLE ITEMS ==========\n\n");
-        for (Items item : Items.itemList) {
-            if (item != null && !item.getitemCategory().equals("Evolution Stone")) {
-                itemsText.append("  Item ID: ").append(item.getitemID()).append("\n");
-                itemsText.append("  Name: ").append(item.getitemName()).append("\n");
-                itemsText.append("  Category: ").append(item.getitemCategory()).append("\n");
-                itemsText.append("  Description: ").append(item.getitemDesc()).append("\n");
-                itemsText.append("  Effects: ").append(item.getitemEffects()).append("\n");
-                itemsText.append(String.format("  Buying Price: P %.2f\n", item.getstartBuyingPrice()));
-                itemsText.append(String.format("  Selling Price: P %.2f\n", item.getsellingPrice()));
+        // Loop through all items using itemCount to avoid nulls at the end of the array
+        for (int i = 0; i < Items.itemCount; i++) {
+            Items item = Items.itemList[i]; // Access item by index
+            // Change .equals() to .equalsIgnoreCase() for category comparison
+            if (item != null && !item.getitemCategory().equalsIgnoreCase("Evolution Stone")) {
+                itemsText.append("    Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("    Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("    Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("    Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("    Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append(String.format("    Buying Price: P %.2f\n", item.getstartBuyingPrice()));
+                itemsText.append(String.format("    Selling Price: P %.2f\n", item.getsellingPrice()));
                 itemsText.append("\n----------------------------------------\n\n");
             }
         }
 
         // Evolution Stones section
         itemsText.append("========== EVOLUTION STONES ==========\n\n");
-        for (Items item : Items.itemList)  {
-            if (item != null && item.getitemCategory().equals("Evolution Stone")) {
-                itemsText.append("  Item ID: ").append(item.getitemID()).append("\n");
-                itemsText.append("  Name: ").append(item.getitemName()).append("\n");
-                itemsText.append("  Category: ").append(item.getitemCategory()).append("\n");
-                itemsText.append("  Description: ").append(item.getitemDesc()).append("\n");
-                itemsText.append("  Effects: ").append(item.getitemEffects()).append("\n");
-                itemsText.append(String.format("  Buying Price: P %.2f\n", item.getstartBuyingPrice()));
-                itemsText.append(String.format("  Selling Price: P %.2f\n", item.getsellingPrice()));
+        // Loop through all items using itemCount to avoid nulls at the end of the array
+        for (int i = 0; i < Items.itemCount; i++) {
+            Items item = Items.itemList[i]; // Access item by index
+            // Change .equals() to .equalsIgnoreCase() for category comparison
+            if (item != null && item.getitemCategory().equalsIgnoreCase("Evolution Stone")) {
+                itemsText.append("    Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("    Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("    Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("    Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("    Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append(String.format("    Buying Price: P %.2f\n", item.getstartBuyingPrice()));
+                itemsText.append(String.format("    Selling Price: P %.2f\n", item.getsellingPrice()));
                 itemsText.append("\n----------------------------------------\n\n");
-            } }
+            }
+        }
 
         itemsTextArea.setText(itemsText.toString());
 
@@ -2677,7 +2685,7 @@ public class DexGui {
         return null;
     }
 
-    private static void ManageTrainerProf() {
+      private static void ManageTrainerProf() {
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2839,7 +2847,7 @@ public class DexGui {
         pokFrame.setVisible(true);
     }
 
-    public static void ManageTrainerPok(Trainers trainer) {
+   public static void ManageTrainerPok(Trainers trainer) {
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2930,6 +2938,7 @@ public class DexGui {
         pokFrame.setLocationRelativeTo(null);
         pokFrame.setVisible(true);
     }
+
     private static void ManageTrainerItem(Trainers trainer){
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
@@ -2969,7 +2978,7 @@ public class DexGui {
 
                         break;
                     case "SELL ITEM":
-
+                        sellItem(trainer);
                         break;
                     case "BACK":
                         pokFrame.dispose();
@@ -3983,6 +3992,7 @@ public class DexGui {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+    
     private static void BuyItem(Trainers trainer) {
         JFrame buyFrame = new JFrame();
         buyFrame.setSize(1300, 700);
@@ -4104,10 +4114,10 @@ public class DexGui {
                 return;
             }
 
-            if (trainer.getItemCount() >= 50 || trainer.getUniqueCount() >= 10) { // Changed == to >= for safety
+            if (trainer.getItemCount() >= 99 || trainer.getUniqueCount() >= 10) { // Changed == to >= for safety
                 JOptionPane.showMessageDialog(buyFrame,
                         "You cannot buy more items. You've reached one (or both) of the following limits:\n"
-                                + "Items in bag (max 50): " + trainer.getItemCount() + "\n"
+                                + "Items in bag (max 99): " + trainer.getItemCount() + "\n"
                                 + "Unique items (max 10): " + trainer.getUniqueCount() + "\n"
                                 + "Try modifying your bag to make space.",
                         "Limit Reached", JOptionPane.WARNING_MESSAGE);
@@ -4122,30 +4132,17 @@ public class DexGui {
                                 + "Item Price: P" + price,
                         "Not Enough Money", JOptionPane.WARNING_MESSAGE);
             } else {
-                // Make a copy
-                Items toBeBought = new Items(
-                        itemToBuy.getitemID(),
-                        itemToBuy.getitemName(),
-                        itemToBuy.getitemCategory(),
-                        itemToBuy.getitemDesc(),
-                        itemToBuy.getitemEffects(),
-                        itemToBuy.getForEvo(),
-                        itemToBuy.getstartBuyingPrice(),
-                        itemToBuy.getsellingPrice()
-                );
-
-                trainer.addItemToBag(toBeBought);
+                String result = trainer.addItemToBag(itemToBuy);
                 trainer.setMoney(trainer.getMoney() - price);
                 // Call the method to update the trainer's data in the file
                 updateTrainerInFile(trainer); // <--- ADD THIS LINE HERE
                 JOptionPane.showMessageDialog(buyFrame,
-                        toBeBought.getitemName() + " successfully added to your bag!\n"
-                                + "Remaining Money: P" + trainer.getMoney(),
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                result + "\nRemaining Money: P" + String.format("%.2f", trainer.getMoney()),
+                "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // Update trainer status display
                 moneyLabel.setText("Available PokeDollars: P" + trainer.getMoney());
-                itemCountLabel.setText("Items in bag (max 50): " + trainer.getItemCount());
+                itemCountLabel.setText("Items in bag (max 99): " + trainer.getItemCount());
                 uniqueCountLabel.setText("Unique items in bag (max 10): " + trainer.getUniqueCount());
             }
         });
@@ -4167,7 +4164,7 @@ public class DexGui {
 
         // Trainer Status Panel (on the right) - NOW INDEPENDENTLY POSITIONED
         moneyLabel = new JLabel("Available PokeDollars: P" + String.format("%.2f", trainer.getMoney()));
-        itemCountLabel = new JLabel("Items in bag (max 50): " + trainer.getItemCount());
+        itemCountLabel = new JLabel("Items in bag (max 99): " + trainer.getItemCount());
         uniqueCountLabel = new JLabel("Unique items in bag (max 10): " + trainer.getUniqueCount());
 
         moneyLabel.setForeground(Color.RED);
@@ -4270,6 +4267,204 @@ public class DexGui {
             e.printStackTrace();
         }
     }
+
+    private static void sellItem(Trainers trainer){
+        JFrame buyFrame = new JFrame();
+        buyFrame.setSize(1300, 700);
+        buyFrame.setUndecorated(true);
+        buyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ImageIcon bg = new ImageIcon("sellItem.png");
+
+        // Custom panel to paint background
+        JPanel backgroundPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel.setOpaque(false);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.setPreferredSize(new Dimension(680, 400)); // slightly smaller width
+        contentPanel.setMaximumSize(new Dimension(680, 400));
+
+        JTextArea itemsTextArea = new JTextArea(15, 60);
+        itemsTextArea.setEditable(false);
+        itemsTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        itemsTextArea.setOpaque(false);
+        itemsTextArea.setForeground(Color.BLACK);
+        itemsTextArea.setLineWrap(true);
+        itemsTextArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(itemsTextArea);
+        scrollPane.setPreferredSize(new Dimension(640, 320));
+        scrollPane.setMaximumSize(new Dimension(640, 320));
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> buyFrame.dispose());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setMaximumSize(new Dimension(680, 40));
+        buttonPanel.add(backButton);
+        StringBuilder itemsText = new StringBuilder();
+       itemsText.append("================================== ITEMS IN BAG ============================\n\n\n");
+       itemsText.append("============================== NON-EVOLUTION ITEMS ==========================\n\n");
+       
+Items[] bag = trainer.getBag();
+int count = trainer.getItemCount();
+boolean hasNonEvo = false;
+boolean hasEvo = false;
+
+// First, display NON-EVOLUTION ITEMS
+for (int i = 0; i < count; i++) {
+    Items item = bag[i];
+    if (item != null && !item.getitemCategory().equalsIgnoreCase("Evolution Stone")) {
+        hasNonEvo = true;
+        itemsText.append("    Item ID: ").append(item.getitemID()).append("\n");
+        itemsText.append("    Name: ").append(item.getitemName()).append("\n");
+        itemsText.append("    Category: ").append(item.getitemCategory()).append("\n");
+        itemsText.append("    Description: ").append(item.getitemDesc()).append("\n");
+        itemsText.append("    Effects: ").append(item.getitemEffects()).append("\n");
+        itemsText.append(String.format("    Selling Price: P %.2f\n", item.getsellingPrice()));
+        itemsText.append("\n-----------------------------------------------------------------------------\n\n");
+    }
+}
+        if (!hasNonEvo) {
+            itemsText.append("You have no non-evolution items in your bag.\n\n");
+        }
+
+         itemsText.append("============================== EVOLUTION STONES ============================\n\n");
+        // Then, display EVOLUTION STONES
+        for (int i = 0; i < count; i++) {
+            Items item = bag[i];
+            if (item != null && item.getitemCategory().equalsIgnoreCase("Evolution Stone")) {
+                hasEvo = true;
+                itemsText.append("    Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("    Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("    Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("    Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("    Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append(String.format("    Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append("\n-----------------------------------------------------------------------------\n\n");
+            }
+        }
+
+        if (!hasEvo) {
+            itemsText.append("You have no evolution stones in your bag.\n\n");
+        }
+
+        itemsTextArea.setText(itemsText.toString());
+
+        contentPanel.add(scrollPane);
+        contentPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(buttonPanel); 
+        // --- Add contentPanel directly to backgroundPanel ---
+        GridBagConstraints gbcContent = new GridBagConstraints();
+        gbcContent.gridx = 0; // Place it in the first column
+        gbcContent.gridy = 0; // Place it in the first row
+        gbcContent.insets = new Insets(230, 0, 0, 450); // Original position for contentPanel
+        gbcContent.anchor = GridBagConstraints.NORTHWEST; // Anchor to top-left of its grid cell
+        backgroundPanel.add(contentPanel, gbcContent);
+
+        // ========== SELL ITEM COMBO + BUTTON ==========
+
+// Build a Vector of items in trainer's bag for the JComboBox
+Vector<Items> itemsInBag = new Vector<>();
+for (int i = 0; i < trainer.getItemCount(); i++) {
+    Items item = trainer.getBag()[i];
+    if (item != null) itemsInBag.add(item);
 }
 
+JComboBox<Items> sellComboBox = new JComboBox<>(itemsInBag);
+sellComboBox.setRenderer(new DefaultListCellRenderer() {
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (value instanceof Items) {
+            Items item = (Items) value;
+            setText(item.getitemName() + " (P" + String.format("%.2f", item.getsellingPrice()) + ")");
+        } else if (value == null && index == -1) {
+            setText("Select item...");
+        }
+        return this;
+    }
+});
+sellComboBox.setSelectedIndex(-1);
+sellComboBox.setPreferredSize(new Dimension(200, 25));
 
+JButton sellButton = new JButton("Sell Selected");
+sellButton.addActionListener(e -> {
+    Items selected = (Items) sellComboBox.getSelectedItem();
+    if (selected == null) {
+        JOptionPane.showMessageDialog(buyFrame, "Please select an item to sell.", "No Item Selected", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    double sellPrice = selected.getsellingPrice();
+    trainer.setMoney(trainer.getMoney() + sellPrice);
+    trainer.removeItemFromBag(selected); // You must implement this method in your Trainers class
+    updateTrainerInFile(trainer); // Save updated trainer info
+
+    JOptionPane.showMessageDialog(buyFrame,
+        selected.getitemName() + " sold for P" + String.format("%.2f", sellPrice) + ".\nNew Balance: P" + String.format("%.2f", trainer.getMoney()),
+        "Item Sold", JOptionPane.INFORMATION_MESSAGE);
+
+    buyFrame.dispose();
+    sellItem(trainer); // Refresh the GUI to reflect the updated bag
+});
+
+// ========== TRAINER STATUS PANEL ==========
+JLabel moneyLabel = new JLabel("Available PokeDollars: P" + String.format("%.2f", trainer.getMoney()));
+JLabel itemCountLabel = new JLabel("Items in bag (max 99): " + trainer.getItemCount());
+JLabel uniqueCountLabel = new JLabel("Unique items in bag (max 10): " + trainer.getUniqueCount());
+
+moneyLabel.setForeground(Color.RED);
+itemCountLabel.setForeground(Color.RED);
+uniqueCountLabel.setForeground(Color.RED);
+
+moneyLabel.setFont(new Font("Arial", Font.BOLD, 14));
+itemCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+uniqueCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+JPanel statusPanel = new JPanel();
+statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
+statusPanel.setOpaque(false);
+statusPanel.setBorder(null);
+statusPanel.add(moneyLabel);
+statusPanel.add(Box.createVerticalStrut(10));
+statusPanel.add(itemCountLabel);
+statusPanel.add(Box.createVerticalStrut(10));
+statusPanel.add(uniqueCountLabel);
+
+// Position status panel on the right
+GridBagConstraints gbcStatus = new GridBagConstraints();
+gbcStatus.gridx = 0;
+gbcStatus.gridy = 0;
+gbcStatus.insets = new Insets(240, 700, 0, 0); // Adjust as needed
+gbcStatus.anchor = GridBagConstraints.NORTHWEST;
+backgroundPanel.add(statusPanel, gbcStatus);
+// Put combo + button in a horizontal panel
+JPanel sellPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+sellPanel.setOpaque(false);
+sellPanel.add(sellComboBox);
+sellPanel.add(sellButton);
+
+// Position panel on right side
+GridBagConstraints gbcSellPanel = new GridBagConstraints();
+gbcSellPanel.gridx = 0;
+gbcSellPanel.gridy = 0;
+gbcSellPanel.insets = new Insets(350, 690, 0, 0);  // Adjust position
+gbcSellPanel.anchor = GridBagConstraints.NORTHWEST;
+backgroundPanel.add(sellPanel, gbcSellPanel);
+
+        buyFrame.setContentPane(backgroundPanel);
+        buyFrame.setVisible(true);
+    }
+}

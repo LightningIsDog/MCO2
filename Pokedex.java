@@ -1129,26 +1129,30 @@ public class Pokedex {
         Scanner input = new Scanner(new File("pokedex.txt"));
         Scanner input2 = new Scanner(new File("moves.txt"));
         input2.useDelimiter("-");
-       availItems[0] = new Items("01", "HP Up", "Vitamin", "A nutritious drink for Pokemon", "+10 HP EVs",false,10000,5000);
-    availItems[1] = new Items("02", "Protein", "Vitamin", "A nutritious drink for Pokemon", "+10 Attack EVs",false,10000, 5000);
-    availItems[2] = new Items("03", "Iron", "Vitamin", "A nutritious drink for Pokemon", "+10 Defense EVs",false,10000, 5000);
-    availItems[3] = new Items("04", "Carbos", "Vitamin", "A nutritious drink for Pokemon", "+10 Speed EVs",false, 10000, 5000);
-    availItems[4] = new Items("05", "Rare Candy", "Leveling Item", "A candy that is packed with energy", "Increases level by 1",false,4800, 2400);
-    availItems[5] = new Items("06", "Health Feather", "Feather", "A feather that slightly increases HP", "+1 HP EV",false, 300, 150);
-    availItems[6] = new Items("07", "Muscle Feather", "Feather", "A feather that slightly increases Attack", "+1 Attack EV",false,300, 150);
-    availItems[7] = new Items("08", "Resist Feather", "Feather", "A feather that slightly increases Defense", "+1 Defense EV",false,300, 150);
-    availItems[8] = new Items("09", "Swift Feather", "Feather", "A feather that slightly increases Speed", "+1 Speed EV",false, 300, 150);
-    availItems[9] = new Items("10", "Zinc", "Vitamin", "A nutritious drink for Pokemon", "+10 Special Defense EVs",false, 10000, 5000);
-  evolutionItems[0] = new Items("01", "Fire Stone", "Evolution Stone", "A stone that radiates heat", "Evolves Pokemon like Vulpix, Growlithe, Eevee",true,3000, 1500);
-    evolutionItems[1] = new Items("02", "Water Stone", "Evolution Stone", "A stone with a blue watery appearance", "Evolves Pokemon like Poliwhirl, Shellder, Eevee",true,3000,1500);
-    evolutionItems[2] = new Items("03", "Thunder Stone", "Evolution Stone", "A stone that sparkles with electricity", "Evolves Pokemon like Pikachu, Eevee",true,3000,1500);
-    evolutionItems[3] = new Items("04", "Leaf Stone", "Evolution Stone", "A stone with a leaf pattern", "Evolves Pokemon like Gloom, Weepinbell, Exeggcute",true, 3000,1500);
-    evolutionItems[4] = new Items("05", "Moon Stone", "Evolution Stone", "A stone that glows faintly in the moonlight", "Evolves Pokemon like Nidorina, Clefairy, Jigglypuff, etc.",true,3000, 1500);
-    evolutionItems[5] = new Items("06", "Sun Stone", "Evolution Stone", "A stone that glows like the sun", "Evolves Pokemon like Gloom, Sunkern, Cottonee, etc.",true,3000,1500);
-    evolutionItems[6] = new Items("07", "Shiny Stone", "Evolution Stone", "A stone that sparkles brightly", "Evolves Pokemon like Togetic, Roselia, Minccino, etc.",true, 3000,1500);
-    evolutionItems[7] = new Items("08", "Dusk Stone", "Evolution Stone", "A dark stone that is ominous in appearance", "Evolves Pokemon like Murkrow, Misdreavus, Doublade, etc.",true,3000,1500);
-    evolutionItems[8] = new Items("09", "Dawn Stone", "Evolution Stone", "A stone that sparkles like the morning sky", "Evolves male Kirlia into Gallade, female Snorunt into Froslass",true,3000,1500);
-    evolutionItems[9] = new Items("10", "Ice Stone", "Evolution Stone", "A stone that is cold to the touch", "Evolves Pokemon like Alolan Vulpix, Galarian Darumaka, Eevee",true,3000,1500);
+        // Create ALL items with UNIQUE IDs. Their constructors will automatically add them to itemList.
+        new Items("01", "HP Up", "Vitamin", "A nutritious drink for Pokemon", "+10 HP EVs", false, 10000, 5000);
+        new Items("02", "Protein", "Vitamin", "A nutritious drink for Pokemon", "+10 Attack EVs", false, 10000, 5000);
+        new Items("03", "Iron", "Vitamin", "A nutritious drink for Pokemon", "+10 Defense EVs", false, 10000, 5000);
+        new Items("04", "Carbos", "Vitamin", "A nutritious drink for Pokemon", "+10 Speed EVs", false, 10000, 5000);
+        new Items("05", "Rare Candy", "Leveling Item", "A candy that is packed with energy", "Increases level by 1", false, 4800, 2400);
+        new Items("06", "Health Feather", "Feather", "A feather that slightly increases HP", "+1 HP EV", false, 300, 150);
+        new Items("07", "Muscle Feather", "Feather", "A feather that slightly increases Attack", "+1 Attack EV", false, 300, 150);
+        new Items("08", "Resist Feather", "Feather", "A feather that slightly increases Defense", "+1 Defense EV", false, 300, 150);
+        new Items("09", "Swift Feather", "Feather", "A feather that slightly increases Speed", "+1 Speed EV", false, 300, 150);
+        new Items("10", "Zinc", "Vitamin", "A nutritious drink for Pokemon", "+10 Special Defense EVs", false, 10000, 5000);
+
+        // Assign UNIQUE IDs to evolution stones to prevent conflicts with 01-10
+        new Items("11", "Fire Stone", "Evolution Stone", "A stone that radiates heat", "Evolves Pokemon like Vulpix, Growlithe, Eevee", true, 3000, 1500);
+        new Items("12", "Water Stone", "Evolution Stone", "A stone with a blue watery appearance", "Evolves Pokemon like Poliwhirl, Shellder, Eevee", true, 3000, 1500);
+        new Items("13", "Thunder Stone", "Evolution Stone", "A stone that sparkles with electricity", "Evolves Pokemon like Pikachu, Eevee", true, 3000, 1500);
+        new Items("14", "Leaf Stone", "Evolution Stone", "A stone with a leaf pattern", "Evolves Pokemon like Gloom, Weepinbell, Exeggcute", true, 3000, 1500);
+        new Items("15", "Moon Stone", "Evolution Stone", "A stone that glows faintly in the moonlight", "Evolves Pokemon like Nidorina, Clefairy, Jigglypuff, etc.", true, 3000, 1500);
+        new Items("16", "Sun Stone", "Evolution Stone", "A stone that glows like the sun", "Evolves Pokemon like Gloom, Sunkern, Cottonee, etc.", true, 3000, 1500);
+        new Items("17", "Shiny Stone", "Evolution Stone", "A stone that sparkles brightly", "Evolves Pokemon like Togetic, Roselia, Minccino, etc.", true, 3000, 1500);
+        new Items("18", "Dusk Stone", "Evolution Stone", "A dark stone that is ominous in appearance", "Evolves Pokemon like Murkrow, Misdreavus, Doublade, etc.", true, 3000, 1500);
+        new Items("19", "Dawn Stone", "Evolution Stone", "A stone that sparkles like the morning sky", "Evolves male Kirlia into Gallade, female Snorunt into Froslass", true, 3000, 1500);
+        new Items("20", "Ice Stone", "Evolution Stone", "A stone that is cold to the touch", "Evolves Pokemon like Alolan Vulpix, Galarian Darumaka, Eevee", true, 3000, 1500);
+
    while (input2.hasNext()) 
         {
             String Name = input2.next().trim();

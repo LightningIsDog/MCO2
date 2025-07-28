@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.ParseException; // Make sure this is imported
 import java.text.SimpleDateFormat; // <--- YOU NEED THIS IMPORT
 import java.util.Calendar; // <--- YOU NEED THIS IMPORT for java.util.Calendar
@@ -59,7 +62,7 @@ public class Trainers {
         this.lineupCount = 0;
         this.storageCount = 0;
 
-        this.bag = new Items[50]; // Maximum of 50 items
+        this.bag = new Items[99]; // Maximum of 50 items
         this.uniqueItems = new Items[10];
         this.uniqueCount = 0;
         this.itemCount = 0;
@@ -99,35 +102,35 @@ public class Trainers {
         this.storageCount = 0; // Fix here as well
 
         // Initialize item arrays
-        this.bag = new Items[50];
+        this.bag = new Items[99];
         this.uniqueItems = new Items[10];
         this.uniqueCount = 0;
         this.itemCount = 0;
 
-        // Populate the bag and uniqueItems arrays from the loaded item names
         if (itemNamesFromBag != null && !itemNamesFromBag.isEmpty()) {
-            Set<String> tempUniqueNames = new HashSet<>();
-            for (String itemName : itemNamesFromBag) {
-                if (this.itemCount < 50) {
-                    // *** THE FIX IS HERE ***
-                    Items loadedItem = Items.getItemByName(itemName); // CALL YOUR STATIC METHOD IN ITEMS CLASS
+    Set<String> tempUniqueNames = new HashSet<>();
+    for (String itemName : itemNamesFromBag) {
+        if (this.itemCount < 99) {
+            Items loadedItem = Items.getItemByName(itemName);
 
-                    if (loadedItem != null) {
-                        this.bag[this.itemCount] = loadedItem;
-                        this.itemCount++;
+            if (loadedItem != null) {
+                Items clonedItem = Items.cloneItem(loadedItem); // ✅ use cloneItem method
 
-                        if (tempUniqueNames.add(itemName)) {
-                            if (this.uniqueCount < 10) {
-                                this.uniqueItems[this.uniqueCount] = loadedItem;
-                                this.uniqueCount++;
-                            }
-                        }
-                    } else {
-                        System.err.println("Warning: Item '" + itemName + "' not found when loading trainer " + name + " (ID: " + ID + ").");
+                this.bag[this.itemCount] = clonedItem;
+                this.itemCount++;
+
+                if (tempUniqueNames.add(itemName)) {
+                    if (this.uniqueCount < 10) {
+                        this.uniqueItems[this.uniqueCount] = clonedItem;
+                        this.uniqueCount++;
                     }
                 }
+            } else {
+                System.err.println("Warning: Item '" + itemName + "' not found when loading trainer " + name + " (ID: " + ID + ").");
             }
         }
+    }
+}
 
         this.trainerNumber = trainerCount++;
     }
@@ -554,27 +557,28 @@ public class Trainers {
     }
 
     public String addItemToBag(Items item) {
-        if (itemCount >= 50) {
-            return "You cannot add more items. Bag is full (50/50).";
-        }
-
-        boolean isUnique = isItemUnique(item);
-        if (isUnique && uniqueCount >= 10) {
-            return "You cannot add more unique item types. Limit is 10.";
-        }
-
-        // Add item to bag
-        bag[itemCount] = item;
-        itemCount++;
-
-        // Add to unique items if it's new
-        if (isUnique) {
-            uniqueItems[uniqueCount] = item;
-            uniqueCount++;
-        }
-
-        return item.getitemName() + " was successfully added to your bag.";
+    if (itemCount >= 99) {
+        return "You cannot add more items. Bag is full (99/99).";
     }
+
+    boolean isUnique = isItemUnique(item);
+    if (isUnique && uniqueCount >= 10) {
+        return "You cannot add more unique item types. Limit is 10.";
+    }
+
+    // ✅ Use centralized clone method
+    Items copy = Items.cloneItem(item);
+
+    bag[itemCount] = copy;
+    itemCount++;
+
+    if (isUnique) {
+        uniqueItems[uniqueCount] = copy;
+        uniqueCount++;
+    }
+
+    return copy.getitemName() + " was successfully added to your bag.";
+}
 
     /**
      * Converts the current Trainer object into a string format suitable for saving to a file.
@@ -652,4 +656,44 @@ public class Trainers {
         }
     }
 
+       public void removeItemFromBag(Items itemToRemove) {
+    if (itemToRemove == null) return;
+
+    for (int i = 0; i < itemCount; i++) {
+        if (bag[i] != null && bag[i].getitemID().equals(itemToRemove.getitemID())) {
+            // Shift items left
+            for (int j = i; j < itemCount - 1; j++) {
+                bag[j] = bag[j + 1];
+            }
+            bag[itemCount - 1] = null;
+            itemCount--;
+
+            // Check if this item still exists in the bag
+            boolean stillExists = false;
+            for (int j = 0; j < itemCount; j++) {
+                if (bag[j] != null && bag[j].getitemID().equals(itemToRemove.getitemID())) {
+                    stillExists = true;
+                    break;
+                }
+            }
+
+            // If not found elsewhere, remove from uniqueItems
+            if (!stillExists) {
+                for (int j = 0; j < uniqueCount; j++) {
+                    if (uniqueItems[j] != null && uniqueItems[j].getitemID().equals(itemToRemove.getitemID())) {
+                        // Shift unique items left
+                        for (int k = j; k < uniqueCount - 1; k++) {
+                            uniqueItems[k] = uniqueItems[k + 1];
+                        }
+                        uniqueItems[uniqueCount - 1] = null;
+                        uniqueCount--;
+                        break;
+                    }
+                }
+            }
+
+            break; // only remove 1 instance
+        }
+    }
+}
 }
