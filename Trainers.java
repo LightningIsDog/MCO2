@@ -556,29 +556,42 @@ public class Trainers {
         return true; // New unique item
     }
 
-    public String addItemToBag(Items item) {
-        if (itemCount >= 50) {
-            return "You cannot add more items. Bag is full (50/50).";
-        }
-
-        boolean isUnique = isItemUnique(item);
-        if (isUnique && uniqueCount >= 10) {
-            return "You cannot add more unique item types. Limit is 10.";
-        }
-
-        // ✅ Use centralized clone method
-        Items copy = Items.cloneItem(item);
-
-        bag[itemCount] = copy;
-        itemCount++;
-
-        if (isUnique) {
-            uniqueItems[uniqueCount] = copy;
-            uniqueCount++;
-        }
-
-        return copy.getitemName() + " was successfully added to your bag.";
+   public String addItemToBag(Items item) {
+    if (itemCount >= 50) {
+        return "You cannot add more items. Bag is full (50/50).";
     }
+
+    // Check if item already exists in the bag
+    for (int i = 0; i < 50; i++) {
+        if (bag[i] != null && bag[i].getitemName().equals(item.getitemName())) {
+            bag[i].setQuantity(bag[i].getQuantity() + 1);
+            itemCount++; // ✅ increase total quantity
+            return item.getitemName() + " quantity increased to " + bag[i].getQuantity() + ".";
+        }
+    }
+
+    // Item is not in the bag — it is a new unique item
+    if (uniqueCount >= 10) {
+        return "You cannot add more unique item types. Limit is 10.";
+    }
+
+    Items copy = Items.cloneItem(item);
+    copy.setQuantity(1);
+
+    // Add to bag
+    for (int i = 0; i < 50; i++) {
+        if (bag[i] == null) {
+            bag[i] = copy;
+            break;
+        }
+    }
+
+    itemCount++;       // ✅ total quantity increases
+    uniqueItems[uniqueCount] = copy;
+    uniqueCount++;
+
+    return copy.getitemName() + " was successfully added to your bag.";
+}
 
     /**
      * Converts the current Trainer object into a string format suitable for saving to a file.
@@ -803,5 +816,14 @@ public class Trainers {
                 return;
             }
         }
+    }
+
+        public boolean hasItem(Items item) {
+        for (int i = 0; i < itemCount; i++) {
+            if (bag[i] != null && bag[i].getitemName().equals(item.getitemName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4257,7 +4257,8 @@ public class DexGui {
                 return;
             }
 
-            if (trainer.getItemCount() >= 50 || trainer.getUniqueCount() >= 10) { // Changed == to >= for safety
+            if (trainer.getItemCount() >= 50 || 
+   (trainer.isItemUnique(itemToBuy) && !trainer.hasItem(itemToBuy) && trainer.getUniqueCount() >= 10)) { // Changed == to >= for safety
                 JOptionPane.showMessageDialog(buyFrame,
                         "You cannot buy more items. You've reached one (or both) of the following limits:\n"
                                 + "Items in bag (max 50): " + trainer.getItemCount() + "\n"
@@ -4767,13 +4768,13 @@ backgroundPanel.add(sellPanel, gbcSellPanel);
                     }
                 }
             } else {
-                                // Use regular item (assume it's consumed immediately)
+                // Use regular item (assume it's consumed immediately)
                 String result = trainer.useItem(selectedItem, selectedPokemon);
 
-                // Set the used item as the held item (if not already holding one)
-                if (selectedPokemon.getHeldItem() == null) {
-                    selectedPokemon.giveHeldItem(selectedItem.getitemName());
-                }
+                // Always replace held item with the used one
+                String heldResult = selectedPokemon.giveHeldItem(selectedItem.getitemName());
+
+                JOptionPane.showMessageDialog(useFrame, result + "\n" + heldResult);
 
                 JOptionPane.showMessageDialog(useFrame, result);
 

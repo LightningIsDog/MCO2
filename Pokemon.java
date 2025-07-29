@@ -516,26 +516,29 @@ public class Pokemon
         System.out.println("\n ================================================================================================");
     }
 
-    /**
-     Gives a held item to the Pokémon if it is not already holding one.
-     @param itemName the name of the item to give
-     */
-    public void giveHeldItem(String itemName)
-    {
-        if (heldItem != null)
-        {
-            System.out.println(Name + " is already holding " + heldItem.getitemName());
-            return;
-        }
-        Items item = Items.getItemByName(itemName);
-        heldItem = item;
-        if (item == null)
-        {
-            System.out.println(itemName + " does not exist");
-            return;
-        }
-        System.out.println(Name + " is now holding " + item.getitemName());
+  /**
+ * Gives a held item to the Pokémon. If already holding one, it is replaced.
+ * @param itemName the name of the item to give
+ * @return message indicating the result
+ */
+public String giveHeldItem(String itemName) {
+    Items item = Items.getItemByName(itemName);
+
+    if (item == null) {
+        return itemName + " does not exist.";
     }
+
+    String message;
+
+    if (heldItem != null) {
+        message = Name + " replaced " + heldItem.getitemName() + " with " + item.getitemName() + ".";
+    } else {
+        message = Name + " is now holding " + item.getitemName() + ".";
+    }
+
+    heldItem = item;
+    return message;
+}
 
     /**
      Removes the held item from the Pokémon if it is holding one.
