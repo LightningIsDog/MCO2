@@ -108,29 +108,29 @@ public class Trainers {
         this.itemCount = 0;
 
         if (itemNamesFromBag != null && !itemNamesFromBag.isEmpty()) {
-    Set<String> tempUniqueNames = new HashSet<>();
-    for (String itemName : itemNamesFromBag) {
-        if (this.itemCount < 99) {
-            Items loadedItem = Items.getItemByName(itemName);
+            Set<String> tempUniqueNames = new HashSet<>();
+            for (String itemName : itemNamesFromBag) {
+                if (this.itemCount < 99) {
+                    Items loadedItem = Items.getItemByName(itemName);
 
-            if (loadedItem != null) {
-                Items clonedItem = Items.cloneItem(loadedItem); // ✅ use cloneItem method
+                    if (loadedItem != null) {
+                        Items clonedItem = Items.cloneItem(loadedItem); // ✅ use cloneItem method
 
-                this.bag[this.itemCount] = clonedItem;
-                this.itemCount++;
+                        this.bag[this.itemCount] = clonedItem;
+                        this.itemCount++;
 
-                if (tempUniqueNames.add(itemName)) {
-                    if (this.uniqueCount < 10) {
-                        this.uniqueItems[this.uniqueCount] = clonedItem;
-                        this.uniqueCount++;
+                        if (tempUniqueNames.add(itemName)) {
+                            if (this.uniqueCount < 10) {
+                                this.uniqueItems[this.uniqueCount] = clonedItem;
+                                this.uniqueCount++;
+                            }
+                        }
+                    } else {
+                        System.err.println("Warning: Item '" + itemName + "' not found when loading trainer " + name + " (ID: " + ID + ").");
                     }
                 }
-            } else {
-                System.err.println("Warning: Item '" + itemName + "' not found when loading trainer " + name + " (ID: " + ID + ").");
             }
         }
-    }
-}
 
         this.trainerNumber = trainerCount++;
     }
@@ -557,28 +557,28 @@ public class Trainers {
     }
 
     public String addItemToBag(Items item) {
-    if (itemCount >= 99) {
-        return "You cannot add more items. Bag is full (99/99).";
+        if (itemCount >= 99) {
+            return "You cannot add more items. Bag is full (99/99).";
+        }
+
+        boolean isUnique = isItemUnique(item);
+        if (isUnique && uniqueCount >= 10) {
+            return "You cannot add more unique item types. Limit is 10.";
+        }
+
+        // ✅ Use centralized clone method
+        Items copy = Items.cloneItem(item);
+
+        bag[itemCount] = copy;
+        itemCount++;
+
+        if (isUnique) {
+            uniqueItems[uniqueCount] = copy;
+            uniqueCount++;
+        }
+
+        return copy.getitemName() + " was successfully added to your bag.";
     }
-
-    boolean isUnique = isItemUnique(item);
-    if (isUnique && uniqueCount >= 10) {
-        return "You cannot add more unique item types. Limit is 10.";
-    }
-
-    // ✅ Use centralized clone method
-    Items copy = Items.cloneItem(item);
-
-    bag[itemCount] = copy;
-    itemCount++;
-
-    if (isUnique) {
-        uniqueItems[uniqueCount] = copy;
-        uniqueCount++;
-    }
-
-    return copy.getitemName() + " was successfully added to your bag.";
-}
 
     /**
      * Converts the current Trainer object into a string format suitable for saving to a file.
@@ -656,62 +656,152 @@ public class Trainers {
         }
     }
 
-       public void removeItemFromBag(Items itemToRemove) {
-    if (itemToRemove == null) return;
+    public void removeItemFromBag(Items itemToRemove) {
+        if (itemToRemove == null) return;
 
-    for (int i = 0; i < itemCount; i++) {
-        if (bag[i] != null && bag[i].getitemID().equals(itemToRemove.getitemID())) {
-            // Shift items left
-            for (int j = i; j < itemCount - 1; j++) {
-                bag[j] = bag[j + 1];
-            }
-            bag[itemCount - 1] = null;
-            itemCount--;
-
-            // Check if this item still exists in the bag
-            boolean stillExists = false;
-            for (int j = 0; j < itemCount; j++) {
-                if (bag[j] != null && bag[j].getitemID().equals(itemToRemove.getitemID())) {
-                    stillExists = true;
-                    break;
+        for (int i = 0; i < itemCount; i++) {
+            if (bag[i] != null && bag[i].getitemID().equals(itemToRemove.getitemID())) {
+                // Shift items left
+                for (int j = i; j < itemCount - 1; j++) {
+                    bag[j] = bag[j + 1];
                 }
-            }
+                bag[itemCount - 1] = null;
+                itemCount--;
 
-            // If not found elsewhere, remove from uniqueItems
-            if (!stillExists) {
-                for (int j = 0; j < uniqueCount; j++) {
-                    if (uniqueItems[j] != null && uniqueItems[j].getitemID().equals(itemToRemove.getitemID())) {
-                        // Shift unique items left
-                        for (int k = j; k < uniqueCount - 1; k++) {
-                            uniqueItems[k] = uniqueItems[k + 1];
-                        }
-                        uniqueItems[uniqueCount - 1] = null;
-                        uniqueCount--;
+                // Check if this item still exists in the bag
+                boolean stillExists = false;
+                for (int j = 0; j < itemCount; j++) {
+                    if (bag[j] != null && bag[j].getitemID().equals(itemToRemove.getitemID())) {
+                        stillExists = true;
                         break;
                     }
                 }
+
+                // If not found elsewhere, remove from uniqueItems
+                if (!stillExists) {
+                    for (int j = 0; j < uniqueCount; j++) {
+                        if (uniqueItems[j] != null && uniqueItems[j].getitemID().equals(itemToRemove.getitemID())) {
+                            // Shift unique items left
+                            for (int k = j; k < uniqueCount - 1; k++) {
+                                uniqueItems[k] = uniqueItems[k + 1];
+                            }
+                            uniqueItems[uniqueCount - 1] = null;
+                            uniqueCount--;
+                            break;
+                        }
+                    }
+                }
+
+                break; // only remove 1 instance
+            }
+        }
+    }
+    public String useItem(Items item, Pokemon pokemon) {
+        if (item == null || pokemon == null) {
+            return "Error: Invalid item or Pokémon selection.";
+        }
+
+        // Check if item exists in bag (by ID)
+        boolean itemFound = false;
+        for (int i = 0; i < itemCount; i++) {
+            if (bag[i] != null && bag[i].getitemID().equals(item.getitemID())) {
+                itemFound = true;
+                break;
+            }
+        }
+        if (!itemFound) {
+            return "Error: You don't have this item in your bag.";
+        }
+
+        // Handle different item categories
+        String itemCategory = item.getitemCategory();
+        String itemName = item.getitemName();
+        String result;
+
+        if (itemCategory.equals("Evolution Stone")) {
+            // Evolution stone logic
+            if (!pokemon.canEvolveWith(itemName)) {
+                return pokemon.getName() + " cannot evolve with " + itemName + "!";
             }
 
-            break; // only remove 1 instance
+            // Perform evolution
+            Pokemon evolvedForm = pokemon.evolveWithStone(itemName);
+            if (evolvedForm == null) {
+                return "Evolution failed for " + pokemon.getName() + "!";
+            }
+
+            // Replace the Pokémon in team/storage
+            replacePokemon(pokemon, evolvedForm);
+
+            // Remove one instance of the item
+            removeItemFromBag(item);
+
+            return pokemon.getName() + " evolved into " + evolvedForm.getName() + "!";
+
+        } else if (itemName.contains("Vitamin") || itemName.contains("Feather")) {
+            // Vitamin/Feather logic - stat boosting items
+            String stat = item.getitemEffects(); // Should return "HP", "Attack", etc.
+            int boostAmount = itemName.contains("Vitamin") ? 10 : 1; // Vitamins give +10, feathers +1
+
+            switch (stat) {
+                case "HP":
+                    pokemon.setHP(pokemon.getHP() + boostAmount);
+                    break;
+                case "Attack":
+                    pokemon.setAtk(pokemon.getAtk() + boostAmount);
+                    break;
+                case "Defense":
+                    pokemon.setDef(pokemon.getDef() + boostAmount);
+                    break;
+                case "Speed":
+                    pokemon.setSpd(pokemon.getSpd() + boostAmount);
+                    break;
+                default:
+                    return "Error: Unknown stat to boost!";
+            }
+
+            // Remove one instance of the item
+            removeItemFromBag(item);
+
+            return pokemon.getName() + "'s " + stat + " increased by " + boostAmount + "!";
+
+        } else if (itemName.equals("Rare Candy")) {
+            // Rare Candy logic - level up
+            if (pokemon.getBaseLevel() >= 100) {
+                return pokemon.getName() + " is already at maximum level!";
+            }
+
+            pokemon.levelUp();
+            removeItemFromBag(item);
+            return pokemon.getName() + " grew to level " + pokemon.getBaseLevel() + "!";
+
+        } else {
+            // Generic item usage
+            removeItemFromBag(item);
+            return "Used " + itemName + " on " + pokemon.getName() + ".";
         }
     }
-}
 
-public boolean hasPokemon(Pokemon p) {
-    // Check lineup
-    for (Pokemon teamMember : pokemonTeam) {
-        if (teamMember != null && teamMember.getPokedexNo() == p.getPokedexNo()) {
-            return true;
+    /**
+     * Helper method to replace a Pokémon with its evolved form in team/storage
+     * @param original The original Pokémon
+     * @param evolved The evolved Pokémon
+     */
+    private void replacePokemon(Pokemon original, Pokemon evolved) {
+        // Check team first
+        for (int i = 0; i < lineupCount; i++) {
+            if (pokemonTeam[i] != null && pokemonTeam[i].equals(original)) {
+                pokemonTeam[i] = evolved;
+                return;
+            }
+        }
+
+        // Check storage if not found in team
+        for (int i = 0; i < storageCount; i++) {
+            if (pokemonPC[i] != null && pokemonPC[i].equals(original)) {
+                pokemonPC[i] = evolved;
+                return;
+            }
         }
     }
-
-    // Check storage
-    for (Pokemon stored : pokemonPC) {
-        if (stored != null && stored.getPokedexNo() == p.getPokedexNo()) {
-            return true;
-        }
-    }
-
-    return false;
-}
 }

@@ -1702,105 +1702,88 @@ public class DexGui {
     }
 
     public static void Speed() {
-    JFrame pokFrame2 = new JFrame();
-    pokFrame2.setSize(1300, 700);
-    pokFrame2.setUndecorated(true);
-    pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame pokFrame2 = new JFrame();
+        pokFrame2.setSize(1300, 700);
+        pokFrame2.setUndecorated(true);
+        pokFrame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    ImageIcon pokBg = new ImageIcon("speed.png");
+        ImageIcon pokBg = new ImageIcon("speed.png");
 
-    JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-    };
-    backgroundPanel2.setOpaque(false);
+        JPanel backgroundPanel2 = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(pokBg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel2.setOpaque(false);
 
-    JPanel mainPanel = new JPanel();
-    mainPanel.setOpaque(false);
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-    JLabel promptLabel = new JLabel("Enter Speed Stats (1–2000):");
-    promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    promptLabel.setForeground(Color.BLACK);
-    promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel promptLabel = new JLabel("Enter Speed Stats (1–2000):");
+        promptLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        promptLabel.setForeground(Color.BLACK);
+        promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    JLabel promptLabel2 = new JLabel("Pokemon added successfully!");
-    promptLabel2.setFont(new Font("Arial", Font.BOLD, 18));
-    promptLabel2.setForeground(Color.GREEN);
-    promptLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
-    promptLabel2.setVisible(false); // Hidden initially
+        JLabel promptLabel2 = new JLabel("Pokemon added successfully!");
+        promptLabel2.setFont(new Font("Arial", Font.BOLD, 18));
+        promptLabel2.setForeground(Color.GREEN);
+        promptLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        promptLabel2.setVisible(false); // Hidden initially
+        pokemon[pokemonCount] = new Pokemon(tempPokemon.getPokedexNo(),tempPokemon.getName(),tempPokemon.getType1(),
+                tempPokemon.getType2(),1,tempPokemon.getFrom(),
+                tempPokemon.getTo(),tempPokemon.getEvoLevel(),tempPokemon.getHP(),tempPokemon.getAtk(),
+                tempPokemon.getDef(),tempPokemon.getSpd()); // Create a new Pokemon instance
+        pokemon[pokemonCount].teachMove("Tackle",false);
+        pokemon[pokemonCount].teachMove("Defend",false);
+        saveToFile(pokemon[pokemonCount]);
+        pokemonCount++; // Increment the count after adding a new Pokemon
 
-    // 🔙 Back button (initially hidden)
-    ButtonBg backButton = new ButtonBg("Back to Pokemon Management", new Dimension(500, 30), new Color(128, 128, 128));
-    backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    backButton.setVisible(false); // Hidden initially
-    backButton.addActionListener(e -> {
-        PokemonManagement(); // Return to management
-    });
+        // 🔙 Back button (initially hidden)
+        ButtonBg backButton = new ButtonBg("Back to Pokemon Management", new Dimension(500, 30), new Color(128, 128, 128));
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.setVisible(false); // Hidden initially
+        backButton.addActionListener(e -> {
+            PokemonManagement(); // Return to management
+        });
 
-    // 🟩 Input Panel
-    JPanel inputPanel = createValidatedIntInputField(
-        "Next", 1, 2000, level -> {
-            System.out.println("Speed received: " + level);
-            tempPokemon.setSpd(level);
+        // 🟩 Input Panel
+        JPanel inputPanel = createValidatedIntInputField(
+                "Next", 1, 2000, level -> {
+                    System.out.println("Speed received: " + level);
+                    tempPokemon.setSpd(level);
+                    promptLabel2.setVisible(true);
+                    backButton.setVisible(true); // Show back button
+                }
+        );
 
-            // ✅ Finalize and save the Pokemon only after Speed is entered
-            pokemon[pokemonCount] = new Pokemon(
-                tempPokemon.getPokedexNo(),
-                tempPokemon.getName(),
-                tempPokemon.getType1(),
-                tempPokemon.getType2(),
-                1,
-                tempPokemon.getFrom(),
-                tempPokemon.getTo(),
-                tempPokemon.getEvoLevel(),
-                tempPokemon.getHP(),
-                tempPokemon.getAtk(),
-                tempPokemon.getDef(),
-                tempPokemon.getSpd()
-            );
+        // 🧩 Add all to main panel
+        mainPanel.add(Box.createVerticalStrut(100));
+        mainPanel.add(promptLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(inputPanel);
+        mainPanel.add(Box.createVerticalStrut(15));
+        mainPanel.add(promptLabel2);
+        mainPanel.add(Box.createVerticalStrut(60));
+        mainPanel.add(backButton);
 
-            pokemon[pokemonCount].teachMove("Tackle", false);
-            pokemon[pokemonCount].teachMove("Defend", false);
-            saveToFile(pokemon[pokemonCount]);
-            pokemonCount++;
-            Pokedex.pokemon[Pokedex.pokemonCount] = pokemon[pokemonCount - 1]; // Access the Pokémon just saved
-            Pokedex.pokemonCount++;
+        // 🎨 Add to background
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(200, 0, 0, 0);
 
-            // 🎉 Feedback
-            promptLabel2.setVisible(true);
-            backButton.setVisible(true);
-        }
-    );
+        backgroundPanel2.add(mainPanel, gbc);
 
-    // 🧩 Add all to main panel
-    mainPanel.add(Box.createVerticalStrut(100));
-    mainPanel.add(promptLabel);
-    mainPanel.add(Box.createVerticalStrut(20));
-    mainPanel.add(inputPanel);
-    mainPanel.add(Box.createVerticalStrut(15));
-    mainPanel.add(promptLabel2);
-    mainPanel.add(Box.createVerticalStrut(60));
-    mainPanel.add(backButton);
-
-    // 🎨 Add to background
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.insets = new Insets(200, 0, 0, 0);
-
-    backgroundPanel2.add(mainPanel, gbc);
-
-    pokFrame2.setContentPane(backgroundPanel2);
-    pokFrame2.setLocationRelativeTo(null);
-    pokFrame2.setVisible(true);
-}
+        pokFrame2.setContentPane(backgroundPanel2);
+        pokFrame2.setLocationRelativeTo(null);
+        pokFrame2.setVisible(true);
+    }
 
     public static JLabel buildMoveLabel(Pokemon currentPokemon) {
         StringBuilder movesTextBuilder = new StringBuilder();
@@ -1835,6 +1818,7 @@ public class DexGui {
         return new JLabel(movesTextBuilder.toString());
     }
 
+    // may kulang pa
     public static void ViewPokemon() {
         JFrame frame = new JFrame("Pokédex Viewer");
         frame.setSize(900, 600);
@@ -1870,15 +1854,14 @@ public class DexGui {
                 // Create Pokémon object
                 Pokemon currentPokemon = new Pokemon(pokedexNo, name, type1, type2, baseLevel, from, to, evoLevel, hp, atk, def, spd);
 
-                        // 🔁 Copy moves from memory if Pokémon was added earlier
-            for (int i = 0; i < Pokedex.pokemonCount; i++) {
-                Pokemon original = Pokedex.pokemon[i];
-                if (original != null && original.getPokedexNo() == currentPokemon.getPokedexNo()) {
-                    currentPokemon.setMoves(original.getMoves());
-                    currentPokemon.setPMoves(original.getPMoves());
-                    break;
+                // 🔁 Copy moves if present in Pokedex.pokemon
+                if (pokedexNo <= Pokedex.pokemonCount) {
+                    Pokemon original = Pokedex.pokemon[pokedexNo - 1];
+                    if (original != null) {
+                        currentPokemon.setMoves(original.getMoves());
+                        currentPokemon.setPMoves(original.getPMoves());
+                    }
                 }
-            }
 
                 // 🔁 Use the exact layout logic from DisplayPokemonSearch()
                 JPanel pokemonCard = new JPanel();
@@ -2702,7 +2685,7 @@ public class DexGui {
         return null;
     }
 
-      private static void ManageTrainerProf() {
+    private static void ManageTrainerProf() {
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2864,7 +2847,7 @@ public class DexGui {
         pokFrame.setVisible(true);
     }
 
-   public static void ManageTrainerPok(Trainers trainer) {
+    public static void ManageTrainerPok(Trainers trainer) {
         JFrame pokFrame = new JFrame();
         pokFrame.setSize(1300, 700);
         pokFrame.setUndecorated(true);
@@ -2992,7 +2975,7 @@ public class DexGui {
                         BuyItem(trainer);
                         break;
                     case "USE ITEM":
-
+                        useItem(trainer);
                         break;
                     case "SELL ITEM":
                         sellItem(trainer);
@@ -3239,142 +3222,137 @@ public class DexGui {
         searchFrame.setVisible(true);
     }
     public static void showAddPokemonToTrainer(Trainers trainer, boolean addToLineup) {
-    JFrame frame = new JFrame("Add Pokémon to " + trainer.getName());
-    frame.setSize(800, 600);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame frame = new JFrame("Add Pokémon to " + trainer.getName());
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-    // Form Panel
-    JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        // Form Panel
+        JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
 
-    // Pokémon Selection
-    JLabel pokemonLabel = new JLabel("Select Pokémon:");
-    JComboBox<String> pokemonCombo = new JComboBox<>();
+        // Pokémon Selection
+        JLabel pokemonLabel = new JLabel("Select Pokémon:");
+        JComboBox<String> pokemonCombo = new JComboBox<>();
 
-    for (int i = 0; i < Pokedex.pokemonCount; i++) {
-        Pokemon p = Pokedex.pokemon[i];
-        if (p != null) {
-            pokemonCombo.addItem(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
-        }
-    }
-
-    // Team/PC Status
-    JLabel statusLabel = new JLabel();
-    if (addToLineup) {
-        statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
-    } else {
-        statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
-    }
-
-    formPanel.add(pokemonLabel);
-    formPanel.add(pokemonCombo);
-    formPanel.add(new JLabel("Status:"));
-    formPanel.add(statusLabel);
-
-    // Result Area
-    JTextArea resultArea = new JTextArea(10, 50);
-    resultArea.setEditable(false);
-    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    JScrollPane resultScroll = new JScrollPane(resultArea);
-    resultScroll.setPreferredSize(new Dimension(700, 200));
-
-    // Button Panel
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    JButton addButton = new JButton(addToLineup ? "Add to Team" : "Add to Storage");
-    JButton cancelButton = new JButton("Cancel");
-
-    addButton.addActionListener(e -> {
-        int selectedIndex = pokemonCombo.getSelectedIndex();
-
-        if (selectedIndex >= 0 && selectedIndex < Pokedex.pokemonCount) {
-            Pokemon selectedPokemon = Pokedex.pokemon[selectedIndex];
-
-            // Check if Pokémon already exists
-            boolean alreadyExists = false;
-            for (Pokemon p : trainer.getPokemonLineup()) {
-                if (p != null && p.getPokedexNo() == selectedPokemon.getPokedexNo()) {
-                    alreadyExists = true;
-                    break;
-                }
+        // Populate with available Pokémon from Pokedex
+        for (int i = 0; i < Pokedex.pokemonCount; i++) {
+            Pokemon p = Pokedex.pokemon[i];
+            if (p != null) {
+                pokemonCombo.addItem(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
             }
-            if (!alreadyExists) {
-                for (Pokemon p : trainer.getPokemonStorage()) {
-                    if (p != null && p.getPokedexNo() == selectedPokemon.getPokedexNo()) {
-                        alreadyExists = true;
-                        break;
+        }
+
+        // Level Input
+        JLabel levelLabel = new JLabel("Level:");
+        JSpinner levelSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+
+        // Nickname Input
+        JLabel nicknameLabel = new JLabel("Nickname (optional):");
+        JTextField nicknameField = new JTextField();
+
+        formPanel.add(pokemonLabel);
+        formPanel.add(pokemonCombo);
+        formPanel.add(levelLabel);
+        formPanel.add(levelSpinner);
+        formPanel.add(nicknameLabel);
+        formPanel.add(nicknameField);
+
+        // Team/PC Status
+        JLabel statusLabel = new JLabel();
+        if (addToLineup) {
+            statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
+        } else {
+            statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
+        }
+        formPanel.add(new JLabel("Status:"));
+        formPanel.add(statusLabel);
+
+        // Result Area
+        JTextArea resultArea = new JTextArea(10, 50);
+        resultArea.setEditable(false);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane resultScroll = new JScrollPane(resultArea);
+        resultScroll.setPreferredSize(new Dimension(700, 200));
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton addButton = new JButton(addToLineup ? "Add to Team" : "Add to Storage");
+        JButton cancelButton = new JButton("Cancel");
+
+        addButton.addActionListener(e -> {
+            int selectedIndex = pokemonCombo.getSelectedIndex();
+            int level = (int) levelSpinner.getValue();
+            String nickname = nicknameField.getText().trim();
+
+            if (selectedIndex >= 0 && selectedIndex < Pokedex.pokemonCount) {
+                Pokemon selectedPokemon = Pokedex.pokemon[selectedIndex];
+
+                // Create a new instance with the specified level
+                Pokemon newPokemon = new Pokemon(
+                        selectedPokemon.getPokedexNo(),
+                        selectedPokemon.getName(),
+                        selectedPokemon.getType1(),
+                        selectedPokemon.getType2(),
+                        level,
+                        selectedPokemon.getFrom(),
+                        selectedPokemon.getTo(),
+                        selectedPokemon.getEvoLevel(),
+                        selectedPokemon.getHP(),
+                        selectedPokemon.getAtk(),
+                        selectedPokemon.getDef(),
+                        selectedPokemon.getSpd()
+                );
+
+                // Set nickname if provided
+                //  if (!nickname.isEmpty()) {
+                //     newPokemon.setNickname(nickname);
+                // }
+
+                // Copy moves from the base Pokémon
+                for (int i = 0; i < selectedPokemon.getPMoves(); i++) {
+                    Moves move = selectedPokemon.getMoves()[i];
+                    if (move != null) {
+                        newPokemon.teachMove(move.getName(), false);
                     }
                 }
-            }
 
-            if (alreadyExists) {
-                resultArea.setText("❌ This Pokémon already exists in the trainer’s team or PC storage.");
-                return;
-            }
-
-            // Create a new instance using base level from selected Pokémon
-            Pokemon newPokemon = new Pokemon(
-                    selectedPokemon.getPokedexNo(),
-                    selectedPokemon.getName(),
-                    selectedPokemon.getType1(),
-                    selectedPokemon.getType2(),
-                    selectedPokemon.getBaseLevel(),
-                    selectedPokemon.getFrom(),
-                    selectedPokemon.getTo(),
-                    selectedPokemon.getEvoLevel(),
-                    selectedPokemon.getHP(),
-                    selectedPokemon.getAtk(),
-                    selectedPokemon.getDef(),
-                    selectedPokemon.getSpd()
-            );
-
-            // Always teach default moves
-            newPokemon.teachMove("Tackle", false);
-            newPokemon.teachMove("Defend", false);
-
-            // Copy other moves (skip duplicates)
-            for (int i = 0; i < selectedPokemon.getPMoves(); i++) {
-                Moves move = selectedPokemon.getMoves()[i];
-                if (move != null && !move.getName().equalsIgnoreCase("Tackle") && !move.getName().equalsIgnoreCase("Defend")) {
-                    newPokemon.teachMove(move.getName(), false);
+                String result;
+                if (addToLineup) {
+                    result = trainer.addPokemonToLineup(newPokemon);
+                } else {
+                    result = trainer.addPokemonToStorage(newPokemon);
                 }
+
+                resultArea.setText(result);
+
+                // Update status label
+                if (addToLineup) {
+                    statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
+                } else {
+                    statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
+                }
+
+                // Save trainer data
+                trainer.saveToFile();
             }
+        });
 
-            String result;
-            if (addToLineup) {
-                result = trainer.addPokemonToLineup(newPokemon);
-            } else {
-                result = trainer.addPokemonToStorage(newPokemon);
-            }
+        cancelButton.addActionListener(e -> frame.dispose());
 
-            resultArea.setText(result);
+        buttonPanel.add(addButton);
+        buttonPanel.add(cancelButton);
 
-            // Update status
-            if (addToLineup) {
-                statusLabel.setText("Team: " + Trainers.getLineupCount() + "/6");
-            } else {
-                statusLabel.setText("PC: " + Trainers.getStorageCount() + "/10");
-            }
+        // Layout
+        mainPanel.add(formPanel, BorderLayout.NORTH);
+        mainPanel.add(resultScroll, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-            trainer.saveToFile();
-        }
-    });
-
-    cancelButton.addActionListener(e -> frame.dispose());
-
-    buttonPanel.add(addButton);
-    buttonPanel.add(cancelButton);
-
-    mainPanel.add(formPanel, BorderLayout.NORTH);
-    mainPanel.add(resultScroll, BorderLayout.CENTER);
-    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-    frame.add(mainPanel);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-}
-
+        frame.add(mainPanel);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
     private static String getPokemonDetails(Pokemon p) {
         return String.format(
                 "Name: %s\nLevel: %d\nType: %s%s\nHP: %d\nAttack: %d\nDefense: %d\nSpeed: %d\n\nMoves:\n%s",
@@ -3398,28 +3376,20 @@ public class DexGui {
         );
     }
 
-   private static String getMovesAsString(Pokemon p) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < p.getPMoves(); i++) {
-        Moves m = p.getMoves()[i];
-        if (m != null) {
-            sb.append("- ").append(m.getName()).append(" (").append(m.getType1());
-            if (!m.getType2().equals("0") && !m.getType2().isEmpty()) {
-                sb.append("/").append(m.getType2());
+    private static String getMovesAsString(Pokemon p) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < p.getPMoves(); i++) {
+            Moves m = p.getMoves()[i];
+            if (m != null) {
+                sb.append("- ").append(m.getName()).append(" (").append(m.getType1());
+                if (!m.getType2().equals("0")) {
+                    sb.append("/").append(m.getType2());
+                }
+                sb.append(")\n");
             }
-            sb.append(")");
-
-            // Append machine (TM/HM) info if available
-            if (m.getMachine() != null && !m.getMachine().isEmpty()) {
-                sb.append(" [").append(m.getMachine()).append("]");
-            }
-
-            sb.append("\n");
         }
+        return sb.toString();
     }
-    return sb.toString();
-}
-
     public static void showSwitchPokemon(Trainers trainer) {
         JFrame frame = new JFrame("Switch Pokémon - " + trainer.getName());
         frame.setSize(900, 600);
@@ -3731,7 +3701,7 @@ public class DexGui {
             return this;
         }
     }
-     public static void showTeachMove(Trainers trainer) {
+    public static void showTeachMove(Trainers trainer) {
         JFrame frame = new JFrame("Teach Moves");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -3739,11 +3709,12 @@ public class DexGui {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Pokémon selection - now with custom renderer
         JPanel pokemonPanel = new JPanel(new FlowLayout());
         JLabel pokemonLabel = new JLabel("Select Pokémon:");
         JComboBox<Pokemon> pokemonCombo = new JComboBox<>();
 
-        // Custom renderer for Pokémon names
+        // Set custom renderer to show Pokémon names
         pokemonCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -3751,113 +3722,91 @@ public class DexGui {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof Pokemon) {
                     Pokemon p = (Pokemon) value;
-                    String types = p.getType1();
-                    if (!p.getType2().equals("0")) { // Assuming "0" means no second type
-                        types += "/" + p.getType2();
-                    }
-                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + " | " + types + ")");
+                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
                 }
                 return this;
             }
         });
 
-        // Only add lineup Pokémon
+        // Populate with trainer's Pokémon
         for (int i = 0; i < trainer.getLineupCount(); i++) {
-            Pokemon p = trainer.getPokemonFromLineup(i);
-            if (p != null) {
-                pokemonCombo.addItem(p);
-            }
+            pokemonCombo.addItem(trainer.getPokemonFromLineup(i));
+        }
+        for (int i = 0; i < trainer.getStorageCount(); i++) {
+            pokemonCombo.addItem(trainer.getPokemonFromStorage(i));
         }
 
-        JPanel moveSelectionPanel = new JPanel(new FlowLayout()); // Changed name from movePanel to be more descriptive
+        // Move selection
+        JPanel movePanel = new JPanel(new FlowLayout());
         JLabel moveLabel = new JLabel("Select Move:");
         JComboBox<String> moveCombo = new JComboBox<>();
 
-        // Add a text area to display selected Pokémon's types and current moves
-        JTextArea pokemonInfoArea = new JTextArea(6, 30); // Increased rows to show types + moves
-        pokemonInfoArea.setEditable(false);
-        pokemonInfoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        pokemonInfoArea.setBorder(BorderFactory.createTitledBorder("Pokémon Info & Current Moves"));
+        // Options
+        JCheckBox overwriteCheck = new JCheckBox("Overwrite last move if full");
 
+        // Current moves display
+        JTextArea currentMovesArea = new JTextArea(5, 30);
+        currentMovesArea.setEditable(false);
 
-        // Update current moves and Pokémon types when Pokémon changes
+        // Update current moves when Pokémon changes
         pokemonCombo.addActionListener(e -> {
             Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
             if (selected != null) {
-                StringBuilder info = new StringBuilder();
-                info.append("Name: ").append(selected.getName()).append("\n");
-                info.append("Level: ").append(selected.getBaseLevel()).append("\n");
-                String types = selected.getType1();
-                if (!selected.getType2().equals("0")) {
-                    types += "/" + selected.getType2();
-                }
-                info.append("Type(s): ").append(types).append("\n\n");
-                info.append("Known Moves:\n");
-                info.append(String.join("\n", selected.getKnownMoves()));
-                pokemonInfoArea.setText(info.toString());
-            } else {
-                pokemonInfoArea.setText(""); // Clear if no Pokémon is selected
+                currentMovesArea.setText(String.join("\n", selected.getKnownMoves()));
             }
         });
 
-        // Populate move list with compatible moves and their types/classification
-        // This listener must be AFTER the initial setup of pokemonCombo, and
-        // potentially AFTER the listener that updates pokemonInfoArea,
-        // so that pokemonCombo.getSelectedItem() is correctly initialized.
+        // Populate moves combo when Pokémon is selected
         pokemonCombo.addActionListener(e -> {
             moveCombo.removeAllItems();
-            Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
-            if (selected != null) {
+            Pokemon selectedPokemon = (Pokemon) pokemonCombo.getSelectedItem();
+            if (selectedPokemon != null) {
                 for (Moves move : Moves.moveList) {
                     if (move != null) {
-                        boolean isNormal = move.getType1().equalsIgnoreCase("Normal");
-                        boolean matchType1 = move.getType1().equalsIgnoreCase(selected.getType1()) ||
-                                (!selected.getType2().equals("0") && move.getType1().equalsIgnoreCase(selected.getType2()));
-                        boolean matchType2 = (!move.getType2().equals("0") &&
-                                (move.getType2().equalsIgnoreCase(selected.getType1()) ||
-                                 (!selected.getType2().equals("0") && move.getType2().equalsIgnoreCase(selected.getType2()))));
-
-                        if (isNormal || matchType1 || matchType2) {
-                            // Display move name, type, and classification
-                            String moveDisplayName = String.format("%s (%s | %s)",
-                                move.getName(),
-                                move.getType1() + (move.getType2().equals("0") ? "" : "/" + move.getType2()),
-                                move.getMachine()); // Assuming getClassification() exists
-                            moveCombo.addItem(moveDisplayName);
+                        // Only show moves that match the Pokémon's type
+                        if (move.getType1().equalsIgnoreCase(selectedPokemon.getType1()) ||
+                                (!selectedPokemon.getType2().equals("0") &&
+                                        move.getType1().equalsIgnoreCase(selectedPokemon.getType2())) ||
+                                (!move.getType2().equals("0") &&
+                                        move.getType2().equalsIgnoreCase(selectedPokemon.getType1())) ||
+                                (!selectedPokemon.getType2().equals("0") && !move.getType2().equals("0") &&
+                                        move.getType2().equalsIgnoreCase(selectedPokemon.getType2()))) {
+                            moveCombo.addItem(move.getName());
                         }
                     }
                 }
             }
         });
 
+        // Teach button
         JButton teachButton = new JButton("Teach Move");
         teachButton.addActionListener(e -> {
             Pokemon pokemon = (Pokemon) pokemonCombo.getSelectedItem();
-            String selectedMoveDisplay = (String) moveCombo.getSelectedItem(); // Get the display string
+            String moveName = (String) moveCombo.getSelectedItem();
+            boolean overwrite = overwriteCheck.isSelected();
 
-            if (pokemon == null || selectedMoveDisplay == null) {
+            if (pokemon == null || moveName == null) {
                 JOptionPane.showMessageDialog(frame, "Please select both a Pokémon and a move!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Extract the actual move name from the display string (e.g., "Tackle (Normal | Physical)" -> "Tackle")
-            String moveName = selectedMoveDisplay.split(" \\(")[0];
-
+            // Get the full move object
             Moves moveToTeach = Moves.getMoveByName(moveName);
             if (moveToTeach == null) {
                 JOptionPane.showMessageDialog(frame, "Invalid move selected!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Compatibility check (this logic remains the same as it's correct)
-            boolean isNormal = moveToTeach.getType1().equalsIgnoreCase("Normal");
-            boolean matchType1 = moveToTeach.getType1().equalsIgnoreCase(pokemon.getType1()) ||
-                    (!pokemon.getType2().equals("0") && moveToTeach.getType1().equalsIgnoreCase(pokemon.getType2()));
-            boolean matchType2 = (!moveToTeach.getType2().equals("0") &&
-                    (moveToTeach.getType2().equalsIgnoreCase(pokemon.getType1()) ||
-                     (!pokemon.getType2().equals("0") && moveToTeach.getType2().equalsIgnoreCase(pokemon.getType2()))));
+            // Check type compatibility
+            boolean typeMatch = moveToTeach.getType1().equalsIgnoreCase(pokemon.getType1()) ||
+                    (!pokemon.getType2().equals("0") &&
+                            moveToTeach.getType1().equalsIgnoreCase(pokemon.getType2())) ||
+                    (!moveToTeach.getType2().equals("0") &&
+                            moveToTeach.getType2().equalsIgnoreCase(pokemon.getType1())) ||
+                    (!pokemon.getType2().equals("0") && !moveToTeach.getType2().equals("0") &&
+                            moveToTeach.getType2().equalsIgnoreCase(pokemon.getType2()));
 
-            if (!(isNormal || matchType1 || matchType2)) {
+            if (!typeMatch) {
                 JOptionPane.showMessageDialog(frame,
                         "Cannot teach this move!\n" +
                                 pokemon.getName() + " is " + pokemon.getType1() +
@@ -3866,75 +3815,49 @@ public class DexGui {
                                 moveToTeach.getName() + " is " + moveToTeach.getType1() +
                                 (moveToTeach.getType2().equals("0") ? "" : "/" + moveToTeach.getType2()) +
                                 " type\n" +
-                                "Pokémon can only learn moves that match their type(s) or are Normal type.",
+                                "Pokémon can only learn moves that match their type(s).",
                         "Type Mismatch", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // --- REMOVED OVERWRITE CHECK AND LOGIC ---
-            // If the Pokémon already knows 4 moves, the teachMove method should handle it
-            // by returning false (if no space) or indicating that an HM cannot be overwritten.
-
-            if (pokemon.teachMove(moveName, false)) { // Always pass false for overwrite
-                // Update the info area after teaching
-                StringBuilder info = new StringBuilder();
-                info.append("Name: ").append(pokemon.getName()).append("\n");
-                info.append("Level: ").append(pokemon.getBaseLevel()).append("\n");
-                String types = pokemon.getType1();
-                if (!pokemon.getType2().equals("0")) {
-                    types += "/" + pokemon.getType2();
-                }
-                info.append("Type(s): ").append(types).append("\n\n");
-                info.append("Known Moves:\n");
-                info.append(String.join("\n", pokemon.getKnownMoves()));
-                pokemonInfoArea.setText(info.toString());
-
+            if (pokemon.teachMove(moveName, overwrite)) {
+                currentMovesArea.setText(String.join("\n", pokemon.getKnownMoves()));
                 JOptionPane.showMessageDialog(frame,
                         moveName + " was successfully taught to " + pokemon.getName() + "!",
                         "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                // Save changes to trainer data
+                // Update trainer data in file
                 trainer.saveToFile();
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Failed to teach move!\n" +
                                 "Possible reasons:\n" +
-                                "- Already knows this move\n" +
-                                "- No space (max 4 moves) - use 'Unlearn Move' first!\n" +
-                                "- Cannot overwrite HM move", // Removed overwrite not enabled
+                                "- Pokémon already knows this move\n" +
+                                "- No empty move slots and overwrite not checked",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Layout setup
+        // Layout
         pokemonPanel.add(pokemonLabel);
         pokemonPanel.add(pokemonCombo);
 
-        moveSelectionPanel.add(moveLabel);
-        moveSelectionPanel.add(moveCombo);
-        // Removed overwriteCheck and overwriteButton
+        movePanel.add(moveLabel);
+        movePanel.add(moveCombo);
+        movePanel.add(overwriteCheck);
 
         JPanel topPanel = new JPanel(new GridLayout(2, 1));
         topPanel.add(pokemonPanel);
-        topPanel.add(moveSelectionPanel); // Use the renamed panel
+        topPanel.add(movePanel);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(new JScrollPane(pokemonInfoArea), BorderLayout.CENTER); // Use the new info area
+        mainPanel.add(new JScrollPane(currentMovesArea), BorderLayout.CENTER);
         mainPanel.add(teachButton, BorderLayout.SOUTH);
 
         frame.add(mainPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-        // Manually trigger the action listener for initial display
-        // after all components are added and visible
-        if (pokemonCombo.getSelectedItem() != null) {
-             pokemonCombo.setSelectedItem(pokemonCombo.getSelectedItem()); // This triggers the listener
-        } else if (pokemonCombo.getItemCount() > 0) {
-            pokemonCombo.setSelectedIndex(0); // Select first if available
-        }
     }
-
     public static void showUnlearnMove(Trainers trainer) {
         JFrame frame = new JFrame("Unlearn Moves");
         frame.setSize(800, 600);
@@ -3943,12 +3866,12 @@ public class DexGui {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Pokémon selection - now with custom renderer for types
+        // Pokémon selection - now with custom renderer
         JPanel pokemonPanel = new JPanel(new FlowLayout());
         JLabel pokemonLabel = new JLabel("Select Pokémon:");
         JComboBox<Pokemon> pokemonCombo = new JComboBox<>();
 
-        // Set custom renderer to show Pokémon name, level, AND types
+        // Set custom renderer to show Pokémon names
         pokemonCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -3956,21 +3879,18 @@ public class DexGui {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof Pokemon) {
                     Pokemon p = (Pokemon) value;
-                    String types = p.getType1();
-                    if (!p.getType2().equals("0")) { // Assuming "0" means no second type
-                        types += "/" + p.getType2();
-                    }
-                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + " | " + types + ")");
+                    setText(p.getName() + " (Lv. " + p.getBaseLevel() + ")");
                 }
                 return this;
             }
         });
 
+        // Populate with trainer's Pokémon
         for (int i = 0; i < trainer.getLineupCount(); i++) {
-            Pokemon p = trainer.getPokemonFromLineup(i);
-            if (p != null) {
-                pokemonCombo.addItem(p);
-            }
+            pokemonCombo.addItem(trainer.getPokemonFromLineup(i));
+        }
+        for (int i = 0; i < trainer.getStorageCount(); i++) {
+            pokemonCombo.addItem(trainer.getPokemonFromStorage(i));
         }
 
         // Move selection
@@ -3978,53 +3898,26 @@ public class DexGui {
         JLabel moveLabel = new JLabel("Select Move to Unlearn:");
         JComboBox<String> moveCombo = new JComboBox<>();
 
-        // Current moves display - now also includes Pokémon's type info
-        JTextArea pokemonInfoArea = new JTextArea(6, 30); // Increased rows for more info
-        pokemonInfoArea.setEditable(false);
-        pokemonInfoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        pokemonInfoArea.setBorder(BorderFactory.createTitledBorder("Pokémon Info & Known Moves"));
+        // Current moves display
+        JTextArea currentMovesArea = new JTextArea(5, 30);
+        currentMovesArea.setEditable(false);
 
-        // Update Pokémon info and populate unlearnable moves when Pokémon changes
+        // Update moves when Pokémon changes
         pokemonCombo.addActionListener(e -> {
-            moveCombo.removeAllItems(); // Clear previous moves
+            moveCombo.removeAllItems();
             Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
             if (selected != null) {
-                // Update Pokémon info area
-                StringBuilder info = new StringBuilder();
-                info.append("Name: ").append(selected.getName()).append("\n");
-                info.append("Level: ").append(selected.getBaseLevel()).append("\n");
-                String types = selected.getType1();
-                if (!selected.getType2().equals("0")) {
-                    types += "/" + selected.getType2();
-                }
-                info.append("Type(s): ").append(types).append("\n\n");
-                info.append("Known Moves:\n");
-                pokemonInfoArea.setText(info.toString() + String.join("\n", selected.getKnownMoves()));
-
+                // Get all known moves
+                String[] knownMoves = selected.getKnownMoves();
+                currentMovesArea.setText(String.join("\n", knownMoves));
 
                 // Populate move combo (excluding HM moves)
-                for (String moveName : selected.getKnownMoves()) { // Iterate directly from known moves
+                for (String moveName : knownMoves) {
                     Moves move = Moves.getMoveByName(moveName);
-                    if (move != null && !move.getMachine().equalsIgnoreCase("HM")) { // Check for HM property
-                        // Format: MoveName (Type | Classification)
-                        String moveDisplayName = String.format("%s (%s | %s)",
-                            move.getName(),
-                            move.getType1() + (move.getType2().equals("0") ? "" : "/" + move.getType2()),
-                            move.getMachine()); // Assuming getClassification() exists
-                        moveCombo.addItem(moveDisplayName);
+                    if (move != null && !move.getMachine().equalsIgnoreCase("HM")) {
+                        moveCombo.addItem(moveName);
                     }
                 }
-                if (moveCombo.getItemCount() == 0 && selected.getKnownMoves().length > 0) {
-                     // If a Pokemon has moves but none are unlearnable (e.g., all are HMs)
-                     moveCombo.addItem("No unlearnable moves");
-                     moveCombo.setEnabled(false); // Disable selection
-                     // Potentially disable the unlearn button too
-                } else {
-                    moveCombo.setEnabled(true);
-                }
-            } else {
-                pokemonInfoArea.setText(""); // Clear if no Pokémon is selected
-                moveCombo.removeAllItems();
             }
         });
 
@@ -4032,59 +3925,37 @@ public class DexGui {
         JButton unlearnButton = new JButton("Unlearn Move");
         unlearnButton.addActionListener(e -> {
             Pokemon pokemon = (Pokemon) pokemonCombo.getSelectedItem();
-            String selectedMoveDisplay = (String) moveCombo.getSelectedItem();
+            String moveName = (String) moveCombo.getSelectedItem();
 
-            if (pokemon == null || selectedMoveDisplay == null || selectedMoveDisplay.equals("No unlearnable moves")) {
-                JOptionPane.showMessageDialog(frame, "Please select a Pokémon and a valid move to unlearn!", "Error", JOptionPane.ERROR_MESSAGE);
+            if (pokemon == null || moveName == null) {
+                JOptionPane.showMessageDialog(frame, "Please select both a Pokémon and a move!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Extract the actual move name from the display string
-            String moveName = selectedMoveDisplay.split(" \\(")[0];
-
-            // Re-check if move is an HM (redundant if combo is filtered, but good for robustness)
+            // Check if move is an HM
             Moves move = Moves.getMoveByName(moveName);
             if (move != null && move.getMachine().equalsIgnoreCase("HM")) {
                 JOptionPane.showMessageDialog(frame,
                         "Cannot unlearn HM moves!\n" +
-                        moveName + " is an HM move and cannot be forgotten.",
+                                moveName + " is an HM move and cannot be forgotten.",
                         "HM Move Protection", JOptionPane.ERROR_MESSAGE);
-                return; // Should not be reached if combo is filtered correctly
+                return;
             }
 
             if (pokemon.unlearnMove(moveName)) {
-                // Refresh both the info area and the move combo
-                pokemonInfoArea.setText(""); // Clear before repopulating
-                moveCombo.removeAllItems(); // Clear before repopulating
-
-                StringBuilder info = new StringBuilder();
-                info.append("Name: ").append(pokemon.getName()).append("\n");
-                info.append("Level: ").append(pokemon.getBaseLevel()).append("\n");
-                String types = pokemon.getType1();
-                if (!pokemon.getType2().equals("0")) {
-                    types += "/" + pokemon.getType2();
-                }
-                info.append("Type(s): ").append(types).append("\n\n");
-                info.append("Known Moves:\n");
-                pokemonInfoArea.setText(info.toString() + String.join("\n", pokemon.getKnownMoves()));
-
-
-                // Re-populate move combo with updated list (excluding HMs)
-                for (String updatedMoveName : pokemon.getKnownMoves()) {
-                    Moves m = Moves.getMoveByName(updatedMoveName);
-                    if (m != null && !m.getMachine().equalsIgnoreCase("HM")) {
-                        String updatedMoveDisplay = String.format("%s (%s | %s)",
-                            m.getName(),
-                            m.getType1() + (m.getType2().equals("0") ? "" : "/" + m.getType2()),
-                            m.getMachine());
-                        moveCombo.addItem(updatedMoveDisplay);
+                // Refresh move combo
+                moveCombo.removeAllItems();
+                Pokemon selected = (Pokemon) pokemonCombo.getSelectedItem();
+                if (selected != null) {
+                    // Re-populate with updated moves (excluding HMs)
+                    for (String updatedMove : selected.getKnownMoves()) {
+                        Moves m = Moves.getMoveByName(updatedMove);
+                        if (m != null && !m.getMachine().equalsIgnoreCase("HM")) {
+                            moveCombo.addItem(updatedMove);
+                        }
                     }
+                    currentMovesArea.setText(String.join("\n", selected.getKnownMoves()));
                 }
-                if (moveCombo.getItemCount() == 0 && pokemon.getKnownMoves().length > 0) {
-                     moveCombo.addItem("No unlearnable moves");
-                     moveCombo.setEnabled(false);
-                }
-
 
                 JOptionPane.showMessageDialog(frame,
                         moveName + " was successfully unlearned!",
@@ -4095,9 +3966,9 @@ public class DexGui {
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Failed to unlearn move!\n" +
-                        "Possible reasons:\n" +
-                        "- Pokémon must keep at least 1 move (cannot have 0 moves)\n" +
-                        "- Move is an HM and cannot be forgotten",
+                                "Possible reasons:\n" +
+                                "- Pokémon must keep at least 1 move\n" +
+                                "- Move is an HM and cannot be forgotten",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -4114,21 +3985,204 @@ public class DexGui {
         topPanel.add(movePanel);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(new JScrollPane(pokemonInfoArea), BorderLayout.CENTER);
+        mainPanel.add(new JScrollPane(currentMovesArea), BorderLayout.CENTER);
         mainPanel.add(unlearnButton, BorderLayout.SOUTH);
 
         frame.add(mainPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-        // Manually trigger the action listener for initial display
-        if (pokemonCombo.getSelectedItem() != null) {
-            pokemonCombo.setSelectedItem(pokemonCombo.getSelectedItem()); // This triggers the listener
-        } else if (pokemonCombo.getItemCount() > 0) {
-            pokemonCombo.setSelectedIndex(0); // Select first if available
-        }
     }
-    
+    public static void useItem(Trainers trainer) {
+        JFrame useFrame = new JFrame("Use Item");
+        useFrame.setSize(800, 600);
+        useFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        // Create tabbed pane for Pokémon selection (team vs storage)
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // Panel for team Pokémon
+        JPanel teamPanel = new JPanel(new BorderLayout());
+        DefaultListModel<Pokemon> teamModel = new DefaultListModel<>();
+        for (int i = 0; i < trainer.getLineupCount(); i++) {
+            teamModel.addElement(trainer.getPokemonFromLineup(i));
+        }
+        JList<Pokemon> teamList = new JList<>(teamModel);
+        teamList.setCellRenderer(new PokemonListRenderer());
+        teamPanel.add(new JScrollPane(teamList), BorderLayout.CENTER);
+        teamPanel.add(new JLabel("Team Pokémon"), BorderLayout.NORTH);
+
+        // Panel for storage Pokémon
+        JPanel storagePanel = new JPanel(new BorderLayout());
+        DefaultListModel<Pokemon> storageModel = new DefaultListModel<>();
+        for (int i = 0; i < trainer.getStorageCount(); i++) {
+            storageModel.addElement(trainer.getPokemonFromStorage(i));
+        }
+        JList<Pokemon> storageList = new JList<>(storageModel);
+        storageList.setCellRenderer(new PokemonListRenderer());
+        storagePanel.add(new JScrollPane(storageList), BorderLayout.CENTER);
+        storagePanel.add(new JLabel("Storage Pokémon"), BorderLayout.NORTH);
+
+        tabbedPane.addTab("Team", teamPanel);
+        tabbedPane.addTab("Storage", storagePanel);
+
+        // Item selection panel
+        JPanel itemPanel = new JPanel(new BorderLayout());
+        DefaultListModel<Items> itemModel = new DefaultListModel<>();
+        for (Items item : trainer.getBag()) {
+            if (item != null) {
+                itemModel.addElement(item);
+            }
+        }
+        JList<Items> itemList = new JList<>(itemModel);
+        itemList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                          boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Items) {
+                    Items item = (Items) value;
+                    setText(item.getitemName() + " (x" + item.getQuantity() + ")");
+                }
+                return this;
+            }
+        });
+        itemPanel.add(new JScrollPane(itemList), BorderLayout.CENTER);
+        itemPanel.add(new JLabel("Your Items"), BorderLayout.NORTH);
+
+        // Info display area
+        JTextArea infoArea = new JTextArea(8, 30);
+        infoArea.setEditable(false);
+        infoArea.setLineWrap(true);
+        infoArea.setWrapStyleWord(true);
+
+        // Selection listeners
+        ListSelectionListener pokemonListener = e -> {
+            if (!e.getValueIsAdjusting()) {
+                JList<Pokemon> source = (JList<Pokemon>) e.getSource();
+                Pokemon selected = source.getSelectedValue();
+                if (selected != null) {
+                    infoArea.setText(getPokemonInfo(selected));
+                }
+            }
+        };
+
+        ListSelectionListener itemListener = e -> {
+            if (!e.getValueIsAdjusting()) {
+                Items selected = itemList.getSelectedValue();
+                if (selected != null) {
+                    infoArea.setText("Item: " + selected.getitemName() + "\n" +
+                            "Category: " + selected.getitemCategory() + "\n" +
+                            "Effect: " + selected.getitemEffects() + "\n\n" +
+                            "Select a Pokémon to use this item on.");
+                }
+            }
+        };
+
+        teamList.addListSelectionListener(pokemonListener);
+        storageList.addListSelectionListener(pokemonListener);
+        itemList.addListSelectionListener(itemListener);
+
+        // Use button
+        JButton useButton = new JButton("Use Item");
+        useButton.addActionListener(e -> {
+            Items selectedItem = itemList.getSelectedValue();
+            Pokemon selectedPokemon = null;
+
+            // Get selected Pokémon based on active tab
+            if (tabbedPane.getSelectedIndex() == 0) { // Team tab
+                selectedPokemon = teamList.getSelectedValue();
+            } else { // Storage tab
+                selectedPokemon = storageList.getSelectedValue();
+            }
+
+            if (selectedItem == null || selectedPokemon == null) {
+                JOptionPane.showMessageDialog(useFrame,
+                        "Please select both an item and a Pokémon!",
+                        "Selection Required", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Check if item can be used on this Pokémon
+            if (selectedItem.getitemCategory().equals("Evolution Stone")) {
+                // Check if Pokémon can evolve with this stone
+                if (!selectedPokemon.canEvolveWith(selectedItem.getitemName())) {
+                    JOptionPane.showMessageDialog(useFrame,
+                            selectedPokemon.getName() + " cannot evolve with " + selectedItem.getitemName(),
+                            "Invalid Use", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                // Use evolution stone
+                int response = JOptionPane.showConfirmDialog(useFrame,
+                        "Use " + selectedItem.getitemName() + " on " + selectedPokemon.getName() +
+                                " to evolve it into " + selectedPokemon.getEvolutionName() + "?",
+                        "Confirm Evolution", JOptionPane.YES_NO_OPTION);
+
+                if (response == JOptionPane.YES_OPTION) {
+                    String result = trainer.useItem(selectedItem, selectedPokemon);
+                    JOptionPane.showMessageDialog(useFrame, result);
+
+                    // Update UI if evolution was successful
+                    if (result.contains("evolved")) {
+                        // Update Pokémon in the list
+                        if (tabbedPane.getSelectedIndex() == 0) { // Team
+                            int index = teamList.getSelectedIndex();
+                            teamModel.set(index, selectedPokemon);
+                        } else { // Storage
+                            int index = storageList.getSelectedIndex();
+                            storageModel.set(index, selectedPokemon);
+                        }
+
+                        // Update item list (quantity decreased)
+                        itemModel.removeElement(selectedItem);
+                        if (selectedItem.getQuantity() > 1) {
+                            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
+                            itemModel.addElement(selectedItem);
+                        }
+
+                        // Save trainer data
+                        trainer.saveToFile();
+                    }
+                }
+            } else {
+                // Use regular item (assume it's consumed immediately)
+                String result = trainer.useItem(selectedItem, selectedPokemon);
+                JOptionPane.showMessageDialog(useFrame, result);
+
+                // Update item list (quantity decreased)
+                itemModel.removeElement(selectedItem);
+                if (selectedItem.getQuantity() > 1) {
+                    selectedItem.setQuantity(selectedItem.getQuantity() - 1);
+                    itemModel.addElement(selectedItem);
+                } else {
+                    // Remove from bag if last one was used
+                    trainer.removeItemFromBag(selectedItem);
+                }
+
+                // Save trainer data
+                trainer.saveToFile();
+            }
+        });
+
+        // Layout
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.add(tabbedPane, BorderLayout.CENTER);
+        leftPanel.add(useButton, BorderLayout.SOUTH);
+
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.add(itemPanel, BorderLayout.CENTER);
+        rightPanel.add(new JScrollPane(infoArea), BorderLayout.SOUTH);
+
+        mainPanel.add(leftPanel, BorderLayout.CENTER);
+        mainPanel.add(rightPanel, BorderLayout.EAST);
+
+        useFrame.add(mainPanel);
+        useFrame.setLocationRelativeTo(null);
+        useFrame.setVisible(true);
+    }
     private static void BuyItem(Trainers trainer) {
         JFrame buyFrame = new JFrame();
         buyFrame.setSize(1300, 700);
@@ -4224,17 +4278,17 @@ public class DexGui {
 
         // Custom renderer to display item name and price in the JComboBox
         quickBuyComboBox.setRenderer(new DefaultListCellRenderer() {
-                                         @Override
-                                         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                                             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                                             if (value instanceof Items) {
-                                                 Items item = (Items) value;
-                                                 setText(item.getitemName() + " (P" + String.format("%.2f", item.getstartBuyingPrice()) + ")");
-                                             } else if (value == null && index == -1) {
-                                                 setText("Select an item...");
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Items) {
+                    Items item = (Items) value;
+                    setText(item.getitemName() + " (P" + String.format("%.2f", item.getstartBuyingPrice()) + ")");
+                } else if (value == null && index == -1) {
+                    setText("Select an item...");
                 }
-                                             return this;
-                                         }
+                return this;
+            }
         });
         quickBuyComboBox.setSelectedIndex(-1); // No item selected initially
         quickBuyComboBox.setPreferredSize(new Dimension(200, 25)); // Set a reasonable size for the combo box
@@ -4273,8 +4327,8 @@ public class DexGui {
                 // Call the method to update the trainer's data in the file
                 updateTrainerInFile(trainer); // <--- ADD THIS LINE HERE
                 JOptionPane.showMessageDialog(buyFrame,
-                result + "\nRemaining Money: P" + String.format("%.2f", trainer.getMoney()),
-                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        result + "\nRemaining Money: P" + String.format("%.2f", trainer.getMoney()),
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // Update trainer status display
                 moneyLabel.setText("Available PokeDollars: P" + trainer.getMoney());
@@ -4377,7 +4431,7 @@ public class DexGui {
                     // The ID didn't match, so this line belongs to a different trainer. Keep it as is.
                     fileLines.add(line);
                 }
-        }
+            }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error reading trainer file: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -4450,33 +4504,33 @@ public class DexGui {
         buttonPanel.setMaximumSize(new Dimension(680, 40));
         buttonPanel.add(backButton);
         StringBuilder itemsText = new StringBuilder();
-       itemsText.append("================================== ITEMS IN BAG ============================\n\n\n");
-       itemsText.append("============================== NON-EVOLUTION ITEMS ==========================\n\n");
-       
-Items[] bag = trainer.getBag();
-int count = trainer.getItemCount();
-boolean hasNonEvo = false;
-boolean hasEvo = false;
+        itemsText.append("================================== ITEMS IN BAG ============================\n\n\n");
+        itemsText.append("============================== NON-EVOLUTION ITEMS ==========================\n\n");
+
+        Items[] bag = trainer.getBag();
+        int count = trainer.getItemCount();
+        boolean hasNonEvo = false;
+        boolean hasEvo = false;
 
 // First, display NON-EVOLUTION ITEMS
-for (int i = 0; i < count; i++) {
-    Items item = bag[i];
-    if (item != null && !item.getitemCategory().equalsIgnoreCase("Evolution Stone")) {
-        hasNonEvo = true;
-        itemsText.append("    Item ID: ").append(item.getitemID()).append("\n");
-        itemsText.append("    Name: ").append(item.getitemName()).append("\n");
-        itemsText.append("    Category: ").append(item.getitemCategory()).append("\n");
-        itemsText.append("    Description: ").append(item.getitemDesc()).append("\n");
-        itemsText.append("    Effects: ").append(item.getitemEffects()).append("\n");
-        itemsText.append(String.format("    Selling Price: P %.2f\n", item.getsellingPrice()));
-        itemsText.append("\n-----------------------------------------------------------------------------\n\n");
-    }
-}
+        for (int i = 0; i < count; i++) {
+            Items item = bag[i];
+            if (item != null && !item.getitemCategory().equalsIgnoreCase("Evolution Stone")) {
+                hasNonEvo = true;
+                itemsText.append("    Item ID: ").append(item.getitemID()).append("\n");
+                itemsText.append("    Name: ").append(item.getitemName()).append("\n");
+                itemsText.append("    Category: ").append(item.getitemCategory()).append("\n");
+                itemsText.append("    Description: ").append(item.getitemDesc()).append("\n");
+                itemsText.append("    Effects: ").append(item.getitemEffects()).append("\n");
+                itemsText.append(String.format("    Selling Price: P %.2f\n", item.getsellingPrice()));
+                itemsText.append("\n-----------------------------------------------------------------------------\n\n");
+            }
+        }
         if (!hasNonEvo) {
             itemsText.append("You have no non-evolution items in your bag.\n\n");
         }
 
-         itemsText.append("============================== EVOLUTION STONES ============================\n\n");
+        itemsText.append("============================== EVOLUTION STONES ============================\n\n");
         // Then, display EVOLUTION STONES
         for (int i = 0; i < count; i++) {
             Items item = bag[i];
@@ -4500,7 +4554,7 @@ for (int i = 0; i < count; i++) {
 
         contentPanel.add(scrollPane);
         contentPanel.add(Box.createVerticalStrut(10));
-        contentPanel.add(buttonPanel); 
+        contentPanel.add(buttonPanel);
         // --- Add contentPanel directly to backgroundPanel ---
         GridBagConstraints gbcContent = new GridBagConstraints();
         gbcContent.gridx = 0; // Place it in the first column
@@ -4512,93 +4566,93 @@ for (int i = 0; i < count; i++) {
         // ========== SELL ITEM COMBO + BUTTON ==========
 
 // Build a Vector of items in trainer's bag for the JComboBox
-Vector<Items> itemsInBag = new Vector<>();
-for (int i = 0; i < trainer.getItemCount(); i++) {
-    Items item = trainer.getBag()[i];
-    if (item != null) itemsInBag.add(item);
-}
-
-JComboBox<Items> sellComboBox = new JComboBox<>(itemsInBag);
-sellComboBox.setRenderer(new DefaultListCellRenderer() {
-    @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (value instanceof Items) {
-            Items item = (Items) value;
-            setText(item.getitemName() + " (P" + String.format("%.2f", item.getsellingPrice()) + ")");
-        } else if (value == null && index == -1) {
-            setText("Select item...");
+        Vector<Items> itemsInBag = new Vector<>();
+        for (int i = 0; i < trainer.getItemCount(); i++) {
+            Items item = trainer.getBag()[i];
+            if (item != null) itemsInBag.add(item);
         }
-        return this;
-    }
-});
-sellComboBox.setSelectedIndex(-1);
-sellComboBox.setPreferredSize(new Dimension(200, 25));
 
-JButton sellButton = new JButton("Sell Selected");
-sellButton.addActionListener(e -> {
-    Items selected = (Items) sellComboBox.getSelectedItem();
-    if (selected == null) {
-        JOptionPane.showMessageDialog(buyFrame, "Please select an item to sell.", "No Item Selected", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+        JComboBox<Items> sellComboBox = new JComboBox<>(itemsInBag);
+        sellComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Items) {
+                    Items item = (Items) value;
+                    setText(item.getitemName() + " (P" + String.format("%.2f", item.getsellingPrice()) + ")");
+                } else if (value == null && index == -1) {
+                    setText("Select item...");
+                }
+                return this;
+            }
+        });
+        sellComboBox.setSelectedIndex(-1);
+        sellComboBox.setPreferredSize(new Dimension(200, 25));
 
-    double sellPrice = selected.getsellingPrice();
-    trainer.setMoney(trainer.getMoney() + sellPrice);
-    trainer.removeItemFromBag(selected); // You must implement this method in your Trainers class
-    updateTrainerInFile(trainer); // Save updated trainer info
+        JButton sellButton = new JButton("Sell Selected");
+        sellButton.addActionListener(e -> {
+            Items selected = (Items) sellComboBox.getSelectedItem();
+            if (selected == null) {
+                JOptionPane.showMessageDialog(buyFrame, "Please select an item to sell.", "No Item Selected", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-    JOptionPane.showMessageDialog(buyFrame,
-        selected.getitemName() + " sold for P" + String.format("%.2f", sellPrice) + ".\nNew Balance: P" + String.format("%.2f", trainer.getMoney()),
-        "Item Sold", JOptionPane.INFORMATION_MESSAGE);
+            double sellPrice = selected.getsellingPrice();
+            trainer.setMoney(trainer.getMoney() + sellPrice);
+            trainer.removeItemFromBag(selected); // You must implement this method in your Trainers class
+            updateTrainerInFile(trainer); // Save updated trainer info
 
-    buyFrame.dispose();
-    sellItem(trainer); // Refresh the GUI to reflect the updated bag
-});
+            JOptionPane.showMessageDialog(buyFrame,
+                    selected.getitemName() + " sold for P" + String.format("%.2f", sellPrice) + ".\nNew Balance: P" + String.format("%.2f", trainer.getMoney()),
+                    "Item Sold", JOptionPane.INFORMATION_MESSAGE);
+
+            buyFrame.dispose();
+            sellItem(trainer); // Refresh the GUI to reflect the updated bag
+        });
 
 // ========== TRAINER STATUS PANEL ==========
-JLabel moneyLabel = new JLabel("Available PokeDollars: P" + String.format("%.2f", trainer.getMoney()));
-JLabel itemCountLabel = new JLabel("Items in bag (max 99): " + trainer.getItemCount());
-JLabel uniqueCountLabel = new JLabel("Unique items in bag (max 10): " + trainer.getUniqueCount());
+        JLabel moneyLabel = new JLabel("Available PokeDollars: P" + String.format("%.2f", trainer.getMoney()));
+        JLabel itemCountLabel = new JLabel("Items in bag (max 99): " + trainer.getItemCount());
+        JLabel uniqueCountLabel = new JLabel("Unique items in bag (max 10): " + trainer.getUniqueCount());
 
-moneyLabel.setForeground(Color.RED);
-itemCountLabel.setForeground(Color.RED);
-uniqueCountLabel.setForeground(Color.RED);
+        moneyLabel.setForeground(Color.RED);
+        itemCountLabel.setForeground(Color.RED);
+        uniqueCountLabel.setForeground(Color.RED);
 
-moneyLabel.setFont(new Font("Arial", Font.BOLD, 14));
-itemCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
-uniqueCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        moneyLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        itemCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        uniqueCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
-JPanel statusPanel = new JPanel();
-statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
-statusPanel.setOpaque(false);
-statusPanel.setBorder(null);
-statusPanel.add(moneyLabel);
-statusPanel.add(Box.createVerticalStrut(10));
-statusPanel.add(itemCountLabel);
-statusPanel.add(Box.createVerticalStrut(10));
-statusPanel.add(uniqueCountLabel);
+        JPanel statusPanel = new JPanel();
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
+        statusPanel.setOpaque(false);
+        statusPanel.setBorder(null);
+        statusPanel.add(moneyLabel);
+        statusPanel.add(Box.createVerticalStrut(10));
+        statusPanel.add(itemCountLabel);
+        statusPanel.add(Box.createVerticalStrut(10));
+        statusPanel.add(uniqueCountLabel);
 
 // Position status panel on the right
-GridBagConstraints gbcStatus = new GridBagConstraints();
-gbcStatus.gridx = 0;
-gbcStatus.gridy = 0;
-gbcStatus.insets = new Insets(240, 700, 0, 0); // Adjust as needed
-gbcStatus.anchor = GridBagConstraints.NORTHWEST;
-backgroundPanel.add(statusPanel, gbcStatus);
+        GridBagConstraints gbcStatus = new GridBagConstraints();
+        gbcStatus.gridx = 0;
+        gbcStatus.gridy = 0;
+        gbcStatus.insets = new Insets(240, 700, 0, 0); // Adjust as needed
+        gbcStatus.anchor = GridBagConstraints.NORTHWEST;
+        backgroundPanel.add(statusPanel, gbcStatus);
 // Put combo + button in a horizontal panel
-JPanel sellPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-sellPanel.setOpaque(false);
-sellPanel.add(sellComboBox);
-sellPanel.add(sellButton);
+        JPanel sellPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        sellPanel.setOpaque(false);
+        sellPanel.add(sellComboBox);
+        sellPanel.add(sellButton);
 
 // Position panel on right side
-GridBagConstraints gbcSellPanel = new GridBagConstraints();
-gbcSellPanel.gridx = 0;
-gbcSellPanel.gridy = 0;
-gbcSellPanel.insets = new Insets(350, 690, 0, 0);  // Adjust position
-gbcSellPanel.anchor = GridBagConstraints.NORTHWEST;
-backgroundPanel.add(sellPanel, gbcSellPanel);
+        GridBagConstraints gbcSellPanel = new GridBagConstraints();
+        gbcSellPanel.gridx = 0;
+        gbcSellPanel.gridy = 0;
+        gbcSellPanel.insets = new Insets(350, 690, 0, 0);  // Adjust position
+        gbcSellPanel.anchor = GridBagConstraints.NORTHWEST;
+        backgroundPanel.add(sellPanel, gbcSellPanel);
 
         buyFrame.setContentPane(backgroundPanel);
         buyFrame.setVisible(true);

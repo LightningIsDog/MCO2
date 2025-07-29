@@ -15,6 +15,7 @@ public class Items {
     private double startBuyingPrice;
     private boolean forEvo;
     private double sellingPrice;
+    private int quantity;
 
     /**
      * Array to store Items objects. This is the master list of item definitions.
@@ -44,6 +45,7 @@ public class Items {
                  double startBuyingPrice, double sellingPrice) {
         // This public constructor will always register the item in the master list
         this(itemID, itemName, itemCategory, itemDesc, itemEffects, forEvo, startBuyingPrice, sellingPrice, true);
+        this.quantity = 0;
     }
 
     /**
@@ -131,11 +133,10 @@ public class Items {
      * @param original The original Items object to clone.
      * @return A new Items object with the same properties.
      */
+
     public static Items cloneItem(Items original) {
         if (original == null) return null;
-
-        // Call the private constructor and explicitly pass 'false' for shouldRegister
-        return new Items(
+        Items clone = new Items(
                 original.itemID,
                 original.itemName,
                 original.itemCategory,
@@ -144,10 +145,18 @@ public class Items {
                 original.forEvo,
                 original.startBuyingPrice,
                 original.sellingPrice,
-                false // DO NOT REGISTER this cloned item into the master itemList
+                false // Do not register in master list
         );
+        clone.setQuantity(original.getQuantity()); // Copy quantity
+        return clone;
+    }
+    public int getQuantity() {
+        return quantity;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
     /**
      * Returns the ID of the item.
      * @return the item ID as a String

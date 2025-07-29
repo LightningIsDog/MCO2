@@ -581,4 +581,408 @@ public class Pokemon
         // Construct and return the string
         return this.Name + " cries " + crySoundName.toUpperCase() + "!!!";
     }
+    public void levelUp() {
+        BaseLevel++;
+
+        // Increase stats (simple linear growth for now)
+        HP += 2;
+        Atk += 1;
+        Def += 1;
+        Spd += 1;
+
+        System.out.println(Name + " grew to level " + BaseLevel + "!");
+        System.out.println(cry());
+
+        // Check for evolution
+        if (canEvolve()) {
+            System.out.println(Name + " is trying to evolve!");
+            // In a real game, you'd prompt the player here
+            // For now we'll auto-evolve if conditions are met
+            evolve();
+        }
+    }
+
+    /**
+     * Checks if the Pokémon meets the conditions to evolve.
+     * @return true if evolution conditions are met
+     */
+    public boolean canEvolve() {
+        // Check level-based evolution
+        if (To != 0 && BaseLevel >= EvoLevel) {
+            return true;
+        }
+
+        // Check stone-based evolution (if holding an evolution stone)
+        if (heldItem != null && heldItem.getForEvo()) {
+            EvolutionStone stone = (EvolutionStone) heldItem;
+            return stone.canEvolve(this);
+        }
+
+        // Could add other evolution conditions here (friendship, trade, etc.)
+        return false;
+    }
+
+    /**
+     * Evolves the Pokémon into its next form if conditions are met.
+     * @return true if evolution was successful
+     */
+    public boolean evolve() {
+        // Level-based evolution
+        if (To != 0 && BaseLevel >= EvoLevel) {
+            Pokemon evolution = Pokedex.pokemon[To - 1]; // Assuming Pokédex numbers are 1-based
+            evolveInto(evolution);
+            return true;
+        }
+
+        // Stone-based evolution
+        if (heldItem != null && heldItem.getForEvo()) {
+            EvolutionStone stone = (EvolutionStone) heldItem;
+            if (stone.canEvolve(this)) {
+                Pokemon evolution = findStoneEvolution();
+                if (evolution != null) {
+                    stone.useForEvolution(this);
+                    evolveInto(evolution);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Helper method to handle the actual evolution transformation.
+     * @param evolution The Pokémon to evolve into
+     */
+    private void evolveInto(Pokemon evolution) {
+        System.out.println("What? " + Name + " is evolving!");
+
+        // Save current moves
+        Moves[] currentMoves = moves;
+        int currentMoveCount = pMoves;
+
+        // Transform into the evolution
+        this.PokedexNo = evolution.PokedexNo;
+        this.Name = evolution.Name;
+        this.Type1 = evolution.Type1;
+        this.Type2 = evolution.Type2;
+        this.From = evolution.From;
+        this.To = evolution.To;
+        this.EvoLevel = evolution.EvoLevel;
+
+        // Stat increases - could be more sophisticated
+        this.HP += evolution.HP / 2;
+        this.Atk += evolution.Atk / 2;
+        this.Def += evolution.Def / 2;
+        this.Spd += evolution.Spd / 2;
+
+        // Keep moves (but limit to 4)
+        this.moves = new Moves[4];
+        this.pMoves = Math.min(currentMoveCount, 4);
+        System.arraycopy(currentMoves, 0, this.moves, 0, pMoves);
+
+        System.out.println("Congratulations! Your " + Name + " evolved!");
+        System.out.println(cry());
+    }
+
+    /**
+     * Finds the appropriate evolution for stone-based evolutions.
+     * @return The Pokémon to evolve into, or null if no evolution found
+     */
+    private Pokemon findStoneEvolution() {
+        if (heldItem == null || !heldItem.getForEvo()) {
+            return null;
+        }
+
+        // This would be more sophisticated in a full implementation
+        // For now we'll just check the next evolution in the chain
+        if (To != 0) {
+            return Pokedex.pokemon[To - 1];
+        }
+
+        // Special cases for stone evolutions that might not be in the normal chain
+        // (e.g., Eevee's multiple evolutions)
+        String stoneName = heldItem.getitemName();
+       /* if (Name.equalsIgnoreCase("Eevee")) {
+            switch (stoneName) {
+                case "Water Stone": return Pokedex.getPokemonByName("Vaporeon");
+                case "Thunder Stone": return Pokedex.getPokemonByName("Jolteon");
+                case "Fire Stone": return Pokedex.getPokemonByName("Flareon");
+                // Add other Eeveelutions if present in your Pokédex
+            }
+        }*/
+
+        return null;
+    }
+
+    /**
+     * Displays evolution information for the Pokémon.
+     */
+    public void displayEvolutionInfo() {
+        if (From != 0) {
+            Pokemon preEvolution = Pokedex.pokemon[From - 1];
+            System.out.println(Name + " evolves from " + preEvolution.getName() +
+                    " at level " + preEvolution.getEvoLevel());
+        }
+
+        if (To != 0) {
+            Pokemon evolution = Pokedex.pokemon[To - 1];
+            System.out.println(Name + " evolves into " + evolution.getName() +
+                    " at level " + EvoLevel);
+        }
+
+        // Display stone evolution info if applicable
+        if (heldItem != null && heldItem.getForEvo()) {
+            System.out.println(Name + " can also evolve using a " + heldItem.getitemName());
+        }
+    }
+    public boolean canEvolveWith(String stoneName) {
+        // Check if this Pokémon has any stone-based evolutions
+        if (To == 0) return false; // No evolution at all
+
+        // Get the evolution data from Pokedex
+        Pokemon evolution = Pokedex.pokemon[To - 1];
+
+        // Check if the stone matches any known evolution stones for this Pokémon
+        switch (Name.toLowerCase()) {
+            // Eevee cases
+            case "eevee":
+                switch (stoneName.toLowerCase()) {
+                    case "water stone": return true;
+                    case "fire stone": return true;
+                    case "thunder stone": return true;
+                    case "leaf stone": return true;
+                    case "ice stone": return true;
+                    case "sun stone": return true;
+                    case "moon stone": return true;
+                    case "shiny stone": return true;
+                    case "dusk stone": return true;
+                    case "dawn stone": return true;
+                }
+                break;
+
+            // Vulpix cases
+            case "vulpix":
+                return stoneName.equalsIgnoreCase("Fire Stone");
+
+            case "growlithe":
+                return stoneName.equalsIgnoreCase("Fire Stone");
+
+            case "poliwhirl":
+                return stoneName.equalsIgnoreCase("Water Stone");
+
+            case "shellder":
+                return stoneName.equalsIgnoreCase("Water Stone");
+
+            case "pikachu":
+                return stoneName.equalsIgnoreCase("Thunder Stone");
+
+            case "gloom":
+                return stoneName.equalsIgnoreCase("Leaf Stone") ||
+                        stoneName.equalsIgnoreCase("Sun Stone");
+
+            case "weepinbell":
+                return stoneName.equalsIgnoreCase("Leaf Stone");
+
+            case "exeggcute":
+                return stoneName.equalsIgnoreCase("Leaf Stone");
+
+            case "nidorina":
+            case "nidorino":
+                return stoneName.equalsIgnoreCase("Moon Stone");
+
+            case "clefairy":
+            case "jigglypuff":
+                return stoneName.equalsIgnoreCase("Moon Stone");
+
+            case "sunkern":
+            case "cottonee":
+                return stoneName.equalsIgnoreCase("Sun Stone");
+
+            case "togetic":
+            case "roselia":
+            case "minccino":
+                return stoneName.equalsIgnoreCase("Shiny Stone");
+
+            case "murkrow":
+            case "misdreavus":
+            case "doublade":
+                return stoneName.equalsIgnoreCase("Dusk Stone");
+
+            case "kirlia": // Male
+                return stoneName.equalsIgnoreCase("Dawn Stone");
+                        //getDescription().toLowerCase().contains("male");
+
+            case "snorunt": // Female
+                return stoneName.equalsIgnoreCase("Dawn Stone");
+                       // getDescription().toLowerCase().contains("female");
+
+            case "alolan vulpix":
+            case "galarian darumaka":
+                return stoneName.equalsIgnoreCase("Ice Stone");
+        }
+
+        return false;
+    }
+
+    /**
+     * Evolves the Pokémon using a specific stone.
+     * @param stoneName The name of the evolution stone to use
+     * @return The evolved Pokémon, or null if evolution failed
+     */
+    public Pokemon evolveWithStone(String stoneName) {
+        if (!canEvolveWith(stoneName)) {
+            return null;
+        }
+
+        // Find the appropriate evolution
+        Pokemon evolution = null;
+
+        switch (Name.toLowerCase()) {
+            case "eevee":
+                switch (stoneName.toLowerCase()) {
+                    case "water stone":
+                        evolution = Pokedex.getPokemonByName("Vaporeon");
+                        break;
+                    case "fire stone":
+                        evolution = Pokedex.getPokemonByName("Flareon");
+                        break;
+                    case "thunder stone":
+                        evolution = Pokedex.getPokemonByName("Jolteon");
+                        break;
+                    case "leaf stone":
+                        evolution = Pokedex.getPokemonByName("Leafeon");
+                        break;
+                    case "ice stone":
+                        evolution = Pokedex.getPokemonByName("Glaceon");
+                        break;
+                    case "sun stone":
+                        evolution = Pokedex.getPokemonByName("Espeon");
+                        break;
+                    case "moon stone":
+                        evolution = Pokedex.getPokemonByName("Umbreon");
+                        break;
+                }
+                break;
+
+            // Handle other Pokémon evolutions
+            case "vulpix":
+                evolution = Pokedex.getPokemonByName("Ninetales");
+                break;
+
+            case "growlithe":
+                evolution = Pokedex.getPokemonByName("Arcanine");
+                break;
+
+            case "poliwhirl":
+                evolution = Pokedex.getPokemonByName("Poliwrath");
+                break;
+
+            case "shellder":
+                evolution = Pokedex.getPokemonByName("Cloyster");
+                break;
+
+            case "pikachu":
+                evolution = Pokedex.getPokemonByName("Raichu");
+                break;
+
+            case "gloom":
+                if (stoneName.equalsIgnoreCase("Leaf Stone")) {
+                    evolution = Pokedex.getPokemonByName("Vileplume");
+                } else {
+                    evolution = Pokedex.getPokemonByName("Bellossom");
+                }
+                break;
+
+            case "weepinbell":
+                evolution = Pokedex.getPokemonByName("Victreebel");
+                break;
+
+            case "exeggcute":
+                evolution = Pokedex.getPokemonByName("Exeggutor");
+                break;
+
+            case "nidorina":
+                evolution = Pokedex.getPokemonByName("Nidoqueen");
+                break;
+
+            case "nidorino":
+                evolution = Pokedex.getPokemonByName("Nidoking");
+                break;
+
+            case "clefairy":
+                evolution = Pokedex.getPokemonByName("Clefable");
+                break;
+
+            case "jigglypuff":
+                evolution = Pokedex.getPokemonByName("Wigglytuff");
+                break;
+
+            // Add cases for other Pokémon as needed
+        }
+
+        if (evolution != null) {
+            // Create a copy of the evolution with our current level and stats
+            Pokemon evolved = new Pokemon(
+                    evolution.getPokedexNo(),
+                    evolution.getName(),
+                    evolution.getType1(),
+                    evolution.getType2(),
+                    this.BaseLevel, // Keep current level
+                    this.PokedexNo, // Now evolves from this Pokémon
+                    evolution.getTo(),
+                    evolution.getEvoLevel(),
+                    this.HP + (evolution.getHP() / 2), // Boost stats
+                    this.Atk + (evolution.getAtk() / 2),
+                    this.Def + (evolution.getDef() / 2),
+                    this.Spd + (evolution.getSpd() / 2)
+            );
+
+            // Copy over moves
+            System.arraycopy(this.moves, 0, evolved.moves, 0, this.pMoves);
+            evolved.pMoves = this.pMoves;
+
+            return evolved;
+        }
+
+        return null;
+    }
+    public String getEvolutionName() {
+        // Check for level-based evolution first
+        if (To != 0 && Pokedex.pokemon != null && To <= Pokedex.pokemonCount) {
+            return Pokedex.pokemon[To - 1].getName();
+        }
+
+        // Check for stone-based evolutions if holding an evolution stone
+        if (heldItem != null && heldItem.getForEvo()) {
+            String stoneName = heldItem.getitemName();
+            switch (Name.toLowerCase()) {
+                case "eevee":
+                    switch (stoneName.toLowerCase()) {
+                        case "water stone": return "Vaporeon";
+                        case "fire stone": return "Flareon";
+                        case "thunder stone": return "Jolteon";
+                        case "leaf stone": return "Leafeon";
+                        case "ice stone": return "Glaceon";
+                    }
+                    break;
+                case "vulpix": return "Ninetales";
+                case "growlithe": return "Arcanine";
+                case "poliwhirl": return "Poliwrath";
+                case "shellder": return "Cloyster";
+                case "pikachu": return "Raichu";
+                case "gloom":
+                    return stoneName.equalsIgnoreCase("Leaf Stone") ? "Vileplume" : "Bellossom";
+                case "weepinbell": return "Victreebel";
+                case "exeggcute": return "Exeggutor";
+                case "nidorina": return "Nidoqueen";
+                case "nidorino": return "Nidoking";
+                case "clefairy": return "Clefable";
+                case "jigglypuff": return "Wigglytuff";
+                // Add other stone evolutions as needed
+            }
+        }
+
+        return "None"; // No evolution available
+    }
 }
