@@ -292,4 +292,7 @@ public class Items {
             System.err.println("⚠ Item database full! Cannot register: " + item.getitemName());
         }
     }
+    public String toCsvString() {
+        return this.itemName + "," + this.quantity;
+    }
 }

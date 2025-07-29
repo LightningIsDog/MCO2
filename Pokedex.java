@@ -1153,46 +1153,30 @@ public class Pokedex {
         Scanner input = new Scanner(new File("pokedex.txt"));
         Scanner input2 = new Scanner(new File("moves.txt"));
         input2.useDelimiter("-");
-       // Create ALL items with UNIQUE IDs. Their constructors will automatically add them to itemList.
-        new Vitamin("01", "HP Up", "A nutritious drink for Pokemon", "HP", 10000, 5000);
-        new Vitamin("02", "Protein", "A nutritious drink for Pokemon", "Attack", 10000, 5000);
-        new Vitamin("03", "Iron", "A nutritious drink for Pokemon", "Defense", 10000, 5000);
-        new Vitamin("04", "Carbos", "A nutritious drink for Pokemon", "Speed", 10000, 5000);
-        new LevelingItem("05", "Rare Candy", "A candy that is packed with energy", 4800, 2400);
-        new Feather("06", "Health Feather", "A feather that slightly increases HP", "HP", 300, 150);
-        new Feather("07", "Muscle Feather", "A feather that slightly increases Attack", "Attack", 300, 150);
-        new Feather("08", "Resist Feather", "A feather that slightly increases Defense", "Defense", 300, 150);
-        new Feather("09", "Swift Feather", "A feather that slightly increases Speed", "Speed", 300, 150);
-        new Vitamin("10", "Zinc", "A nutritious drink for Pokemon", "Special Defense", 10000, 5000);
+        // Create ALL items with UNIQUE IDs. Their constructors will automatically add them to itemList.
+        new Items("01", "HP Up", "Vitamin", "A nutritious drink for Pokemon", "+10 HP EVs", false, 10000, 5000);
+        new Items("02", "Protein", "Vitamin", "A nutritious drink for Pokemon", "+10 Attack EVs", false, 10000, 5000);
+        new Items("03", "Iron", "Vitamin", "A nutritious drink for Pokemon", "+10 Defense EVs", false, 10000, 5000);
+        new Items("04", "Carbos", "Vitamin", "A nutritious drink for Pokemon", "+10 Speed EVs", false, 10000, 5000);
+        new Items("05", "Rare Candy", "Leveling Item", "A candy that is packed with energy", "Increases level by 1", false, 4800, 2400);
+        new Items("06", "Health Feather", "Feather", "A feather that slightly increases HP", "+1 HP EV", false, 300, 150);
+        new Items("07", "Muscle Feather", "Feather", "A feather that slightly increases Attack", "+1 Attack EV", false, 300, 150);
+        new Items("08", "Resist Feather", "Feather", "A feather that slightly increases Defense", "+1 Defense EV", false, 300, 150);
+        new Items("09", "Swift Feather", "Feather", "A feather that slightly increases Speed", "+1 Speed EV", false, 300, 150);
+        new Items("10", "Zinc", "Vitamin", "A nutritious drink for Pokemon", "+10 Special Defense EVs", false, 10000, 5000);
 
         // Assign UNIQUE IDs to evolution stones to prevent conflicts with 01-10
-        new EvolutionStone("11", "Fire Stone", "A stone that radiates heat",
-                new String[]{"Vulpix", "Growlithe", "Eevee"}, 3000, 1500);
-        new EvolutionStone("12", "Water Stone", "A stone with a blue watery appearance",
-                new String[]{"Poliwhirl", "Shellder", "Eevee"}, 3000, 1500);
-        new EvolutionStone("13", "Thunder Stone", "A stone that sparkles with electricity",
-                new String[]{"Pikachu", "Eevee"}, 3000, 1500);
+        new Items("11", "Fire Stone", "Evolution Stone", "A stone that radiates heat", "Evolves Pokemon like Vulpix, Growlithe, Eevee", true, 3000, 1500);
+        new Items("12", "Water Stone", "Evolution Stone", "A stone with a blue watery appearance", "Evolves Pokemon like Poliwhirl, Shellder, Eevee", true, 3000, 1500);
+        new Items("13", "Thunder Stone", "Evolution Stone", "A stone that sparkles with electricity", "Evolves Pokemon like Pikachu, Eevee", true, 3000, 1500);
+        new Items("14", "Leaf Stone", "Evolution Stone", "A stone with a leaf pattern", "Evolves Pokemon like Gloom, Weepinbell, Exeggcute", true, 3000, 1500);
+        new Items("15", "Moon Stone", "Evolution Stone", "A stone that glows faintly in the moonlight", "Evolves Pokemon like Nidorina, Clefairy, Jigglypuff, etc.", true, 3000, 1500);
+        new Items("16", "Sun Stone", "Evolution Stone", "A stone that glows like the sun", "Evolves Pokemon like Gloom, Sunkern, Cottonee, etc.", true, 3000, 1500);
+        new Items("17", "Shiny Stone", "Evolution Stone", "A stone that sparkles brightly", "Evolves Pokemon like Togetic, Roselia, Minccino, etc.", true, 3000, 1500);
+        new Items("18", "Dusk Stone", "Evolution Stone", "A dark stone that is ominous in appearance", "Evolves Pokemon like Murkrow, Misdreavus, Doublade, etc.", true, 3000, 1500);
+        new Items("19", "Dawn Stone", "Evolution Stone", "A stone that sparkles like the morning sky", "Evolves male Kirlia into Gallade, female Snorunt into Froslass", true, 3000, 1500);
+        new Items("20", "Ice Stone", "Evolution Stone", "A stone that is cold to the touch", "Evolves Pokemon like Alolan Vulpix, Galarian Darumaka, Eevee", true, 3000, 1500);
 
-        new EvolutionStone("14", "Leaf Stone", "A stone with a leaf pattern",
-                new String[]{"Gloom", "Weepinbell", "Exeggcute"}, 3000, 1500);
-
-        new EvolutionStone("15", "Moon Stone", "A stone that glows faintly in the moonlight",
-                new String[]{"Nidorina", "Nidorino", "Clefairy", "Jigglypuff"}, 3000, 1500);
-
-        new EvolutionStone("16", "Sun Stone", "A stone that glows like the sun",
-                new String[]{"Gloom", "Sunkern", "Cottonee"}, 3000, 1500);
-
-        new EvolutionStone("17", "Shiny Stone", "A stone that sparkles brightly",
-                new String[]{"Togetic", "Roselia", "Minccino"}, 3000, 1500);
-
-        new EvolutionStone("18", "Dusk Stone", "A dark stone that is ominous in appearance",
-                new String[]{"Murkrow", "Misdreavus", "Doublade"}, 3000, 1500);
-
-        new EvolutionStone("19", "Dawn Stone", "A stone that sparkles like the morning sky",
-                new String[]{"Kirlia (Male)", "Snorunt (Female)"}, 3000, 1500);
-
-        new EvolutionStone("20", "Ice Stone", "A stone that is cold to the touch",
-                new String[]{"Alolan Vulpix", "Galarian Darumaka", "Eevee"}, 3000, 1500);
         while (input2.hasNext())
         {
             String Name = input2.next().trim();

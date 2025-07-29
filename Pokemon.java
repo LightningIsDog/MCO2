@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.*;
 /** This class represents a Pokémon in the game, encapsulating its properties and behaviors.It includes attributes such as Pokédex number, name, types, base level,
  evolution details, stats (HP, Attack, Defense, Speed), moves set, and held items.
@@ -7,8 +8,9 @@ import java.util.*;
  *  @version 5.0
  */
 
-public class Pokemon
+public class Pokemon implements Serializable
 {
+    private static final long serialVersionUID = 1L;
     private int PokedexNo;
     private String Name;
     private String Type1;
@@ -516,29 +518,26 @@ public class Pokemon
         System.out.println("\n ================================================================================================");
     }
 
-  /**
- * Gives a held item to the Pokémon. If already holding one, it is replaced.
- * @param itemName the name of the item to give
- * @return message indicating the result
- */
-public String giveHeldItem(String itemName) {
-    Items item = Items.getItemByName(itemName);
-
-    if (item == null) {
-        return itemName + " does not exist.";
+    /**
+     Gives a held item to the Pokémon if it is not already holding one.
+     @param itemName the name of the item to give
+     */
+    public void giveHeldItem(String itemName)
+    {
+        if (heldItem != null)
+        {
+            System.out.println(Name + " is already holding " + heldItem.getitemName());
+            return;
+        }
+        Items item = Items.getItemByName(itemName);
+        heldItem = item;
+        if (item == null)
+        {
+            System.out.println(itemName + " does not exist");
+            return;
+        }
+        System.out.println(Name + " is now holding " + item.getitemName());
     }
-
-    String message;
-
-    if (heldItem != null) {
-        message = Name + " replaced " + heldItem.getitemName() + " with " + item.getitemName() + ".";
-    } else {
-        message = Name + " is now holding " + item.getitemName() + ".";
-    }
-
-    heldItem = item;
-    return message;
-}
 
     /**
      Removes the held item from the Pokémon if it is holding one.
@@ -987,5 +986,121 @@ public String giveHeldItem(String itemName) {
         }
 
         return "None"; // No evolution available
+    }
+    public static Pokemon fromFileString(String line) {
+    try {
+        String[] parts = line.split(",");
+        if (parts.length < 8) {
+            throw new IllegalArgumentException("Invalid Pokémon data string");
+        }
+
+        // Parse basic info
+        String name = parts[0];
+        int baseLevel = Integer.parseInt(parts[1]);
+        String type1 = parts[2];
+        String type2 = parts[3].equals("0") ? "0" : parts[3]; // Handle null/empty type2
+        int hp = Integer.parseInt(parts[4]);
+        int atk = Integer.parseInt(parts[5]);
+        int def = Integer.parseInt(parts[6]);
+        int spd = Integer.parseInt(parts[7]);
+
+        // Find original Pokémon from Pokedex to get evolution info
+        Pokemon original = Pokedex.getPokemonByName(name);
+        if (original == null) {
+            throw new IllegalArgumentException("Pokémon not found in Pokedex: " + name);
+        }
+
+        // Create new Pokémon instance
+        Pokemon pokemon = new Pokemon(
+                original.getPokedexNo(),
+                name,
+                type1,
+                type2,
+                baseLevel,
+                original.getFrom(),
+                original.getTo(),
+                original.getEvoLevel(),
+                hp,
+                atk,
+                def,
+                spd
+        );
+
+        // Load moves if they exist in the data (parts[8] contains moves)
+        if (parts.length > 8 && !parts[8].isEmpty()) {
+            String[] moveNames = parts[8].split(";");
+            for (String moveName : moveNames) {
+                pokemon.teachMove(moveName, false);
+            }
+        }
+
+        return pokemon;
+    } catch (Exception e) {
+        System.err.println("Error parsing Pokémon data: " + e.getMessage());
+        return null;
+    }
+}
+
+    public String toFileString() {
+        StringBuilder sb = new StringBuilder();
+
+        // Basic info
+        sb.append(Name).append(",");
+        sb.append(BaseLevel).append(",");
+        sb.append(Type1).append(",");
+        sb.append(Type2 == null ? "0" : Type2).append(",");
+        sb.append(HP).append(",");
+        sb.append(Atk).append(",");
+        sb.append(Def).append(",");
+        sb.append(Spd).append(",");
+
+        // Moves
+        if (pMoves > 0) {
+            for (int i = 0; i < pMoves; i++) {
+                if (moves[i] != null) {
+                    sb.append(moves[i].getName());
+                    if (i < pMoves - 1) sb.append(";");
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+    public String toCsvString() {
+        return String.join(",",
+                String.valueOf(this.PokedexNo),
+                this.Name,
+                this.Type1,
+                this.Type2,
+                String.valueOf(this.BaseLevel),
+                String.valueOf(this.From),
+                String.valueOf(this.To),
+                String.valueOf(this.EvoLevel),
+                String.valueOf(this.HP),
+                String.valueOf(this.Atk),
+                String.valueOf(this.Def),
+                String.valueOf(this.Spd)
+        );
+    }
+
+    public static Pokemon fromCsvString(String csv) {
+        String[] parts = csv.split(",");
+        if (parts.length < 12) { // Ensure there are at least 12 fields
+            throw new IllegalArgumentException("Invalid CSV format. Expected 12 fields, got: " + parts.length);
+        }
+        return new Pokemon(
+                Integer.parseInt(parts[0]), // pokedexNo
+                parts[1],                   // name// level
+                parts[2],                   // type1
+                parts[3],
+                Integer.parseInt(parts[4]),// type2
+                Integer.parseInt(parts[5]),
+                Integer.parseInt(parts[6]),
+                Integer.parseInt(parts[7]),
+                Integer.parseInt(parts[8]),
+                Integer.parseInt(parts[9]),
+                Integer.parseInt(parts[10]),
+                Integer.parseInt(parts[11])
+        );
     }
 }
