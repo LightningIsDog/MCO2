@@ -7,13 +7,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.Vector;
+import java.util.List;
 import java.util.function.Consumer;
 import java.awt.event.ActionListener;
 import javax.swing.event.ListSelectionListener;
-import java.util.List;
 
 public class DexGui {
 
@@ -3215,68 +3214,67 @@ public class DexGui {
             StringBuilder result = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
                 String line;
+                boolean inTrainer = false;
                 boolean found = false;
+                Trainers currentTrainer = null;
+                String section = null;
+                Map<String, String> trainerData = new HashMap<>();
 
                 while ((line = reader.readLine()) != null) {
-                    if (!line.trim().isEmpty()) {
-                        String[] parts = line.split("-");
-                        if (parts.length >= 8) {
-                            String id = parts[0];
-                            String name = parts[1];
-                            String month = parts[2];
-                            String day = parts[3];
-                            String year = parts[4];
-                            String sex = parts[5];
-                            String home = parts[6];
-                            String description = parts[7];
+                    line = line.trim();
 
-                            // Check if any field matches the keyword
-                            if (id.toLowerCase().contains(keyword) ||
-                                    name.toLowerCase().contains(keyword) ||
-                                    month.toLowerCase().contains(keyword) ||
-                                    day.toLowerCase().contains(keyword) ||
-                                    year.toLowerCase().contains(keyword) ||
-                                    sex.toLowerCase().contains(keyword) ||
-                                    home.toLowerCase().contains(keyword) ||
-                                    description.toLowerCase().contains(keyword)) {
+                    if (line.equals("[TRAINER_START]")) {
+                        inTrainer = true;
+                        trainerData.clear();
+                        currentTrainer = new Trainers();
+                        section = null;
+                        continue;
+                    } else if (line.equals("[TRAINER_END]")) {
+                        inTrainer = false;
 
-                                Trainers trainer = new Trainers(id, name, Integer.parseInt(month), Integer.parseInt(day), Integer.parseInt(year), sex, home, description);
+                        // Check if current trainer matches search criteria
+                        if (currentTrainer != null && trainerMatchesKeyword(currentTrainer, keyword)) {
+                            appendTrainerInfo(result, currentTrainer);
+                            found = true;
+                        }
+                        continue;
+                    } else if (line.startsWith("[")) {
+                        section = line.replace("[", "").replace("]", "");
+                        continue;
+                    }
 
-                                result.append("   Trainer Card\n");
-                                result.append("   ID No.      : ").append(trainer.getID()).append("\n");
-                                result.append("   Name        : ").append(trainer.getName()).append("\n");
-                                Date birth = trainer.getBirth();
-                                result.append("   Birth Date  : ").append(birth.getMonth()).append("/")
-                                        .append(birth.getDay()).append("/").append(birth.getYear()).append("\n");
-                                result.append("   Sex         : ").append(trainer.getSex()).append("\n");
-                                result.append("   Hometown    : ").append(trainer.getHome()).append("\n");
-                                result.append("   Description : ").append(trainer.getDescription()).append("\n");
-                                result.append("   Money       : ").append(trainer.getMoney()).append("\n");
-
-                                result.append("   Pokemon in Lineup:");
-                                Pokemon[] team = trainer.getPokemonLineup();
-                                boolean hasTeam = false;
-                                for (Pokemon p : team) {
-                                    if (p != null) {
-                                        result.append("     - ").append(p.getName()).append("\n");
-                                        hasTeam = true;
-                                    }
-                                }
-                                if (!hasTeam) result.append(" None\n");
-
-                                result.append("   Pokemon in Storage:");
-                                Pokemon[] pc = trainer.getPokemonStorage();
-                                boolean hasStorage = false;
-                                for (Pokemon p : pc) {
-                                    if (p != null) {
-                                        result.append("     - ").append(p.getName()).append("\n");
-                                        hasStorage = true;
-                                    }
-                                }
-                                if (!hasStorage) result.append(" None\n");
-
-                                result.append("----------------------------\n\n");
-                                found = true;
+                    if (inTrainer && currentTrainer != null) {
+                        if (section == null) {
+                            // Parse trainer attributes
+                            if (line.startsWith("ID=")) {
+                                currentTrainer.setID(line.substring(3).trim());
+                                trainerData.put("ID", line.substring(3).trim());
+                            } else if (line.startsWith("Name=")) {
+                                currentTrainer.setName(line.substring(5).trim());
+                                trainerData.put("Name", line.substring(5).trim());
+                            } else if (line.startsWith("Birth=")) {
+                                trainerData.put("Birth", line.substring(6).trim());
+                            } else if (line.startsWith("Sex=")) {
+                                currentTrainer.setSex(line.substring(4).trim());
+                                trainerData.put("Sex", line.substring(4).trim());
+                            } else if (line.startsWith("Home=")) {
+                                currentTrainer.setHome(line.substring(5).trim());
+                                trainerData.put("Home", line.substring(5).trim());
+                            } else if (line.startsWith("Description=")) {
+                                currentTrainer.setDescription(line.substring(12).trim());
+                                trainerData.put("Description", line.substring(12).trim());
+                            } else if (line.startsWith("Money=")) {
+                                currentTrainer.setMoney(Double.parseDouble(line.substring(6).trim()));
+                                trainerData.put("Money", line.substring(6).trim());
+                            }
+                        } else {
+                            // Handle sections (team, storage, items)
+                            if (section.equals("POKEMON_TEAM")) {
+                                Pokemon p = Pokemon.fromCsvString(line);
+                                if (p != null) currentTrainer.addPokemonToLineup(p);
+                            } else if (section.equals("POKEMON_STORAGE")) {
+                                Pokemon p = Pokemon.fromCsvString(line);
+                                if (p != null) currentTrainer.addPokemonToStorage(p);
                             }
                         }
                     }
@@ -3290,6 +3288,8 @@ public class DexGui {
 
             } catch (IOException ex) {
                 resultArea.setText("Error reading trainers.txt: " + ex.getMessage());
+            } catch (NumberFormatException ex) {
+                resultArea.setText("Error parsing trainer data: " + ex.getMessage());
             }
         });
 
@@ -3300,6 +3300,49 @@ public class DexGui {
         searchFrame.add(mainPanel);
         searchFrame.setLocationRelativeTo(null);
         searchFrame.setVisible(true);
+    }
+
+    private static boolean trainerMatchesKeyword(Trainers trainer, String keyword) {
+        return trainer.getID().toLowerCase().contains(keyword) ||
+                trainer.getName().toLowerCase().contains(keyword) ||
+                trainer.getSex().toLowerCase().contains(keyword) ||
+                trainer.getHome().toLowerCase().contains(keyword) ||
+                trainer.getDescription().toLowerCase().contains(keyword);
+    }
+
+    private static void appendTrainerInfo(StringBuilder result, Trainers trainer) {
+        result.append("   Trainer Card\n");
+        result.append("   ID No.      : ").append(trainer.getID()).append("\n");
+        result.append("   Name        : ").append(trainer.getName()).append("\n");
+        result.append("   Birth Date  : ").append(trainer.getBirth()).append("\n");
+        result.append("   Sex         : ").append(trainer.getSex()).append("\n");
+        result.append("   Hometown    : ").append(trainer.getHome()).append("\n");
+        result.append("   Description : ").append(trainer.getDescription()).append("\n");
+        result.append("   Money       : ").append(trainer.getMoney()).append("\n");
+
+        result.append("   Pokemon in Lineup:");
+        Pokemon[] team = trainer.getPokemonLineup();
+        boolean hasTeam = false;
+        for (Pokemon p : team) {
+            if (p != null) {
+                result.append("     - ").append(p.getName()).append("\n");
+                hasTeam = true;
+            }
+        }
+        if (!hasTeam) result.append(" None\n");
+
+        result.append("   Pokemon in Storage:");
+        Pokemon[] pc = trainer.getPokemonStorage();
+        boolean hasStorage = false;
+        for (Pokemon p : pc) {
+            if (p != null) {
+                result.append("     - ").append(p.getName()).append("\n");
+                hasStorage = true;
+            }
+        }
+        if (!hasStorage) result.append(" None\n");
+
+        result.append("----------------------------\n\n");
     }
     public static void showAddPokemonToTrainer(Trainers trainer, boolean addToLineup) {
         JFrame frame = new JFrame("Add Pokémon to " + trainer.getName());
@@ -4330,7 +4373,8 @@ public class DexGui {
                 return;
             }
 
-            if (trainer.getItemCount() >= 50 || trainer.getUniqueCount() >= 10) { // Changed == to >= for safety
+            if (trainer.getItemCount() >= 50 ||
+                    (trainer.isItemUnique(itemToBuy) && !trainer.hasItem(itemToBuy) && trainer.getUniqueCount() >= 10)) { // Changed == to >= for safety
                 JOptionPane.showMessageDialog(buyFrame,
                         "You cannot buy more items. You've reached one (or both) of the following limits:\n"
                                 + "Items in bag (max 50): " + trainer.getItemCount() + "\n"
@@ -4887,10 +4931,10 @@ public class DexGui {
                 // Use regular item (assume it's consumed immediately)
                 String result = trainer.useItem(selectedItem, selectedPokemon);
 
-                // Set the used item as the held item (if not already holding one)
-                if (selectedPokemon.getHeldItem() == null) {
-                    selectedPokemon.giveHeldItem(selectedItem.getitemName());
-                }
+                // Always replace held item with the used one
+                String heldResult = selectedPokemon.giveHeldItem(selectedItem.getitemName());
+
+                JOptionPane.showMessageDialog(useFrame, result + "\n" + heldResult);
 
                 JOptionPane.showMessageDialog(useFrame, result);
 

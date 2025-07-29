@@ -518,25 +518,30 @@ public class Pokemon implements Serializable
         System.out.println("\n ================================================================================================");
     }
 
+
     /**
-     Gives a held item to the Pokémon if it is not already holding one.
-     @param itemName the name of the item to give
+     * Gives a held item to the Pokémon. If already holding one, it is replaced.
+     * @param itemName the name of the item to give
+     * @return message indicating the result
      */
-    public void giveHeldItem(String itemName)
-    {
-        if (heldItem != null)
-        {
-            System.out.println(Name + " is already holding " + heldItem.getitemName());
-            return;
-        }
+
+    public String giveHeldItem(String itemName) {
         Items item = Items.getItemByName(itemName);
-        heldItem = item;
-        if (item == null)
-        {
-            System.out.println(itemName + " does not exist");
-            return;
+
+        if (item == null) {
+            return itemName + " does not exist.";
         }
-        System.out.println(Name + " is now holding " + item.getitemName());
+
+        String message;
+
+        if (heldItem != null) {
+            message = Name + " replaced " + heldItem.getitemName() + " with " + item.getitemName() + ".";
+        } else {
+            message = Name + " is now holding " + item.getitemName() + ".";
+        }
+
+        heldItem = item;
+        return message;
     }
 
     /**
@@ -1067,6 +1072,17 @@ public class Pokemon implements Serializable
         return sb.toString();
     }
     public String toCsvString() {
+        // Build moves string
+        String movesString = "";
+        if (pMoves > 0) {
+            movesString = String.join(",",
+                    Arrays.stream(moves, 0, pMoves)
+                            .filter(Objects::nonNull)
+                            .map(Moves::getName)
+                            .toArray(String[]::new)
+            );
+        }
+
         return String.join(",",
                 String.valueOf(this.PokedexNo),
                 this.Name,
@@ -1079,28 +1095,41 @@ public class Pokemon implements Serializable
                 String.valueOf(this.HP),
                 String.valueOf(this.Atk),
                 String.valueOf(this.Def),
-                String.valueOf(this.Spd)
+                String.valueOf(this.Spd),
+                movesString // Always include moves field (empty if no moves)
         );
     }
 
     public static Pokemon fromCsvString(String csv) {
         String[] parts = csv.split(",");
-        if (parts.length < 12) { // Ensure there are at least 12 fields
+        if (parts.length < 12) {
             throw new IllegalArgumentException("Invalid CSV format. Expected 12 fields, got: " + parts.length);
         }
-        return new Pokemon(
-                Integer.parseInt(parts[0]), // pokedexNo
-                parts[1],                   // name// level
+
+        // Create the Pokemon with basic stats
+        Pokemon pokemon = new Pokemon(
+                Integer.parseInt(parts[0]),  // pokedexNo
+                parts[1],                   // name
                 parts[2],                   // type1
-                parts[3],
-                Integer.parseInt(parts[4]),// type2
-                Integer.parseInt(parts[5]),
-                Integer.parseInt(parts[6]),
-                Integer.parseInt(parts[7]),
-                Integer.parseInt(parts[8]),
-                Integer.parseInt(parts[9]),
-                Integer.parseInt(parts[10]),
-                Integer.parseInt(parts[11])
+                parts[3],                   // type2
+                Integer.parseInt(parts[4]), // baseLevel
+                Integer.parseInt(parts[5]), // from
+                Integer.parseInt(parts[6]), // to
+                Integer.parseInt(parts[7]), // evoLevel
+                Integer.parseInt(parts[8]), // HP
+                Integer.parseInt(parts[9]), // Atk
+                Integer.parseInt(parts[10]), // Def
+                Integer.parseInt(parts[11])  // Spd
         );
+
+        // Parse and add moves if they exist
+        if (parts.length > 12 && !parts[12].isEmpty()) {
+            String[] moveNames = parts[12].split(",");
+            for (String moveName : moveNames) {
+                pokemon.teachMove(moveName.trim(), false);
+            }
+        }
+
+        return pokemon;
     }
 }

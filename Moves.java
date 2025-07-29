@@ -44,38 +44,45 @@ public class Moves {
 
     public void displaymove(boolean tab) {
         System.out.println("\n ==================================================================\n");
-        if (tab) {
-            System.out.println("\tMove: " + this.getName().trim());
-        } else {
-            System.out.println("\tMove: " + this.getName().trim());
+        if (tab)
+        {
+            System.out.println("\tMove: " + getName().trim());
+        }
+        else {
+            System.out.println("\tMove: " + getName().trim());
         }
 
-        System.out.println("\t" + this.getDesc());
-        System.out.println("\tClassification: " + this.getMachine());
-        if (!this.getType2().contains("0")) {
-            PrintStream var10000 = System.out;
-            String var10001 = this.getType1();
-            var10000.println("\tType: " + var10001 + "/" + this.getType2());
-        } else {
-            System.out.println("\tType: " + this.getType1());
+        System.out.println("\t" + getDesc());
+        System.out.println("\tClassification: " + getMachine());
+        if (!getType2().contains("0"))
+        {
+            System.out.println("\tType: " + getType1() + "/" + getType2());
+        }
+        else
+        {
+            System.out.println("\tType: " + getType1());
         }
 
         System.out.println("\n ==================================================================");
     }
 
     public static void addMovetoDataBase(String name, String desc, String machine, String type1, String type2) {
-        if (name != null && desc != null && machine != null && type1 != null && type2 != null) {
+        {
+            if(name==null||desc==null||machine==null||type1==null||type2==null) {
+                System.out.println("null move cannot be added");
+                return;
+            }
             moveList[moveCount] = new Moves(name, desc, machine, type1, type2);
-            ++moveCount;
-        } else {
-            System.out.println("null move cannot be added");
+            moveCount++;
         }
     }
 
-    public static Moves getMoveByName(String name) {
-        for(Moves move : moveList) {
-            if (move != null && move.getName().equalsIgnoreCase(name.strip())) {
-                return move;
+    public static Moves getMoveByName(String name)
+    {
+        for (Moves move : moveList)
+        {
+            if (move != null && move.getName().equalsIgnoreCase(name.strip()))
+            {                return move;
             }
         }
 

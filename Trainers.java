@@ -296,6 +296,24 @@ public class Trainers {
     public void setMoney(double money) {
         this.money = money;
     }
+    public void setID(String ID){
+        this.ID = ID;
+    }
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setSex(String sex){
+        this.sex = sex;
+    }
+
+    public void setHome(String home){
+        this.home = home;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
 
     /** This method sets the Trainer's Pokemon lineup.
      *
@@ -813,24 +831,37 @@ public class Trainers {
             return "You cannot add more items. Bag is full (50/50).";
         }
 
-        boolean isUnique = isItemUnique(item);
-        if (isUnique && uniqueCount >= 10) {
+        // Check if item already exists in the bag
+        for (int i = 0; i < 50; i++) {
+            if (bag[i] != null && bag[i].getitemName().equals(item.getitemName())) {
+                bag[i].setQuantity(bag[i].getQuantity() + 1);
+                itemCount++; // ✅ increase total quantity
+                return item.getitemName() + " quantity increased to " + bag[i].getQuantity() + ".";
+            }
+        }
+
+        // Item is not in the bag — it is a new unique item
+        if (uniqueCount >= 10) {
             return "You cannot add more unique item types. Limit is 10.";
         }
 
-        // ✅ Use centralized clone method
         Items copy = Items.cloneItem(item);
+        copy.setQuantity(1);
 
-        bag[itemCount] = copy;
-        itemCount++;
-
-        if (isUnique) {
+        // Add to bag
+        for (int i = 0; i < 50; i++) {
+            if (bag[i] == null) {
+                bag[i] = copy;
+                break;
+            }
+        }
+            itemCount++;       // ✅ total quantity increases
             uniqueItems[uniqueCount] = copy;
             uniqueCount++;
+
+            return copy.getitemName() + " was successfully added to your bag.";
         }
 
-        return copy.getitemName() + " was successfully added to your bag.";
-    }
 
     /**
      * Parses a line from trainers.txt into a Trainers object.
@@ -1021,5 +1052,13 @@ public class Trainers {
                 return;
             }
         }
+    }
+    public boolean hasItem(Items item) {
+        for (int i = 0; i < itemCount; i++) {
+            if (bag[i] != null && bag[i].getitemName().equals(item.getitemName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
