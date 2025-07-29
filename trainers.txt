@@ -7,27 +7,24 @@ Home=Pallet Town
 Description=Pokémon Trainer
 Money=1000000
 [POKEMON_TEAM]
-25,Pikachu,Electric,0,30,0,26,0,80,90,55,120,Surf,Strength,Thunderbolt,Iron Tail
-1,Bulbasaur,Grass,Poison,15,0,2,16,60,62,63,60,Tackle,Growl,Leech Seed,Vine Whip
-4,Charmander,Fire,0,15,0,5,36,50,65,50,65,Scratch,Ember,Smokescreen,Flamethrower
-7,Squirtle,Water,0,15,0,8,16,55,48,65,43,Tackle,Water Gun,Bubble,Withdraw
-39,Jigglypuff,Normal,Fairy,15,0,0,0,115,45,20,20,Sing,Double Slap,Defense Curl,Pound
+25,Pikachu,Electric,0,30,0,26,0,35,55,40,90,Surf,Strength,Thunderbolt,Iron Head
+1,Bulbasaur,Grass,Poison,15,0,2,16,45,49,49,45,Tackle
+4,Charmander,Fire,0,15,0,5,16,39,52,43,65,Flamethrower
+7,Squirtle,Water,0,15,0,8,16,44,48,65,43,Tackle
+10,Caterpie,Bug,0,15,0,11,7,45,30,35,45,Tackle
 [POKEMON_STORAGE]
-10,Caterpie,Bug,0,5,0,0,0,45,30,35,45,Tackle,String Shot
-13,Weedle,Bug,Poison,5,0,0,0,40,35,30,50,Poison Sting,String Shot
-16,Pidgey,Normal,Flying,5,0,0,18,60,40,45,56,Tackle,Gust
-19,Rattata,Normal,0,5,0,0,20,30,56,35,72,Tackle,Quick Attack
-23,Ekans,Poison,0,5,0,0,0,35,60,44,55,Wrap,Leer
+10,Caterpie,Bug,0,5,0,11,7,45,30,35,45,Tackle
+13,Weedle,Bug,Poison,5,0,14,7,40,35,30,50,Tackle
+16,Pidgey,Normal,Flying,5,0,17,18,40,45,40,56,Tackle
+19,Rattata,Normal,0,5,0,20,20,30,56,35,72,Tackle
+23,Ekans,Poison,0,5,0,24,22,35,60,44,55,Tackle
 [ITEMS]
-Potion,10
-Revive,5
+HP Up,1
 Protein,7
 Iron,6
 Carbos,4
-Calcium,3
-Zinc,5
 Rare Candy,8
-HP Up,1
+Zinc,5
 [TRAINER_END]
 
 [TRAINER_START]
@@ -39,18 +36,20 @@ Home=Cerulean City
 Description=Water Pokémon Specialist
 Money=850000
 [POKEMON_TEAM]
-120,Staryu,Water,0,18,0,121,0,30,45,55,85,Tackle,Water Gun,Swift,Recover
-60,Poliwag,Water,0,16,0,61,0,40,50,40,90,Bubble,Hypnosis,Water Gun,Double Slap
-98,Krabby,Water,0,15,0,0,0,30,105,90,50,Bubblebeam,Harden,Leer,Stomp
-118,Goldeen,Water,0,15,0,119,0,45,67,60,63,Peck,Water Sport,Flail,Horn Attack
-129,Magikarp,Water,0,5,0,130,20,20,10,55,80,Splash,Tackle
+7,Squirtle,Water,0,16,0,8,16,44,48,65,43,Tackle
+8,Wartortle,Water,0,16,7,9,36,59,63,80,58,Tackle
+9,Blastoise,Water,0,36,8,0,0,79,83,100,78,Surf,Tackle
+10,Caterpie,Bug,0,15,0,11,7,45,30,35,45,Tackle
+13,Weedle,Bug,Poison,15,0,14,7,40,35,30,50,Tackle
 [POKEMON_STORAGE]
-54,Psyduck,Water,0,5,0,55,33,50,52,48,55,Scratch,Water Gun
+16,Pidgey,Normal,Flying,15,0,17,18,40,45,40,56,Tackle
 [ITEMS]
-Potion,10
-Revive,5
+HP Up,1
 Protein,7
 Iron,6
+Carbos,4
+Rare Candy,8
+Zinc,5
 [TRAINER_END]
 
 [TRAINER_START]
@@ -62,18 +61,21 @@ Home=Pewter City
 Description=Rock Pokémon Trainer
 Money=780000
 [POKEMON_TEAM]
-74,Geodude,Rock,Ground,18,0,75,0,40,80,100,20,Tackle,Defense Curl,Rock Throw,Magnitude
-95,Onix,Rock,Ground,20,0,0,0,35,45,160,70,Bind,Screech,Rock Tomb,Dig
-111,Rhyhorn,Ground,Rock,19,0,112,0,80,85,95,25,Tail Whip,Horn Attack,Stomp,Fury Attack
-213,Shuckle,Bug,Rock,15,0,0,0,20,10,230,5,Withdraw,Wrap,Encore,Bide
-185,Sudowoodo,Rock,0,20,0,0,0,70,100,115,30,Rock Throw,Mimic,Low Kick,Headbutt
+27,Sandshrew,Ground,0,18,0,28,22,50,75,85,40,Tackle
+28,Sandslash,Ground,0,22,27,0,0,Earthquake,Rock Smash
+19,Rattata,Normal,0,19,0,20,20,30,56,35,72,Tackle
+21,Spearow,Normal,Flying,15,0,22,20,40,60,30,70,Tackle
+23,Ekans,Poison,0,20,0,24,22,35,60,44,55,Tackle
 [POKEMON_STORAGE]
-66,Machop,Fighting,0,10,0,67,28,70,80,50,35,Karate Chop,Low Sweep
+10,Caterpie,Bug,0,15,0,11,7,45,30,35,45,Tackle
 [ITEMS]
-Potion,10
-Revive,5
+HP Up,1
 Protein,7
 Iron,6
+Carbos,4
+Calcium,3
+Zinc,5
+Rare Candy,8
 [TRAINER_END]
 
 [TRAINER_START]
@@ -85,18 +87,21 @@ Home=Celadon City
 Description=Grass Type Gym Leader
 Money=900000
 [POKEMON_TEAM]
-43,Oddish,Grass,Poison,15,0,44,0,45,50,55,30,Absorb,Sweet Scent,Poison Powder,Stun Spore
-69,Bellsprout,Grass,Poison,14,0,70,0,50,75,35,40,Vine Whip,Wrap,Growth,Sleep Powder
-114,Tangela,Grass,0,20,0,0,0,65,55,115,60,Constrict,Stun Spore,Vine Whip,Absorb
-182,Bellossom,Grass,0,25,69,0,0,75,80,95,50,Magical Leaf,Solar Beam,Sweet Scent,Sunny Day
-191,Sunkern,Grass,0,10,0,192,0,30,30,30,30,Absorb,Growth
+1,Bulbasaur,Grass,Poison,15,0,2,16,45,49,49,45,Tackle
+2,Ivysaur,Grass,Poison,16,1,3,32,60,62,63,60,Tackle
+3,Venusaur,Grass,Poison,32,2,0,0,80,82,83,80,Solar Beam,Tackle
+10,Caterpie,Bug,0,15,0,11,7,45,30,35,45,Tackle
+13,Weedle,Bug,Poison,15,0,14,7,40,35,30,50,Tackle
 [POKEMON_STORAGE]
-187,Hoppip,Grass,Flying,5,0,188,0,35,35,40,50,Splash,Synthesis
+16,Pidgey,Normal,Flying,15,0,17,18,40,45,40,56,Tackle
 [ITEMS]
-Potion,10
-Revive,5
+HP Up,1
 Protein,7
 Iron,6
+Carbos,4
+Calcium,3
+Zinc,5
+Rare Candy,8
 [TRAINER_END]
 
 [TRAINER_START]
@@ -108,16 +113,19 @@ Home=Pallet Town
 Description=Rival Trainer
 Money=990000
 [POKEMON_TEAM]
-133,Eevee,Normal,0,25,0,134,30,55,55,50,55,Quick Attack,Bite,Take Down,Sand Attack
-17,Pidgeotto,Normal,Flying,22,0,0,0,63,60,55,50,71,Gust,Twister,Agility,Quick Attack
-24,Arbok,Poison,0,21,0,0,0,60,85,69,80,Bite,Glare,Poison Fang,Crunch
-19,Rattata,Normal,0,15,0,0,20,30,56,35,72,Quick Attack,Hyper Fang
-8,Wartortle,Water,0,28,7,9,0,59,63,80,58,Water Gun,Bubblebeam,Tackle,Withdraw
+4,Charmander,Fire,0,25,0,5,16,39,52,43,65,Tackle
+17,Pidgeotto,Normal,Flying,22,16,18,36,63,60,55,71,Tackle
+24,Arbok,Poison,0,21,23,0,0,60,95,69,80,Tackle
+19,Rattata,Normal,0,15,0,20,20,30,56,35,72,Tackle
+8,Wartortle,Water,0,28,7,9,36,59,63,80,58,Tackle
 [POKEMON_STORAGE]
-52,Meowth,Normal,0,10,0,53,28,40,45,35,90,Scratch,Bite
+5,Charmeleon,Fire,0,16,4,6,36,58,64,58,80,Tackle
 [ITEMS]
-Potion,10
-Revive,5
+HP Up,1
 Protein,7
 Iron,6
+Carbos,4
+Calcium,3
+Zinc,5
+Rare Candy,8
 [TRAINER_END]
