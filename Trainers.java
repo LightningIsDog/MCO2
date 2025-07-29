@@ -62,7 +62,7 @@ public class Trainers {
         this.lineupCount = 0;
         this.storageCount = 0;
 
-        this.bag = new Items[99]; // Maximum of 50 items
+        this.bag = new Items[50]; // Maximum of 50 items
         this.uniqueItems = new Items[10];
         this.uniqueCount = 0;
         this.itemCount = 0;
@@ -102,7 +102,7 @@ public class Trainers {
         this.storageCount = 0; // Fix here as well
 
         // Initialize item arrays
-        this.bag = new Items[99];
+        this.bag = new Items[50];
         this.uniqueItems = new Items[10];
         this.uniqueCount = 0;
         this.itemCount = 0;
@@ -110,7 +110,7 @@ public class Trainers {
         if (itemNamesFromBag != null && !itemNamesFromBag.isEmpty()) {
             Set<String> tempUniqueNames = new HashSet<>();
             for (String itemName : itemNamesFromBag) {
-                if (this.itemCount < 99) {
+                if (this.itemCount < 50) {
                     Items loadedItem = Items.getItemByName(itemName);
 
                     if (loadedItem != null) {
@@ -557,8 +557,8 @@ public class Trainers {
     }
 
     public String addItemToBag(Items item) {
-        if (itemCount >= 99) {
-            return "You cannot add more items. Bag is full (99/99).";
+        if (itemCount >= 50) {
+            return "You cannot add more items. Bag is full (50/50).";
         }
 
         boolean isUnique = isItemUnique(item);

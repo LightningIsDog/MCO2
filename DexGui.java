@@ -3376,27 +3376,34 @@ public class DexGui {
 }
 
     private static String getPokemonDetails(Pokemon p) {
-        return String.format(
-                "Name: %s\nLevel: %d\nType: %s%s\nHP: %d\nAttack: %d\nDefense: %d\nSpeed: %d\n\nMoves:\n%s",
-                p.getName(),
-                p.getBaseLevel(),
-                p.getType1(),
-                p.getType2().equals("0") ? "" : "/" + p.getType2(),
-                p.getHP(),
-                p.getAtk(),
-                p.getDef(),
-                p.getSpd(),
-                getMovesAsString(p)
-        );
-    }
-    private static String getPokemonInfo(Pokemon p) {
-        return String.format(
-                "%s (Lv.%d)\nType: %s%s\nHP: %d  ATK: %d  DEF: %d  SPD: %d",
-                p.getName(), p.getBaseLevel(),
-                p.getType1(), p.getType2().equals("0") ? "" : "/" + p.getType2(),
-                p.getHP(), p.getAtk(), p.getDef(), p.getSpd()
-        );
-    }
+    String heldItemName = (p.getHeldItem() != null) ? p.getHeldItem().getitemName() : "None";
+
+    return String.format(
+        "Name: %s\nLevel: %d\nType: %s%s\nHP: %d\nAttack: %d\nDefense: %d\nSpeed: %d\n\nMoves:\n%s\nHeld Item: %s",
+        p.getName(),
+        p.getBaseLevel(),
+        p.getType1(),
+        p.getType2().equals("0") ? "" : "/" + p.getType2(),
+        p.getHP(),
+        p.getAtk(),
+        p.getDef(),
+        p.getSpd(),
+        getMovesAsString(p),
+        heldItemName
+    );
+}
+
+   private static String getPokemonInfo(Pokemon p) {
+    String heldItemName = (p.getHeldItem() != null) ? p.getHeldItem().getitemName() : "None";
+
+    return String.format(
+        "%s (Lv.%d)\nType: %s%s\nHP: %d  ATK: %d  DEF: %d  SPD: %d\nHeld Item: %s",
+        p.getName(), p.getBaseLevel(),
+        p.getType1(), p.getType2().equals("0") ? "" : "/" + p.getType2(),
+        p.getHP(), p.getAtk(), p.getDef(), p.getSpd(),
+        heldItemName
+    );
+}
 
    private static String getMovesAsString(Pokemon p) {
     StringBuilder sb = new StringBuilder();
@@ -4250,10 +4257,10 @@ public class DexGui {
                 return;
             }
 
-            if (trainer.getItemCount() >= 99 || trainer.getUniqueCount() >= 10) { // Changed == to >= for safety
+            if (trainer.getItemCount() >= 50 || trainer.getUniqueCount() >= 10) { // Changed == to >= for safety
                 JOptionPane.showMessageDialog(buyFrame,
                         "You cannot buy more items. You've reached one (or both) of the following limits:\n"
-                                + "Items in bag (max 99): " + trainer.getItemCount() + "\n"
+                                + "Items in bag (max 50): " + trainer.getItemCount() + "\n"
                                 + "Unique items (max 10): " + trainer.getUniqueCount() + "\n"
                                 + "Try modifying your bag to make space.",
                         "Limit Reached", JOptionPane.WARNING_MESSAGE);
@@ -4278,7 +4285,7 @@ public class DexGui {
 
                 // Update trainer status display
                 moneyLabel.setText("Available PokeDollars: P" + trainer.getMoney());
-                itemCountLabel.setText("Items in bag (max 99): " + trainer.getItemCount());
+                itemCountLabel.setText("Items in bag (max 50): " + trainer.getItemCount());
                 uniqueCountLabel.setText("Unique items in bag (max 10): " + trainer.getUniqueCount());
             }
         });
@@ -4300,7 +4307,7 @@ public class DexGui {
 
         // Trainer Status Panel (on the right) - NOW INDEPENDENTLY POSITIONED
         moneyLabel = new JLabel("Available PokeDollars: P" + String.format("%.2f", trainer.getMoney()));
-        itemCountLabel = new JLabel("Items in bag (max 99): " + trainer.getItemCount());
+        itemCountLabel = new JLabel("Items in bag (max 50): " + trainer.getItemCount());
         uniqueCountLabel = new JLabel("Unique items in bag (max 10): " + trainer.getUniqueCount());
 
         moneyLabel.setForeground(Color.RED);
@@ -4558,7 +4565,7 @@ sellButton.addActionListener(e -> {
 
 // ========== TRAINER STATUS PANEL ==========
 JLabel moneyLabel = new JLabel("Available PokeDollars: P" + String.format("%.2f", trainer.getMoney()));
-JLabel itemCountLabel = new JLabel("Items in bag (max 99): " + trainer.getItemCount());
+JLabel itemCountLabel = new JLabel("Items in bag (max 50): " + trainer.getItemCount());
 JLabel uniqueCountLabel = new JLabel("Unique items in bag (max 10): " + trainer.getUniqueCount());
 
 moneyLabel.setForeground(Color.RED);
@@ -4760,8 +4767,14 @@ backgroundPanel.add(sellPanel, gbcSellPanel);
                     }
                 }
             } else {
-                // Use regular item (assume it's consumed immediately)
+                                // Use regular item (assume it's consumed immediately)
                 String result = trainer.useItem(selectedItem, selectedPokemon);
+
+                // Set the used item as the held item (if not already holding one)
+                if (selectedPokemon.getHeldItem() == null) {
+                    selectedPokemon.giveHeldItem(selectedItem.getitemName());
+                }
+
                 JOptionPane.showMessageDialog(useFrame, result);
 
                 // Update item list (quantity decreased)
