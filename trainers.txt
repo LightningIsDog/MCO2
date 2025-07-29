@@ -1,33 +1,4 @@
 [TRAINER_START]
-ID=00001
-Name=Ash
-Birth=05/22/1996
-Sex=Male
-Home=Pallet Town
-Description=Pokémon Trainer
-Money=1000000
-[POKEMON_TEAM]
-25,Pikachu,Electric,0,30,0,26,0,35,55,40,90,Surf,Strength,Thunderbolt,Iron Head
-1,Bulbasaur,Grass,Poison,15,0,2,16,45,49,49,45,Tackle
-4,Charmander,Fire,0,15,0,5,16,39,52,43,65,Flamethrower
-7,Squirtle,Water,0,15,0,8,16,44,48,65,43,Tackle
-10,Caterpie,Bug,0,15,0,11,7,45,30,35,45,Tackle
-[POKEMON_STORAGE]
-10,Caterpie,Bug,0,5,0,11,7,45,30,35,45,Tackle
-13,Weedle,Bug,Poison,5,0,14,7,40,35,30,50,Tackle
-16,Pidgey,Normal,Flying,5,0,17,18,40,45,40,56,Tackle
-19,Rattata,Normal,0,5,0,20,20,30,56,35,72,Tackle
-23,Ekans,Poison,0,5,0,24,22,35,60,44,55,Tackle
-[ITEMS]
-HP Up,1
-Protein,7
-Iron,6
-Carbos,4
-Rare Candy,8
-Zinc,5
-[TRAINER_END]
-
-[TRAINER_START]
 ID=00002
 Name=Misty
 Birth=07/12/1997
@@ -51,7 +22,6 @@ Carbos,4
 Rare Candy,8
 Zinc,5
 [TRAINER_END]
-
 [TRAINER_START]
 ID=00003
 Name=Brock
@@ -62,7 +32,7 @@ Description=Rock Pokémon Trainer
 Money=780000
 [POKEMON_TEAM]
 27,Sandshrew,Ground,0,18,0,28,22,50,75,85,40,Tackle
-28,Sandslash,Ground,0,22,27,0,0,Earthquake,Rock Smash
+28,Sandslash,Ground,0,22,27,0,0,75,100,110,65,Earthquake,Rock Smash
 19,Rattata,Normal,0,19,0,20,20,30,56,35,72,Tackle
 21,Spearow,Normal,Flying,15,0,22,20,40,60,30,70,Tackle
 23,Ekans,Poison,0,20,0,24,22,35,60,44,55,Tackle
@@ -77,7 +47,6 @@ Calcium,3
 Zinc,5
 Rare Candy,8
 [TRAINER_END]
-
 [TRAINER_START]
 ID=00004
 Name=Erika
@@ -103,7 +72,6 @@ Calcium,3
 Zinc,5
 Rare Candy,8
 [TRAINER_END]
-
 [TRAINER_START]
 ID=00005
 Name=Gary
@@ -128,4 +96,39 @@ Carbos,4
 Calcium,3
 Zinc,5
 Rare Candy,8
+[TRAINER_END]
+[TRAINER_START]
+ID=00001
+Name=Ash
+Birth=03/04/0012
+Sex=Male
+Home=Pallet Town
+Description=Pokémon Trainer
+Money=1000000.00
+[POKEMON_TEAM]
+25,Pikachu,Electric,0,30,0,26,0,35,55,40,90,Surf,Thunderbolt
+1,Bulbasaur,Grass,Poison,15,0,2,16,45,49,49,45,Tackle
+4,Charmander,Fire,0,15,0,5,16,39,52,43,65,Flamethrower
+7,Squirtle,Water,0,15,0,8,16,44,48,65,43,Tackle
+10,Caterpie,Bug,0,15,0,11,7,45,30,35,45,Tackle
+[POKEMON_STORAGE]
+10,Caterpie,Bug,0,5,0,11,7,45,30,35,45,Tackle
+13,Weedle,Bug,Poison,5,0,14,7,40,35,30,50,Tackle
+16,Pidgey,Normal,Flying,5,0,17,18,40,45,40,56,Tackle
+19,Rattata,Normal,0,5,0,20,20,30,56,35,72,Tackle
+23,Ekans,Poison,0,5,0,24,22,35,60,44,55,Tackle
+[ITEMS]
+HP Up,1
+Protein,1
+Iron,1
+Carbos,1
+Rare Candy,1
+Zinc,1
+[UNIQUE_ITEMS]
+HP Up
+Protein
+Iron
+Carbos
+Rare Candy
+Zinc
 [TRAINER_END]
