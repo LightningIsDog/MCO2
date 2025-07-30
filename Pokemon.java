@@ -1,40 +1,111 @@
 import java.io.Serializable;
 import java.util.*;
-/** This class represents a Pokémon in the game, encapsulating its properties and behaviors.It includes attributes such as Pokédex number, name, types, base level,
- evolution details, stats (HP, Attack, Defense, Speed), moves set, and held items.
- The class provides methods to display Pokémon details and etc.
+
+/** This class represents a Pokémon in the game.
+ *  It includes attributes such as Pokedex number, name, types, base level,
  *  @author Justin Miguel Agustin L. Lotilla
  *  @author Maurienne Marie M. Mojica
  *  @version 5.0
  */
 
-public class Pokemon implements Serializable
-{
+public class Pokemon implements Serializable{
+
+    /**
+     * Serial version UID for serialization compatibility.
+     * This is used to ensure that a loaded class corresponds
+     */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Pokemon dex number
+     */
     private int PokedexNo;
+
+    /**
+     * Pokemon name
+     */
     private String Name;
+
+    /**
+     * Pokemon primary type
+     */
     private String Type1;
+
+    /**
+     * Pokemon secondary type
+     */
     private String Type2;
+
+    /**
+     * Pokemon base level
+     */
     private int BaseLevel;
+
+    /**
+     * Pokemon evolution from
+     */
     private int From;
+
+    /**
+     * Pokemon evolution to
+     */
     private int To;
+
+    /**
+     * Pokemon evolution level
+     */
     private int EvoLevel;
+
+    /**
+     * Pokemon HP stat
+     */
     private int HP;
+
+    /**
+     * Pokemon attack stat
+     */
     private int Atk;
+
+    /**
+     * Pokemon defense stat
+     */
     private int Def;
+
+    /**
+     * Pokemon Speed stat
+     */
     private int Spd;
+
+    /**
+     * Array to hold the Pokémon's moves
+     */
     private Moves[] moves = new Moves[4];
+
+    /**
+     * Pokemon's held item
+     */
     private Items heldItem;
+
+    /**
+     * Pokemon's item count
+     */
     private int pItems = 0;
+
+    /**
+     * Pokemon's move count
+     */
     private int pMoves = 0;
 
-    // ✅ Default (no-arg) constructor
+   /**
+    * Default constructor for the Pokémon class.
+    * Initializes the Pokémon with default values.
+    */
     public Pokemon() {
         this.PokedexNo = 0;
         this.Name = "";
         this.Type1 = "";
-        this.Type2 = "0"; // Use "0" to indicate no second type
-        this.BaseLevel = 1; // Default starting level
+        this.Type2 = "0"; 
+        this.BaseLevel = 1; 
         this.From = 0;
         this.To = 0;
         this.EvoLevel = 0;
@@ -76,13 +147,14 @@ public class Pokemon implements Serializable
     }
 
     /**
-     * Array to store the types of Pokémon.
+     * Array of all possible Pokémon types.
      */
-    public  static final String[] TYPES = { "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy" };
+    public  static final String[] TYPES = { "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", 
+    "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy" };
 
     /**
-     Returns the Dex No. of the Pokemon.
-     @return the item ID as an int
+     * Returns the Pokédex number of the Pokémon.
+     * @return the Pokédex number as an int
      */
     public int getPokedexNo()
     {
@@ -197,82 +269,144 @@ public class Pokemon implements Serializable
         return heldItem;
     }
 
+    /**
+     * Returns the number of moves the Pokémon currently knows.
+     * @return the number of moves as an int
+     */
     public int getPMoves() {
         return pMoves;
     }
 
+    /**
+     * Returns the array of moves that the Pokémon currently knows.
+     * @return an array of Moves objects representing the Pokémon's moves
+     */
     public Moves[] getMoves() {
         return moves;
     }
 
+    /**
+     * Sets the Pokédex number of the Pokémon.
+     * @param pokedexNo pokedex number of the pokemon
+     */
     public void setPokedexNo(int pokedexNo)
     {
         this.PokedexNo = pokedexNo;
     }
 
-
+    /**
+     * Sets the name of the Pokémon.
+     * @param name pokemon name
+     */
     public void setName(String name)
     {
         this.Name = name;
     }
 
+    /**
+     * Sets the primary type of the Pokémon.
+     * @param type1 primary type of a pokemon
+     */
     public void setType1(String type1)
     {
         this.Type1 = type1;
     }
 
+    /**
+     * Sets the secondary type of the Pokémon.
+     * @param type2 secondary type of pokemon
+     */
     public void setType2(String type2)
     {
         this.Type2 = type2;
     }
 
+    /**
+     * Sets the base level of the Pokémon.
+     * @param from evolution from of a pokemon 
+     */
     public void setFrom(int from)
     {
         this.From = from;
     }
 
+    /**
+     * Sets the Pokédex number that this Pokémon evolves to.
+     * @param to evolution to of a pokemon
+     */
     public void setTo(int to)
     {
         this.To = to;
     }
 
+    /**
+     * Sets the level at which this Pokémon evolves.
+     * @param evoLevel evolution level of a pokemon
+     */
     public void setEvoLevel(int evoLevel)
     {
         this.EvoLevel = evoLevel;
     }
 
+    /**
+     * Sets the hit points (HP) of the Pokémon.
+     * @param hp hp stats of a pokemon
+     */
     public void setHP(int hp)
     {
         this.HP = hp;
     }
 
+    /**
+     * Sets the attack stat of the Pokémon.
+     * @param atk attack stat of a pokemon
+     */
     public void setAtk(int atk)
     {
         this.Atk = atk;
     }
 
+    /**
+     * Sets the defense stat of the Pokémon.
+     * @param def defense stat of a pokemon
+     */
     public void setDef(int def)
     {
         this.Def = def;
     }
 
+    /**
+     * Sets the speed stat of the Pokémon.
+     * @param spd speed stat of a pokemon
+     */
     public void setSpd(int spd)
     {
         this.Spd = spd;
     }
 
+    /**
+     * Stores the move sets of the Pokémon.
+     * @param moves move set of a pokemon
+     */
     public void setMoves(Moves[] moves) {
         this.moves = moves;
     }
 
+    /**
+     * Sets the moves that the pokemon wants to learn
+     * @param pMoves pokemon moves
+     */
     public void setPMoves(int pMoves) {
         this.pMoves = pMoves;
     }
 
-    /**
-     Teaches a move to the Pokémon if it doesn't already know it and if it can learn it.
-     @param moveName the name of the move to teach
-     */
+   /**
+    * Teaches a move to the Pokémon.
+    * @param moveName move name to be taught
+    * @param overwrite {@code true} to allow replacing an existing move if the Pokémon already knows 4 moves;
+    *                  {@code false} to prevent overwriting
+    * @return {@code true} if the move was successfully taught; {@code false} otherwise
+    */
     public boolean teachMove(String moveName, boolean overwrite) {
         Moves move = Moves.getMoveByName(moveName);
         if (move == null) return false;
@@ -295,7 +429,6 @@ public class Pokemon implements Serializable
             moves[pMoves-1] = move; // Replace last move
             return true;
         }
-
         return false;
     }
 
@@ -305,11 +438,10 @@ public class Pokemon implements Serializable
      * @return true if move was successfully removed
      */
     public boolean unlearnMove(String moveName) {
-        if (pMoves <= 1) return false; // Must keep at least 1 move
-
+        // Must keep at least 1 move
+        if (pMoves <= 1) return false; 
         for (int i = 0; i < pMoves; i++) {
             if (moves[i].getName().equalsIgnoreCase(moveName)) {
-                // Shift remaining moves
                 System.arraycopy(moves, i+1, moves, i, pMoves-i-1);
                 moves[--pMoves] = null;
                 return true;
@@ -317,6 +449,11 @@ public class Pokemon implements Serializable
         }
         return false;
     }
+
+    /**
+     * Returns the names of the moves that the Pokémon currently knows.
+     * @return an array of move names as Strings
+     */
     public String[] getKnownMoves() {
         String[] knownMoves = new String[pMoves];
         for (int i = 0; i < pMoves; i++) {
@@ -325,11 +462,11 @@ public class Pokemon implements Serializable
         return knownMoves;
     }
 
-    /**
-     Displays the details of the Pokémon in a formatted manner.
-     It includes the Pokédex number, name, type(s), base level, stats (HP, Attack, Defense, Speed),
-     evolution details, held item, and moves known by the Pokémon.
-     */
+     /**
+      * Displays the details of the Pokémon in a formatted manner.
+      * It includes the Pokédex number, name, type(s), base level, stats (HP, Attack, Defense, Speed),
+      * evolution details, held item, and moves known by the Pokémon.
+      */
     public void displaypokemon()
     {
         System.out.println("\n ================================================================================================");
@@ -518,7 +655,6 @@ public class Pokemon implements Serializable
         System.out.println("\n ================================================================================================");
     }
 
-
     /**
      * Gives a held item to the Pokémon. If already holding one, it is replaced.
      * @param itemName the name of the item to give
@@ -527,11 +663,9 @@ public class Pokemon implements Serializable
 
     public String giveHeldItem(String itemName) {
         Items item = Items.getItemByName(itemName);
-
         if (item == null) {
             return itemName + " does not exist.";
         }
-
         String message;
 
         if (heldItem != null) {
@@ -539,13 +673,12 @@ public class Pokemon implements Serializable
         } else {
             message = Name + " is now holding " + item.getitemName() + ".";
         }
-
         heldItem = item;
         return message;
     }
 
     /**
-     Removes the held item from the Pokémon if it is holding one.
+     * Removes a held item to the Pokémon
      */
     public void removeHeldItem()
     {
@@ -559,8 +692,7 @@ public class Pokemon implements Serializable
     }
 
     /**
-     Uses the held item if it is not null and if it is not a held item.
-     If the item is a held item, it will not be removed after use.
+     * Uses a held Item
      */
     public void useHeldItem()
     {
@@ -577,21 +709,19 @@ public class Pokemon implements Serializable
     }
 
     /**
-     Makes the Pokémon cry, which is a sound it makes.
-     This method prints a message indicating that the Pokémon is crying.
+     * This method return the Pokemon's cry
+     * @return Pokemon's Cry
      */
     public String cry() {
-        // You might want to remove spaces from the name for the actual "sound" part
-        // For example, "Mister Mime" might cry "MISTERMIME!!!"
         String crySoundName = this.Name.replace(" ", "");
-
-        // Construct and return the string
         return this.Name + " cries " + crySoundName.toUpperCase() + "!!!";
     }
+
+    /**
+     * This method increments Pokemon's base stats and level
+     */
     public void levelUp() {
         BaseLevel++;
-
-        // Increase stats (simple linear growth for now)
         HP += 2;
         Atk += 1;
         Def += 1;
@@ -600,11 +730,8 @@ public class Pokemon implements Serializable
         System.out.println(Name + " grew to level " + BaseLevel + "!");
         System.out.println(cry());
 
-        // Check for evolution
         if (canEvolve()) {
             System.out.println(Name + " is trying to evolve!");
-            // In a real game, you'd prompt the player here
-            // For now we'll auto-evolve if conditions are met
             evolve();
         }
     }
@@ -653,7 +780,6 @@ public class Pokemon implements Serializable
                 }
             }
         }
-
         return false;
     }
 
@@ -677,7 +803,7 @@ public class Pokemon implements Serializable
         this.To = evolution.To;
         this.EvoLevel = evolution.EvoLevel;
 
-        // Stat increases - could be more sophisticated
+        // Stat increases
         this.HP += evolution.HP / 2;
         this.Atk += evolution.Atk / 2;
         this.Def += evolution.Def / 2;
@@ -687,7 +813,6 @@ public class Pokemon implements Serializable
         this.moves = new Moves[4];
         this.pMoves = Math.min(currentMoveCount, 4);
         System.arraycopy(currentMoves, 0, this.moves, 0, pMoves);
-
         System.out.println("Congratulations! Your " + Name + " evolved!");
         System.out.println(cry());
     }
@@ -701,8 +826,6 @@ public class Pokemon implements Serializable
             return null;
         }
 
-        // This would be more sophisticated in a full implementation
-        // For now we'll just check the next evolution in the chain
         if (To != 0) {
             return Pokedex.pokemon[To - 1];
         }
@@ -710,15 +833,6 @@ public class Pokemon implements Serializable
         // Special cases for stone evolutions that might not be in the normal chain
         // (e.g., Eevee's multiple evolutions)
         String stoneName = heldItem.getitemName();
-       /* if (Name.equalsIgnoreCase("Eevee")) {
-            switch (stoneName) {
-                case "Water Stone": return Pokedex.getPokemonByName("Vaporeon");
-                case "Thunder Stone": return Pokedex.getPokemonByName("Jolteon");
-                case "Fire Stone": return Pokedex.getPokemonByName("Flareon");
-                // Add other Eeveelutions if present in your Pokédex
-            }
-        }*/
-
         return null;
     }
 
@@ -738,11 +852,17 @@ public class Pokemon implements Serializable
                     " at level " + EvoLevel);
         }
 
-        // Display stone evolution info if applicable
         if (heldItem != null && heldItem.getForEvo()) {
             System.out.println(Name + " can also evolve using a " + heldItem.getitemName());
         }
     }
+
+    /**
+     * This method handles compatibility check for which pokemon, a pokemon can evolve with
+     * by the use of evolution stone
+     * @param stoneName evolution stone name
+     * @return false if there is no evolution
+     */
     public boolean canEvolveWith(String stoneName) {
         // Check if this Pokémon has any stone-based evolutions
         if (To == 0) return false; // No evolution at all
@@ -750,9 +870,7 @@ public class Pokemon implements Serializable
         // Get the evolution data from Pokedex
         Pokemon evolution = Pokedex.pokemon[To - 1];
 
-        // Check if the stone matches any known evolution stones for this Pokémon
         switch (Name.toLowerCase()) {
-            // Eevee cases
             case "eevee":
                 switch (stoneName.toLowerCase()) {
                     case "water stone": return true;
@@ -768,7 +886,6 @@ public class Pokemon implements Serializable
                 }
                 break;
 
-            // Vulpix cases
             case "vulpix":
                 return stoneName.equalsIgnoreCase("Fire Stone");
 
@@ -816,19 +933,16 @@ public class Pokemon implements Serializable
             case "doublade":
                 return stoneName.equalsIgnoreCase("Dusk Stone");
 
-            case "kirlia": // Male
+            case "kirlia": 
                 return stoneName.equalsIgnoreCase("Dawn Stone");
-                        //getDescription().toLowerCase().contains("male");
 
-            case "snorunt": // Female
+            case "snorunt":
                 return stoneName.equalsIgnoreCase("Dawn Stone");
-                       // getDescription().toLowerCase().contains("female");
 
             case "alolan vulpix":
             case "galarian darumaka":
                 return stoneName.equalsIgnoreCase("Ice Stone");
         }
-
         return false;
     }
 
@@ -841,7 +955,6 @@ public class Pokemon implements Serializable
         if (!canEvolveWith(stoneName)) {
             return null;
         }
-
         // Find the appropriate evolution
         Pokemon evolution = null;
 
@@ -872,7 +985,6 @@ public class Pokemon implements Serializable
                 }
                 break;
 
-            // Handle other Pokémon evolutions
             case "vulpix":
                 evolution = Pokedex.getPokemonByName("Ninetales");
                 break;
@@ -924,8 +1036,6 @@ public class Pokemon implements Serializable
             case "jigglypuff":
                 evolution = Pokedex.getPokemonByName("Wigglytuff");
                 break;
-
-            // Add cases for other Pokémon as needed
         }
 
         if (evolution != null) {
@@ -935,25 +1045,27 @@ public class Pokemon implements Serializable
                     evolution.getName(),
                     evolution.getType1(),
                     evolution.getType2(),
-                    this.BaseLevel, // Keep current level
-                    this.PokedexNo, // Now evolves from this Pokémon
+                    this.BaseLevel, 
+                    this.PokedexNo, 
                     evolution.getTo(),
                     evolution.getEvoLevel(),
-                    this.HP + (evolution.getHP() / 2), // Boost stats
+                    this.HP + (evolution.getHP() / 2), 
                     this.Atk + (evolution.getAtk() / 2),
                     this.Def + (evolution.getDef() / 2),
                     this.Spd + (evolution.getSpd() / 2)
             );
 
-            // Copy over moves
             System.arraycopy(this.moves, 0, evolved.moves, 0, this.pMoves);
             evolved.pMoves = this.pMoves;
-
             return evolved;
         }
-
         return null;
     }
+
+    /**
+     * This method gets the pokemon name of a pokemon it evolves into
+     * @return Evolved Pokemon name
+     */
     public String getEvolutionName() {
         // Check for level-based evolution first
         if (To != 0 && Pokedex.pokemon != null && To <= Pokedex.pokemonCount) {
@@ -986,70 +1098,76 @@ public class Pokemon implements Serializable
                 case "nidorino": return "Nidoking";
                 case "clefairy": return "Clefable";
                 case "jigglypuff": return "Wigglytuff";
-                // Add other stone evolutions as needed
             }
         }
-
-        return "None"; // No evolution available
+        return "None"; 
     }
+
+    /**
+     * Reconstructs a Pokemon object from a line of saved data.
+     * @param line the {@code String} containing serialized Pokémon data
+     * @return the reconstructed Pokemon object, or null if parsing fails
+     */
     public static Pokemon fromFileString(String line) {
-    try {
-        String[] parts = line.split(",");
-        if (parts.length < 8) {
-            throw new IllegalArgumentException("Invalid Pokémon data string");
-        }
-
-        // Parse basic info
-        String name = parts[0];
-        int baseLevel = Integer.parseInt(parts[1]);
-        String type1 = parts[2];
-        String type2 = parts[3].equals("0") ? "0" : parts[3]; // Handle null/empty type2
-        int hp = Integer.parseInt(parts[4]);
-        int atk = Integer.parseInt(parts[5]);
-        int def = Integer.parseInt(parts[6]);
-        int spd = Integer.parseInt(parts[7]);
-
-        // Find original Pokémon from Pokedex to get evolution info
-        Pokemon original = Pokedex.getPokemonByName(name);
-        if (original == null) {
-            throw new IllegalArgumentException("Pokémon not found in Pokedex: " + name);
-        }
-
-        // Create new Pokémon instance
-        Pokemon pokemon = new Pokemon(
-                original.getPokedexNo(),
-                name,
-                type1,
-                type2,
-                baseLevel,
-                original.getFrom(),
-                original.getTo(),
-                original.getEvoLevel(),
-                hp,
-                atk,
-                def,
-                spd
-        );
-
-        // Load moves if they exist in the data (parts[8] contains moves)
-        if (parts.length > 8 && !parts[8].isEmpty()) {
-            String[] moveNames = parts[8].split(";");
-            for (String moveName : moveNames) {
-                pokemon.teachMove(moveName, false);
+        try {
+            String[] parts = line.split(",");
+            if (parts.length < 8) {
+                throw new IllegalArgumentException("Invalid Pokémon data string");
             }
+
+            // Parse basic info
+            String name = parts[0];
+            int baseLevel = Integer.parseInt(parts[1]);
+            String type1 = parts[2];
+            String type2 = parts[3].equals("0") ? "0" : parts[3]; // Handle null/empty type2
+            int hp = Integer.parseInt(parts[4]);
+            int atk = Integer.parseInt(parts[5]);
+            int def = Integer.parseInt(parts[6]);
+            int spd = Integer.parseInt(parts[7]);
+
+            // Find original Pokémon from Pokedex to get evolution info
+            Pokemon original = Pokedex.getPokemonByName(name);
+            if (original == null) {
+                throw new IllegalArgumentException("Pokémon not found in Pokedex: " + name);
+            }
+
+            // Create new Pokémon instance
+            Pokemon pokemon = new Pokemon(
+                    original.getPokedexNo(),
+                    name,
+                    type1,
+                    type2,
+                    baseLevel,
+                    original.getFrom(),
+                    original.getTo(),
+                    original.getEvoLevel(),
+                    hp,
+                    atk,
+                    def,
+                    spd
+            );
+
+            // Load moves if they exist in the data (parts[8] contains moves)
+            if (parts.length > 8 && !parts[8].isEmpty()) {
+                String[] moveNames = parts[8].split(";");
+                for (String moveName : moveNames) {
+                    pokemon.teachMove(moveName, false);
+                }
+            }
+            return pokemon;
+        } catch (Exception e) {
+            System.err.println("Error parsing Pokémon data: " + e.getMessage());
+            return null;
         }
-
-        return pokemon;
-    } catch (Exception e) {
-        System.err.println("Error parsing Pokémon data: " + e.getMessage());
-        return null;
     }
-}
 
+    /**
+     * Converts this Pokemon object into a comma-separated string
+     * for saving to a file.
+     * @return the formatted string representation of the Pokémon's data
+     */
     public String toFileString() {
         StringBuilder sb = new StringBuilder();
-
-        // Basic info
         sb.append(Name).append(",");
         sb.append(BaseLevel).append(",");
         sb.append(Type1).append(",");
@@ -1059,7 +1177,6 @@ public class Pokemon implements Serializable
         sb.append(Def).append(",");
         sb.append(Spd).append(",");
 
-        // Moves
         if (pMoves > 0) {
             for (int i = 0; i < pMoves; i++) {
                 if (moves[i] != null) {
@@ -1068,20 +1185,24 @@ public class Pokemon implements Serializable
                 }
             }
         }
-
         return sb.toString();
     }
+
+    /**
+     * Converts this Pokémon object into a CSV string representation.
+     * This includes all basic stats and the names of its moves.
+     * @return the CSV string representation of the Pokémon
+     */
     public String toCsvString() {
-        // Build moves string
         String movesString = "";
-        if (pMoves > 0) {
-            movesString = String.join(",",
-                    Arrays.stream(moves, 0, pMoves)
-                            .filter(Objects::nonNull)
-                            .map(Moves::getName)
-                            .toArray(String[]::new)
-            );
-        }
+            if (pMoves > 0) {
+                movesString = String.join(",",
+                        Arrays.stream(moves, 0, pMoves)
+                                .filter(Objects::nonNull)
+                                .map(Moves::getName)
+                                .toArray(String[]::new)
+                );
+            }
 
         return String.join(",",
                 String.valueOf(this.PokedexNo),
@@ -1100,6 +1221,13 @@ public class Pokemon implements Serializable
         );
     }
 
+    /**
+     * Creates a Pokémon object from a CSV string.
+     * The CSV string should contain the following fields in order:
+     * @param csv the CSV-formatted {@code String} containing Pokémon data
+     * @return a new Pokémon object with the parsed data
+     * @throws IllegalArgumentException if the CSV format is invalid
+     */
     public static Pokemon fromCsvString(String csv) {
         String[] parts = csv.split(",");
         if (parts.length < 12) {
@@ -1129,7 +1257,6 @@ public class Pokemon implements Serializable
                 pokemon.teachMove(moveName.trim(), false);
             }
         }
-
         return pokemon;
     }
 }

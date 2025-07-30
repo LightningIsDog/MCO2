@@ -1,21 +1,23 @@
 import java.io.*;
 import java.util.*;
-import java.text.ParseException; // Make sure this is imported
-import java.text.SimpleDateFormat; // <--- YOU NEED THIS IMPORT
-
+import java.text.ParseException; 
+import java.text.SimpleDateFormat; 
 
 /** This class represents a collection of trainers in the game.
+ * It contains methods to manage trainer data, including adding, retrieving, and saving trainers.
  *  @author Justin Miguel Agustin L. Lotilla
  *  @author Maurienne Marie M. Mojica
  *  @version 5.0
  */
 
 public class Trainers {
+
+    /**
+     * Trainer's attributes
+     */
     private static int trainerCount = 0;
-
-    private int trainerNumber; // Indexing; no delete trainer method in specs implies that this is fixed already
-
-    private String ID; // Made String to handle entries that start with 0s
+    private int trainerNumber; 
+    private String ID; 
     private String name;
     private java.util.Date birth;
     private String sex;
@@ -23,23 +25,35 @@ public class Trainers {
     private String description;
     private double money;
 
+    /**
+     * Trainer's Pokemon attributes
+     */
     private Pokemon[] pokemonTeam; // Set to 6 max
     private Pokemon[] pokemonPC; // Set to 10 max
     private int lineupCount; // Counter; 6 max
     private int storageCount; // Counter; 10 max
 
+    /**
+     * Trainer's bag attributes
+     */
     private Items[] bag; // Set to 50 max
     private Items[] uniqueItems; // To track which items are already in the bag
-    private int uniqueCount; // Set to 10 max; unique means that Trainers can only have 10 kinds of items max
-    private int itemCount; // Track number of items in bag; 50 max
+    private int uniqueCount; // Set to 10 max
+    private int itemCount; // Track number of items in bag
+
+    /**
+     * Date format for parsing birth dates from string
+     */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 
     /** This method initializes a Trainer object
-     *
      * @param ID: user's input to ID
      * @param name: user's input to name
-     * @param sex: user's input to sex
-     * @param home: user's input to home
+     * @param month : user's birth month
+     * @param day : user's birth day
+     * @param year : user's birth year
+     * @param sex: user's gender
+     * @param home: user's hometown
      * @param description: user's input to description
      */
     public Trainers(String ID, String name, int month, int day, int year, String sex, String home, String description) {
@@ -61,17 +75,28 @@ public class Trainers {
         this.uniqueItems = new Items[10];
         this.uniqueCount = 0;
         this.itemCount = 0;
-
         this.trainerNumber = trainerCount++;
     }
 
+    /**
+     * This method constructs a Trainer object with the specified attributes and initializes 
+     * their Pokémon team, storage, and bag items
+     * @param ID trainer ID
+     * @param name Trainer name
+     * @param birthDateString Trainer birthdate
+     * @param sex Trainer gender
+     * @param home Trainer hometown
+     * @param description Trainer description
+     * @param money Trainer money
+     * @param itemNamesFromBag Trainer items in bag
+     */
     public Trainers(String ID, String name, String birthDateString, String sex, String home, String description,
                     double money, List<String> itemNamesFromBag) {
         this.ID = ID;
         this.name = name;
         this.sex = sex;
         this.home = home;
-        this.description = description; // This holds the 'occupation' from the file
+        this.description = description; 
         this.money = money;
 
         // Parse birthDateString into your Date object
@@ -79,22 +104,20 @@ public class Trainers {
             java.util.Date parsedUtilDate = DATE_FORMAT.parse(birthDateString);
             java.util.Calendar cal = java.util.Calendar.getInstance();
             cal.setTime(parsedUtilDate);
-            int month = cal.get(java.util.Calendar.MONTH) + 1; // Calendar.MONTH is 0-indexed
+            int month = cal.get(java.util.Calendar.MONTH) + 1; 
             int day = cal.get(java.util.Calendar.DAY_OF_MONTH);
             int year = cal.get(java.util.Calendar.YEAR);
-            this.birth = new java.util.Date(month, day, year); // Assuming Date(month, day, year) constructor
-
+            this.birth = new java.util.Date(month, day, year); 
         } catch (ParseException e) {
             System.err.println("Error parsing birth date string: '" + birthDateString + "' for trainer " + name + ". Setting default date.");
-            this.birth = new java.util.Date(1, 1, 2000); // Fallback if parsing fails
+            this.birth = new java.util.Date(1, 1, 2000); 
         }
 
         // Initialize Pokemon arrays (not loaded from trainers.txt in this format)
         this.pokemonTeam = new Pokemon[6];
         this.pokemonPC = new Pokemon[10];
-        // FIX: lineupCount and storageCount should be instance variables, not static.
-        this.lineupCount = 0; // Fix here as well
-        this.storageCount = 0; // Fix here as well
+        this.lineupCount = 0; 
+        this.storageCount = 0; 
 
         // Initialize item arrays
         this.bag = new Items[50];
@@ -109,8 +132,7 @@ public class Trainers {
                     Items loadedItem = Items.getItemByName(itemName);
 
                     if (loadedItem != null) {
-                        Items clonedItem = Items.cloneItem(loadedItem); // ✅ use cloneItem method
-
+                        Items clonedItem = Items.cloneItem(loadedItem); 
                         this.bag[this.itemCount] = clonedItem;
                         this.itemCount++;
 
@@ -126,15 +148,18 @@ public class Trainers {
                 }
             }
         }
-
         this.trainerNumber = trainerCount++;
     }
 
+    /**
+     *  Constructs a default Trainer object with placeholder values 
+     * for all fields and empty arrays for Pokémon and items.
+     */
     public Trainers() {
         // Initialize default values
         this.ID = "00000";
         this.name = "Unknown";
-        this.birth = new java.util.Date(1, 1, 2000); // Your custom Date class
+        this.birth = new java.util.Date(1, 1, 2000); 
         this.sex = "Unknown";
         this.home = "Unknown";
         this.description = "No description";
@@ -144,8 +169,8 @@ public class Trainers {
         this.bag = new Items[50];
         this.uniqueItems = new Items[10];
     }
+
     /** This method returns the Trainer class's trainerCount
-     *
      * @return trainerCount: the Trainer class's trainerCount
      */
     public static int getTrainerCount() {
@@ -153,7 +178,6 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's trainerNumber
-     *
      * @return trainerNumber: a Trainer object's trainerNumber
      */
     public int getTrainerNumber() {
@@ -161,7 +185,6 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's ID
-     *
      * @return ID: a Trainer object's ID
      */
     public String getID() {
@@ -169,23 +192,20 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's name
-     *
      * @return name: a Trainer object's name
      */
     public String getName() {
         return name;
     }
 
-    /** This method returns a Trainer object's birth year
-     *
-     * @return birth: a Trainer object's birth year
+    /** This method returns a Trainer object's birthdate
+     * @return birth: a Trainer object's birthdate
      */
     public java.util.Date getBirth() {
         return birth;
     }
 
     /** This method returns a Trainer object's sex
-     *
      * @return sex: a Trainer object's sex
      */
     public String getSex() {
@@ -193,7 +213,6 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's home town
-     *
      * @return home: a Trainer object's home town
      */
     public String getHome() {
@@ -201,7 +220,6 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's description
-     *
      * @return description: a Trainer object's description
      */
     public String getDescription() {
@@ -209,7 +227,6 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's money
-     *
      * @return money: a Trainer object's money
      */
     public double getMoney() {
@@ -217,114 +234,134 @@ public class Trainers {
     }
 
     /** This method returns a Trainer object's Pokemon lineup
-     *
      * @return pokemonLineup: a Trainer object's Pokemon lineup
      */
     public Pokemon[] getPokemonLineup() {
         return pokemonTeam;
     }
 
+    /**
+     * Returns the Pokémon at the specified index in the trainer's lineup.
+     * @param i the index of the Pokémon in the lineup (0–6)
+     * @return the Pokemon at the given index
+     */
     public Pokemon getPokemonFromLineup(int i) {
         return pokemonTeam[i];
     }
 
-    /** This method returns a Trainer object's Pokemon storage
-     *
-     * @return pokemonCount: a Trainer object's Pokemon storage
+    /** Returns the array of Pokémon in the trainer's storage (PC).
+     * @return an array of Pokemon objects stored in the trainer's PC
      */
     public Pokemon[] getPokemonStorage() {
         return pokemonPC;
     }
 
+    /**
+     * Returns a single Pokémon from the trainer's storage at the specified index.
+     * @param i the index of the Pokémon in the storage (0–9)
+     * @return the Pokemon at the given index in the PC
+     */
     public Pokemon getPokemonFromStorage(int i) {
         return pokemonPC[i];
     }
 
     /** This method returns a Trainer object's lineupCount
-     *
-     * @return pokemonCount: a Trainer object's lineupCount
+     * @return lineupCount: a Trainer object's lineupCount
      */
     public int getLineupCount() {
         return lineupCount;
     }
 
     /** This method returns a Trainer object's storageCount
-     *
-     * @return pokemonCount: a Trainer object's storageCount
+     * @return storageCount: a Trainer object's storageCount
      */
     public int getStorageCount() {
         return storageCount;
     }
 
     /** This method returns a Trainer object's bag
-     *
-     * @return pokemonCount: a Trainer object's bag
+     * @return bag: a Trainer object's bag
      */
     public Items[] getBag() {
         return bag;
     }
 
     /** This method returns a Trainer object's uniqueItems
-     *
-     * @return pokemonCount: a Trainer object's uniqueItems
+     * @return uniqueItems: a Trainer object's uniqueItems
      */
     public Items[] getUniqueItems() {
         return uniqueItems;
     }
 
     /** This method returns a Trainer object's uniqueCount
-     *
-     * @return pokemonCount: a Trainer object's uniqueCount
+     * @return uniqueCount: a Trainer object's uniqueCount
      */
     public int getUniqueCount() {
         return uniqueCount;
     }
 
     /** This method returns a Trainer object's itemCount
-     *
-     * @return pokemonCount: a Trainer object's itemCount
+     * @return itemCount: a Trainer object's itemCount
      */
     public int getItemCount() {
         return itemCount;
     }
 
-    // Setters
     /** This method sets the Trainer's money.
-     *
      * @param money: the amount of money to set
      */
     public void setMoney(double money) {
         this.money = money;
     }
+
+    /**
+     * This method sets the Trainer's ID
+     * @param ID : ID to set
+     */
     public void setID(String ID){
         this.ID = ID;
     }
+
+    /**
+     * This method sets the Trainer's name
+     * @param name : Name to set
+     */
     public void setName(String name){
         this.name = name;
     }
 
+    /**
+     * This method sets the Trainer's gender
+     * @param sex : Gender to set
+     */
     public void setSex(String sex){
         this.sex = sex;
     }
 
+    /**
+     * This method sets the Trainer's hometown
+     * @param home : Hometown to set
+     */
     public void setHome(String home){
         this.home = home;
     }
 
+    /**
+     * This method set's the Trainer's Description
+     * @param description : Description to set
+     */
     public void setDescription(String description){
         this.description = description;
     }
 
     /** This method sets the Trainer's Pokemon lineup.
-     *
-     * @param pokemonLineup: the array of Pokemon to set as the lineup (max 6)
+     * @param pokemonLineup: the array of Pokemon to set as the lineup (max of 6)
      */
     public void setPokemonLineup(Pokemon[] pokemonLineup) {
         this.pokemonTeam = pokemonLineup;
     }
 
     /** This method sets the Trainer's Pokemon storage.
-     *
      * @param pokemonStorage: the array of Pokemon to set as the storage (max 10)
      */
     public void setPokemonStorage(Pokemon[] pokemonStorage) {
@@ -332,7 +369,6 @@ public class Trainers {
     }
 
     /** This method sets the count of Pokemon in the lineup.
-     *
      * @param lineupCount: the number of Pokemon in the lineup (max 6)
      */
     public void setLineupCount(int lineupCount) {
@@ -340,7 +376,6 @@ public class Trainers {
     }
 
     /** This method sets the count of Pokemon in storage.
-     *
      * @param storageCount: the number of Pokemon in storage (max 10)
      */
     public void setStorageCount(int storageCount) {
@@ -348,7 +383,6 @@ public class Trainers {
     }
 
     /** This method sets the Trainer's item bag.
-     *
      * @param bag: the array of items to set in the bag (max 50)
      */
     public void setBag(Items[] bag) {
@@ -356,7 +390,6 @@ public class Trainers {
     }
 
     /** This method sets the Trainer's list of unique items.
-     *
      * @param uniqueItems: the array of unique items (max 10 types)
      */
     public void setUniqueItems(Items[] uniqueItems) {
@@ -364,7 +397,6 @@ public class Trainers {
     }
 
     /** This method sets the count of unique items.
-     *
      * @param uniqueCount: the number of unique item types in the bag (max 10)
      */
     public void setUniqueCount(int uniqueCount) {
@@ -372,79 +404,62 @@ public class Trainers {
     }
 
     /** This method sets the total item count in the bag.
-     *
      * @param itemCount: the total number of items in the bag (max 50)
      */
     public void setItemCount(int itemCount) {
         this.itemCount = itemCount;
     }
 
-    public void display(){
-        System.out.println("Trainer Card");
-        System.out.println("ID No.      : " + ID);
-        System.out.println("Name        : " + name);
-        System.out.println("Birthdate   : " + birth );
-        System.out.println("Sex         : " + sex);
-        System.out.println("Hometown    : " + home);
-        System.out.println("Description : " + description);
-        System.out.println("Money       : " + money);
-
-        System.out.println("\nPokemon in Lineup:");
-        if (pokemonTeam != null && lineupCount > 0) {
-            for (int i = 0; i < lineupCount; i++) {
-                if (pokemonTeam[i] != null) {
-                    System.out.print("  - ");
-                    System.out.print(pokemonTeam[i].getName());
-                }
-            }
-        } else {
-            System.out.println("  None");
-        }
-
-        System.out.println("Pokemon in Storage:");
-        if (pokemonPC != null && storageCount > 0) {
-            for (int i = 0; i < storageCount; i++) {
-                if (pokemonPC[i] != null) {
-                    System.out.print("  - ");
-                    System.out.print(pokemonPC[i].getName());
-                }
-            }
-        } else {
-            System.out.println("  None");
-        }
-
-        System.out.println("----------------------------");
-
-    }
+    /**
+     * Checks if the trainer's lineup has space for an additional Pokémon.
+     * @return true if the lineup contains fewer than 6 Pokémon; 
+     */
     public boolean canAddToTeam() {
         return lineupCount < 6;
     }
 
+    /**
+     * Checks if the trainer's storage has space for an additional Pokémon.
+     * @return true if the lstorage contains fewer than 10 Pokémon; 
+     */
     public boolean canAddToPC() {
         return storageCount < 10;
     }
 
-    // In Trainers.java
+    /**
+     *  This method returns a message indicating success or failure for adding pokemon to lineup
+     * @param pokemon the {@code Pokemon} to be added to the lineup
+     * @return a status message indicating whether the addition was successful or if the team is full
+     */
     public String addPokemonToLineup(Pokemon pokemon) {
         if (lineupCount >= 6) {
             return "Error: Your team is already full (6/6).";
         }
-
         pokemonTeam[lineupCount] = pokemon;
         lineupCount++;
         return "Successfully added " + pokemon.getName() + " to your team!";
     }
 
+    /**
+     *  This method returns a message indicating success or failure for adding pokemon to storage
+     * @param pokemon the {@code Pokemon} to be added to the lineup
+     * @return a status message indicating whether the addition was successful or if the storage is full
+     */
     public String addPokemonToStorage(Pokemon pokemon) {
         if (storageCount >= 10) {
             return "Error: Your PC storage is full (10/10).";
         }
-
         pokemonPC[storageCount] = pokemon;
         storageCount++;
         return "Successfully added " + pokemon.getName() + " to your PC storage!";
     }
 
+    /**
+     * This method moves or swaps a Pokémon between the trainer's lineup and storage (PC) based on the provided indices.
+     * @param lineupIndex pokemon index in lineup
+     * @param storageIndex pokemon index in storage
+     * @return a message indicating the result of the move or swap, or an error if invalid
+     */
     public String switchPokemon(int lineupIndex, int storageIndex) {
         // Validate indices
         if (lineupIndex == -1 && storageIndex == -1) {
@@ -469,9 +484,9 @@ public class Trainers {
                 pokemonTeam[i] = pokemonTeam[i + 1];
             }
             pokemonTeam[--lineupCount] = null;
-
             return pokemon.getName() + " moved to storage!";
         }
+
         // Moving from storage to lineup
         else if (storageIndex >= 0 && lineupIndex == -1) {
             if (storageIndex >= storageCount) {
@@ -490,9 +505,9 @@ public class Trainers {
                 pokemonPC[i] = pokemonPC[i + 1];
             }
             pokemonPC[--storageCount] = null;
-
             return pokemon.getName() + " added to your team!";
         }
+
         // Direct swap between lineup and storage
         else if (lineupIndex >= 0 && storageIndex >= 0) {
             if (lineupIndex >= lineupCount || storageIndex >= storageCount) {
@@ -503,12 +518,17 @@ public class Trainers {
             Pokemon temp = pokemonTeam[lineupIndex];
             pokemonTeam[lineupIndex] = pokemonPC[storageIndex];
             pokemonPC[storageIndex] = temp;
-
             return "Swapped " + temp.getName() + " and " + pokemonTeam[lineupIndex].getName();
         }
-
         return "Error: Invalid operation!";
     }
+
+    /**
+     * This method releases a Pokémon from either the trainer's lineup or storage.
+     * @param fromLineup {@code true} to release from the lineup; {@code false} to release from storage
+     * @param index the index of the Pokémon to release in the selected collection
+     * @return the released Pokemon object, or null if the operation is invalid
+     */
     public Pokemon releasePokemon(boolean fromLineup, int index) {
         if (fromLineup) {
             if (index < 0 || index >= lineupCount || lineupCount <= 1) {
@@ -531,16 +551,16 @@ public class Trainers {
         }
     }
 
-
+    /**
+     * This method saves the current trainer's data to the "trainers.txt" file.
+     */
     public void saveToFile() {
-        // Read all existing trainers first
         List<String> allTrainersData = new ArrayList<>();
         boolean trainerExists = false;
 
         try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
             StringBuilder currentTrainer = new StringBuilder();
             boolean isCurrentTrainer = false;
-
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.equals("[TRAINER_START]")) {
@@ -584,22 +604,24 @@ public class Trainers {
             System.err.println("Failed to save trainers: " + e.getMessage());
         }
     }
+
+    /**
+     * This method converts the trainer's data into a structured string for saving to a file.
+     * @return the full formatted string representing the trainer's data
+     */
     public String toFileString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[TRAINER_START]\n");
 
-        // Core trainer info
+        // Trainer Information
+        sb.append("[TRAINER_START]\n");
         sb.append("ID=").append(this.ID).append("\n");
         sb.append("Name=").append(this.name).append("\n");
-
-        // FIXED: Proper date formatting for custom Date class
         sb.append("Birth=")
                 .append(String.format("%02d/%02d/%04d",
                         this.birth.getMonth(),
                         this.birth.getDay(),
                         this.birth.getYear()))
                 .append("\n");
-
         sb.append("Sex=").append(this.sex).append("\n");
         sb.append("Home=").append(this.home).append("\n");
         sb.append("Description=").append(this.description).append("\n");
@@ -644,7 +666,11 @@ public class Trainers {
         return sb.toString();
     }
 
-    // Helper method to write Pokémon data
+    /**
+     * This method writes a single Pokémon's data to the given PrintWriter in a structured format.
+     * @param writer
+     * @param p
+     */
     private void writePokemon(PrintWriter writer, Pokemon p) {
         writer.println("POKEMON_START");
         writer.println(p.getPokedexNo());
@@ -652,6 +678,7 @@ public class Trainers {
         writer.println(p.getType1());
         writer.println(p.getType2());
         writer.println(p.getBaseLevel());
+
         // Add other Pokémon attributes as needed
         writer.println("MOVES_START");
         for (Moves move : p.getMoves()) {
@@ -659,11 +686,17 @@ public class Trainers {
         }
         writer.println("POKEMON_END");
     }
+
+    /**
+     * This method reads trainer data from file and returns a Trainer's object matching the given ID.
+     * Loads basic info, team, storage, and items if found.
+     * @param trainerID trainer ID
+     * @return the reconstructed Trainer's object if found; null if otherwise
+     */
     public static Trainers loadFromFile(String trainerID) {
         try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
             Trainers currentTrainer = null;
             String section = null;
-
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
@@ -704,7 +737,7 @@ public class Trainers {
                                 Calendar cal = Calendar.getInstance();
                                 cal.setTime(parsedDate);
                                 currentTrainer.birth = new java.util.Date(
-                                        cal.get(Calendar.MONTH) + 1,  // Your Date class expects 1-12
+                                        cal.get(Calendar.MONTH) + 1,  
                                         cal.get(Calendar.DAY_OF_MONTH),
                                         cal.get(Calendar.YEAR)
                                 );
@@ -756,12 +789,14 @@ public class Trainers {
         } catch (NumberFormatException e) {
             System.err.println("Error parsing numeric value: " + e.getMessage());
         }
-
         return null; // Trainer not found
     }
+
     private static Map<String, Trainers> trainerCache = new HashMap<>();
 
-    // Call this method once at startup
+    /**
+     * This method loads all trainers from the "trainers.txt" file and stores them in the trainer cache.
+     */
     public static void loadAllTrainers() {
         try (BufferedReader reader = new BufferedReader(new FileReader("trainers.txt"))) {
             Trainers currentTrainer = null;
@@ -784,13 +819,23 @@ public class Trainers {
         }
     }
 
-    // Now fetch any trainer in O(1) time
+    /**
+     * This method retrieves a trainer from the cache using the given trainer ID.
+     * @param trainerID trainer ID
+     * @return the Trainer's object if found in the cache; null if otherwise
+     */
     public static Trainers getTrainerById(String trainerID) {
         return trainerCache.get(trainerID.trim());
     }
+
+    /**
+     * This method reads and reconstructs a Pokemon object from the given BufferedReader
+     * @param reader the {@code BufferedReader} from which Pokémon data is read
+     * @return the reconstructed Pokemon object
+     * @throws IOException if the format is invalid or an I/O error occurs
+     */
     private static Pokemon readPokemon(BufferedReader reader) throws IOException {
         if (!"POKEMON_START".equals(reader.readLine())) throw new IOException("Invalid Pokémon format");
-
         Pokemon p = new Pokemon(
                 Integer.parseInt(reader.readLine()), // pokedexNo
                 reader.readLine(), // name
@@ -813,10 +858,14 @@ public class Trainers {
                 p.teachMove(moveName, false);
             }
         }
-
         return p;
     }
 
+    /**
+     * This method checks whether the given item is not already in the trainer's unique item list.
+     * @param item item to check
+     * @return true if the item is unique, false otherwise
+     */
     public boolean isItemUnique(Items item) {
         for (int i = 0; i < uniqueCount; i++) {
             if (uniqueItems[i] != null && uniqueItems[i].getitemName().equals(item.getitemName())) {
@@ -826,6 +875,11 @@ public class Trainers {
         return true; // New unique item
     }
 
+    /**
+     * This method adds the given item to the trainer's bag, handling both quantity updates and unique item limits.
+     * @param item item to add
+     * @return a status message indicating success or the reason for failure
+     */
     public String addItemToBag(Items item) {
         if (itemCount >= 50) {
             return "You cannot add more items. Bag is full (50/50).";
@@ -858,14 +912,12 @@ public class Trainers {
             itemCount++;       // ✅ total quantity increases
             uniqueItems[uniqueCount] = copy;
             uniqueCount++;
-
             return copy.getitemName() + " was successfully added to your bag.";
-        }
+    }
 
 
     /**
      * Parses a line from trainers.txt into a Trainers object.
-     * Expected Format: ID-Name-Birthday(MM-dd-yyyy)-Sex-Home-Description(Occupation)-Money[-Item1,Item2,...]
      * @param line The line string from the file.
      * @return A Trainers object, or null if parsing fails.
      */
@@ -883,7 +935,7 @@ public class Trainers {
             String birthDateString = parts[2]; // Keep as String for the constructor
             String sex = parts[3];
             String home = parts[4];
-            String description = parts[5]; // This corresponds to 'Occupation' in your file
+            String description = parts[5]; 
             double money = Double.parseDouble(parts[6]);
 
             List<String> items = new ArrayList<>();
@@ -905,11 +957,16 @@ public class Trainers {
         }
     }
 
+    /**
+     * This method removes a single instance of the specified item from the trainer's bag.
+     * @param itemToRemove item to remove from bag
+     */
     public void removeItemFromBag(Items itemToRemove) {
         if (itemToRemove == null) return;
 
         for (int i = 0; i < itemCount; i++) {
             if (bag[i] != null && bag[i].getitemID().equals(itemToRemove.getitemID())) {
+
                 // Shift items left
                 for (int j = i; j < itemCount - 1; j++) {
                     bag[j] = bag[j + 1];
@@ -930,6 +987,7 @@ public class Trainers {
                 if (!stillExists) {
                     for (int j = 0; j < uniqueCount; j++) {
                         if (uniqueItems[j] != null && uniqueItems[j].getitemID().equals(itemToRemove.getitemID())) {
+
                             // Shift unique items left
                             for (int k = j; k < uniqueCount - 1; k++) {
                                 uniqueItems[k] = uniqueItems[k + 1];
@@ -940,11 +998,17 @@ public class Trainers {
                         }
                     }
                 }
-
                 break; // only remove 1 instance
             }
         }
     }
+
+    /**
+     * This method applies the effects of the specified item to the given Pokémon, if valid.
+     * @param item item to use
+     * @param pokemon pokemon that will use the item
+     * @return a status message indicating the result of the item usage, or an error message if invalid
+     */
     public String useItem(Items item, Pokemon pokemon) {
         if (item == null || pokemon == null) {
             return "Error: Invalid item or Pokémon selection.";
@@ -978,15 +1042,9 @@ public class Trainers {
             if (evolvedForm == null) {
                 return "Evolution failed for " + pokemon.getName() + "!";
             }
-
-            // Replace the Pokémon in team/storage
-            replacePokemon(pokemon, evolvedForm);
-
-            // Remove one instance of the item
-            removeItemFromBag(item);
-
+            replacePokemon(pokemon, evolvedForm);  // Replace the Pokémon in team/storage
+            removeItemFromBag(item); // Remove one instance of the item
             return pokemon.getName() + " evolved into " + evolvedForm.getName() + "!";
-
         } else if (itemName.contains("Vitamin") || itemName.contains("Feather")) {
             // Vitamin/Feather logic - stat boosting items
             String stat = item.getitemEffects(); // Should return "HP", "Attack", etc.
@@ -1008,22 +1066,16 @@ public class Trainers {
                 default:
                     return "Error: Unknown stat to boost!";
             }
-
-            // Remove one instance of the item
-            removeItemFromBag(item);
-
+            removeItemFromBag(item); // Remove one instance of the item
             return pokemon.getName() + "'s " + stat + " increased by " + boostAmount + "!";
-
         } else if (itemName.equals("Rare Candy")) {
             // Rare Candy logic - level up
             if (pokemon.getBaseLevel() >= 100) {
                 return pokemon.getName() + " is already at maximum level!";
             }
-
             pokemon.levelUp();
             removeItemFromBag(item);
             return pokemon.getName() + " grew to level " + pokemon.getBaseLevel() + "!";
-
         } else {
             // Generic item usage
             removeItemFromBag(item);
@@ -1053,6 +1105,12 @@ public class Trainers {
             }
         }
     }
+
+    /**
+     * This method checks if the trainer's bag contains the specified item by name.
+     * @param item item to check
+     * @return true if the item exists in the bag;false otherwise
+     */
     public boolean hasItem(Items item) {
         for (int i = 0; i < itemCount; i++) {
             if (bag[i] != null && bag[i].getitemName().equals(item.getitemName())) {

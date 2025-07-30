@@ -5,8 +5,12 @@
  @author Maurienne Marie M. Mojica
  @version 5.0
  */
+
 public class Items {
 
+    /**
+     * Attributes of the Items class.
+     */
     private String itemID;
     private String itemName;
     private String itemCategory;
@@ -21,17 +25,17 @@ public class Items {
      * Array to store Items objects. This is the master list of item definitions.
      */
     public static Items[] itemList = new Items[100]; // Max capacity
-    // Removing availItems and evolutionItems static arrays from here
-    // as they are primarily for UI filtering, which can be done directly from itemList
-    // or through new methods if absolutely necessary.
-    // Keeping only itemList as the source of truth for all defined items.
-    public static int itemCount = 0; // Tracks the number of items in itemList
+
+    /**
+     * Tracks the number of items in itemList
+     */
+    public static int itemCount = 0; 
 
     /**
      * Constructs a new Item object with the specified attributes.
      * Initializes item information including ID, name, category, description,
      * effects, availability for sale, evolution flag, buying price range, and selling price.
-     * Automatically registers the item in the item list.
+     * Automatically registers the item in the item or master list.
      * @param itemID             the unique identifier for the item
      * @param itemName           the name of the item
      * @param itemCategory       the category/type of the item
@@ -43,7 +47,6 @@ public class Items {
      */
     public Items(String itemID, String itemName, String itemCategory, String itemDesc, String itemEffects, boolean forEvo,
                  double startBuyingPrice, double sellingPrice) {
-        // This public constructor will always register the item in the master list
         this(itemID, itemName, itemCategory, itemDesc, itemEffects, forEvo, startBuyingPrice, sellingPrice, true);
         this.quantity = 0;
     }
@@ -77,11 +80,15 @@ public class Items {
         }
     }
 
+    /**
+     * Initializes the static itemList with predefined items.
+     * This method creates instances of various item types (Vitamins, Feathers, LevelingItems, EvolutionStones)
+     * and registers them in the static itemList array.
+     */
     public static void initializeItems() {
         itemList = new Items[20];
         itemCount = 0;
 
-        // Create ALL items with UNIQUE IDs. Their constructors will automatically add them to itemList.
         new Vitamin("01", "HP Up", "A nutritious drink for Pokemon", "HP", 10000, 5000);
         new Vitamin("02", "Protein", "A nutritious drink for Pokemon", "Attack", 10000, 5000);
         new Vitamin("03", "Iron", "A nutritious drink for Pokemon", "Defense", 10000, 5000);
@@ -92,8 +99,6 @@ public class Items {
         new Feather("08", "Resist Feather", "A feather that slightly increases Defense", "Defense", 300, 150);
         new Feather("09", "Swift Feather", "A feather that slightly increases Speed", "Speed", 300, 150);
         new Vitamin("10", "Zinc", "A nutritious drink for Pokemon", "Special Defense", 10000, 5000);
-
-        // Assign UNIQUE IDs to evolution stones to prevent conflicts with 01-10
         new EvolutionStone("11", "Fire Stone", "A stone that radiates heat",
                 new String[]{"Vulpix", "Growlithe", "Eevee"}, 3000, 1500);
         new EvolutionStone("12", "Water Stone", "A stone with a blue watery appearance",
@@ -121,10 +126,8 @@ public class Items {
 
         new EvolutionStone("20", "Ice Stone", "A stone that is cold to the touch",
                 new String[]{"Alolan Vulpix", "Galarian Darumaka", "Eevee"}, 3000, 1500);
-
         System.out.println("Items initialized. Total items in master list: " + itemCount);
     }
-
 
     /**
      * Creates a deep copy of the given Items object.
@@ -133,7 +136,6 @@ public class Items {
      * @param original The original Items object to clone.
      * @return A new Items object with the same properties.
      */
-
     public static Items cloneItem(Items original) {
         if (original == null) return null;
         Items clone = new Items(
@@ -147,16 +149,26 @@ public class Items {
                 original.sellingPrice,
                 false // Do not register in master list
         );
-        clone.setQuantity(original.getQuantity()); // Copy quantity
+        clone.setQuantity(original.getQuantity()); 
         return clone;
     }
+
+    /**
+     * Returns the quantity of the item.
+     * @return the quantity of the item as an integer
+     */
     public int getQuantity() {
         return quantity;
     }
 
+    /**
+     * Sets the quantity of the item.
+     * @param quantity quantity of an item
+     */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
     /**
      * Returns the ID of the item.
      * @return the item ID as a String
@@ -197,6 +209,10 @@ public class Items {
         return itemEffects;
     }
 
+    /**
+     * Returns whether the item is a part of evolution stones
+     * @return true if the item is used for evolution, false otherwise
+     */
     public boolean getForEvo() {
         return forEvo;
     }
@@ -217,38 +233,13 @@ public class Items {
         return sellingPrice;
     }
 
-    /*
-    // Uncomment and complete if needed.
-    public void displayItems() {
-        System.out.println("\n ================================================================================================");
-        System.out.printf("\n\tItem ID %s: %s", getitemID(), getitemName());
-        System.out.printf("\n\tCategory: " + getitemCategory());
-        System.out.printf("\n\tDescription: " + getitemDesc());
-        System.out.printf("\n\tEffects: " + getitemEffects());
-
-        // Assuming getToSold() and getendBuyingPrice() would be implemented elsewhere if this is used
-        // if (getToSold() == true) {
-        //     if(getForEvo() == false) {
-        //         System.out.printf("\n\tBuying Price: P %.2f", getstartBuyingPrice());
-        //     } else {
-        //         System.out.printf("\n\tBuying Price: P %.2f - P %.2f", getstartBuyingPrice(), getendBuyingPrice());
-        //     }
-        // } else {
-        //     System.out.printf("\n\tBuying Price: Not Sold");
-        // }
-        System.out.printf("\n\tSelling Price: P %.2f", getsellingPrice());
-        System.out.println("\n\n ================================================================================================");
-    }
-    */
-
     /**
      * Searches for an item in the item list by its name.
      * @param name the name of the item to search for
      * @return the matching Items object if found, otherwise null
      */
     public static Items getItemByName(String name) {
-        // Search the master itemList
-        for (int i = 0; i < itemCount; i++) { // Iterate only up to itemCount
+        for (int i = 0; i < itemCount; i++) { 
             Items items = itemList[i];
             if (items != null && items.getitemName().equalsIgnoreCase(name.strip())) {
                 return items;
@@ -257,18 +248,8 @@ public class Items {
         return null;
     }
 
-    // Removed getAvailItems(), getEvolutionItems(), getAvailItemCount(), getEvolutionItemCount()
-    // because if your UI code expects to iterate over Items.itemList and filter it,
-    // these explicit filtered arrays are not strictly necessary as static members of Items.
-    // If your UI relies on these being pre-filtered and readily available as static arrays,
-    // we would need to re-introduce the logic to populate them *after* initializeItems
-    // ensures all items are in itemList.
-
     /**
-     * Registers a new item into the item list if there is available space.
-     * If the item list is full, it prints an error message.
-     * This method is private because only the initial creation of master item definitions
-     * should add to itemList.
+     * Registers an item into the item list
      * @param item the item to be registered
      */
     private static void registerItem(Items item) {
@@ -284,7 +265,6 @@ public class Items {
                 return; // Prevent adding duplicate ID
             }
         }
-
         if (itemCount < itemList.length) {
             itemList[itemCount] = item;
             itemCount++;
@@ -292,6 +272,11 @@ public class Items {
             System.err.println("⚠ Item database full! Cannot register: " + item.getitemName());
         }
     }
+
+    /**
+     * Converts this item object into a comma-separated string
+     * @return the formatted string representation of the item's data
+     */
     public String toCsvString() {
         return this.itemName + "," + this.quantity;
     }

@@ -7,6 +7,7 @@ import java.util.Scanner;
  *  @author Maurienne Marie M. Mojica
  *  @version 5.0
  */
+
 public class Pokedex {
 
     /**
@@ -16,6 +17,7 @@ public class Pokedex {
     private Pokedex() {
         // Prevent instantiation
     }
+
     /**
      Array to store Pokémon objects, moves, available items, evolution items, and trainers.
      */
@@ -24,6 +26,7 @@ public class Pokedex {
     private static Items[]availItems = new Items[300];
     private static Items[]evolutionItems = new Items[300];
     private static Trainers[]trainers = new Trainers[300];
+
     /**
      * Counter for the number of Pokémon added to the Pokedex.
      */
@@ -110,7 +113,8 @@ public class Pokedex {
      name, types, stats, and evolution information. It performs input validation to ensure
      no duplicate entries and valid types are added. Once validated, it stores the Pokémon in
      the array and appends the data to the file "pokedex.txt".
-     @return: void
+     @param name pokemon name to get
+     @return pokemon if found, null otherwise
      */
     public static Pokemon getPokemonByName(String name) {
         if (name == null || name.trim().isEmpty()) {
@@ -136,7 +140,11 @@ public class Pokedex {
 
         return null; // No match found
     }
-    private static void addPokemon() // orig
+
+    /**
+     * From Mco1 Add Pokemon feature (Console version)
+     */
+    private static void addPokemon() 
     {
         int PokedexNo;
         String Name;
@@ -274,6 +282,9 @@ public class Pokedex {
         }
     }
 
+    /**
+     * This method displays pokemon from database (mco1, console version)
+     */
     private static void viewPokemon()
     {
         System.out.println("\n ================================================================================================");
@@ -930,62 +941,6 @@ public class Pokedex {
         }
     }
 
-    /*
-     /**
-        This method searches for items based on either buying or selling price.
-        It supports searching within a price range (for evolution items) or exact match.
-        If no matching items are found, it prints an appropriate message.
-        @param itemsArray   the array of items to search
-        @param searchPrice  the price value to search for
-        @param option       the type of search: 5 = buying price, 6 = selling price
-        @param Evo          true if the item is an evolution item (uses range search)
-
-    public static void searchItemsByPrice(Items[] itemsArray, double searchPrice,int option, boolean Evo)
-    {
-        boolean found = false;
-        for (Items item : itemsArray)
-        {
-            if (item == null)
-            {
-                continue;
-            }
-
-            if(option == 5)
-            {
-                if(Evo == true)
-                {
-                    if (item.getstartBuyingPrice() <= searchPrice && item.getendBuyingPrice() >= searchPrice)
-                    {
-                        item.displayItems(); // print each matched item
-                        found = true;
-                    }
-                }
-
-                else
-                {
-                   if(item.getstartBuyingPrice() == searchPrice){
-                     item.displayItems(); // print each matched item
-                     found = true;
-                   }
-                }
-            }
-
-            else if(option ==6)
-            {
-                if (item.getsellingPrice() == searchPrice)
-                {
-                     item.displayItems(); // print each matched item
-                    found = true;
-                }
-            }
-        }
-       if (found == false)
-        {
-            System.out.println("   Item not found");
-            System.out.println("\n ================================================================================================");
-        }
-    } */
-
     /**
      This method prompts the user for a valid double input with a specified prompt.
      It continues to ask until a valid double is entered, handling non-numeric inputs gracefully.
@@ -1131,6 +1086,11 @@ public class Pokedex {
         }while(choice != 3);
     }
 
+    /**
+     * Returns a list of all available Pokémon from the main Pokémon array.
+     *
+     * @return an {@code ArrayList} containing all available {@code Pokemon} objects
+     */
     public static ArrayList<Pokemon> getAvailablePokemon() {
         ArrayList<Pokemon> availablePokemon = new ArrayList<>();
         for (Pokemon pokemon : pokemon)
@@ -1153,6 +1113,7 @@ public class Pokedex {
         Scanner input = new Scanner(new File("pokedex.txt"));
         Scanner input2 = new Scanner(new File("moves.txt"));
         input2.useDelimiter("-");
+
         // Create ALL items with UNIQUE IDs. Their constructors will automatically add them to itemList.
         new Vitamin("01", "HP Up", "A nutritious drink for Pokemon", "HP", 10000, 5000);
         new Vitamin("02", "Protein", "A nutritious drink for Pokemon", "Attack", 10000, 5000);
@@ -1203,7 +1164,7 @@ public class Pokedex {
             String Type2 = input2.next().trim();
             Moves.addMovetoDataBase(Name, Desc, Machine, Type1, Type2);
         }
-        //Moves.addMovetoDataBase(null,null,null,null,null); for testing
+
         while(input.hasNext())
         {
             int PokedexNo = input.nextInt();
@@ -1221,24 +1182,12 @@ public class Pokedex {
             pokemon[pokemonCount] = new Pokemon (PokedexNo,Name,Type1,Type2,BaseLevel,From,To,EvoLevel,HP,Atk,Def,Spd);
             pokemon[pokemonCount].teachMove("Tackle",false);
             pokemon[pokemonCount].teachMove("Defend",false);
-
-            /* for testing item and move methods
-            pokemon[pokemonCount].teachMove("Megahorn");
-            pokemon[pokemonCount].teachMove("Surf");
-            pokemon[pokemonCount].forgetMove("Surf");
-            pokemon[pokemonCount].forgetMove("Megahorn");
-            pokemon[pokemonCount].giveHeldItem("Magazine");
-            pokemon[pokemonCount].giveHeldItem("HP Up");
-            pokemon[pokemonCount].giveHeldItem("Carbos");
-            pokemon[pokemonCount].removeHeldItem();*/
-
-
             pokemonCount++;
         }
 
         do
         {
-            new DexGui("Pokemon");
+            new DexGui("Pokemon"); // Call GUI VERSION
             System.out.println("\n\n\n       ███████╗███╗   ██╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗███████╗██████╗     ██████╗  ██████╗ ██╗  ██╗███████╗██████╗ ███████╗██╗  ██╗");
             System.out.println("        ██╔════╝████╗  ██║██║  ██║██╔══██╗████╗  ██║██╔════╝██╔════╝██╔══██╗    ██╔══██╗██╔═══██╗██║ ██╔╝██╔════╝██╔══██╗██╔════╝╚██╗██╔╝");
             System.out.println("        █████╗  ██╔██╗ ██║███████║███████║██╔██╗ ██║██║     █████╗  ██║  ██║    ██████╔╝██║   ██║█████╔╝ █████╗  ██║  ██║█████╗   ╚███╔╝ ");
@@ -1271,7 +1220,6 @@ public class Pokedex {
 
             switch (choice)
             {
-                // Pokemon Management Menu
                 case 1:
                     do
                     {
@@ -1304,7 +1252,6 @@ public class Pokedex {
                     }while (manage!=4);
                     break;
 
-                // Moves Management Menu
                 case 2:
                     do
                     {
@@ -1337,7 +1284,6 @@ public class Pokedex {
                     }while (manage != 4);
                     break;
 
-                // Item Management Menu
                 case 3:
                     do
                     {
