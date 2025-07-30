@@ -394,23 +394,17 @@ public class DexGui {
         JScrollPane descScroll = new JScrollPane(descArea);
 
         JLabel machineLabel = new JLabel("Machine:");
-        JComboBox<String> machineCombo = new JComboBox<>(new String[]{
-                "HM","TM"
-        });
+        JComboBox<String> machineCombo = new JComboBox<>(new String[]{"HM","TM"});
 
         JLabel type1Label = new JLabel("Primary Type:");
-        JComboBox<String> type1Combo = new JComboBox<>(new String[]{
-                "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
-                "Fighting", "Poison", "Ground", "Flying", "Psychic",
-                "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
-        });
+        JComboBox<String> type1Combo = new JComboBox<>(Pokemon.TYPES);
 
         JLabel type2Label = new JLabel("Secondary Type (or None):");
-        JComboBox<String> type2Combo = new JComboBox<>(new String[]{
-                "None", "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
-                "Fighting", "Poison", "Ground", "Flying", "Psychic",
-                "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
-        });
+        JComboBox<String> type2Combo = new JComboBox<>();
+        type2Combo.addItem("None");
+        for (String type : Pokemon.TYPES) {
+            type2Combo.addItem(type);
+        }
 
         // Add components to form panel
         formPanel.add(nameLabel);
@@ -442,8 +436,21 @@ public class DexGui {
             String type1 = (String) type1Combo.getSelectedItem();
             String type2 = (String) type2Combo.getSelectedItem();
 
+            // Validation checks
             if (name.isEmpty() || desc.isEmpty() || machine.isEmpty()) {
                 resultArea.setText("Please fill in all required fields.");
+                return;
+            }
+
+            // Check for numbers in move name
+            if (name.matches(".*\\d.*")) {
+                resultArea.setText("Error: Move names cannot contain numbers.");
+                return;
+            }
+
+            // Check for special characters (optional)
+            if (!name.matches("^[a-zA-Z\\s-]+$")) {
+                resultArea.setText("Error: Move names can only contain letters, spaces and hyphens.");
                 return;
             }
 
@@ -471,17 +478,15 @@ public class DexGui {
             machineCombo.setSelectedIndex(0);
             type1Combo.setSelectedIndex(0);
             type2Combo.setSelectedIndex(0);
-            String data = ("\n" + name + "-" + desc + "-" + machine + "-"+ type1 +"-" + type2 + "-");
 
-            try
-            {
-                FileWriter writer = new FileWriter("moves.txt",true);
+            // Save to file
+            String data = "\n" + name + "-" + desc + "-" + machine + "-" + type1 + "-" + type2 + "-";
+            try {
+                FileWriter writer = new FileWriter("moves.txt", true);
                 writer.append(data);
                 writer.close();
-            }
-            catch (IOException f)
-            {
-                f.printStackTrace();
+            } catch (IOException f) {
+                resultArea.setText("Error saving move to file: " + f.getMessage());
             }
         });
 
@@ -636,7 +641,7 @@ public class DexGui {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel searchLabel = new JLabel("Enter Item Name:");
+        JLabel searchLabel = new JLabel("Enter Item Name or ID:");
         JTextField searchField = new JTextField(20);
         JButton searchButton = new JButton("Search");
 
@@ -653,22 +658,32 @@ public class DexGui {
         backButton.addActionListener(e -> ItemManagement());
 
         searchButton.addActionListener(e -> {
-            String keyword = searchField.getText().trim().toLowerCase();
-            if (keyword.isEmpty()) {
-                resultArea.setText("Please enter an item name or keyword.");
+            String searchTerm = searchField.getText().trim();
+            if (searchTerm.isEmpty()) {
+                resultArea.setText("Please enter an item name or ID.");
                 return;
             }
 
             StringBuilder foundItems = new StringBuilder();
+            boolean isNumericSearch = searchTerm.matches("\\d+"); // Check if search is numeric ID
+
             for (Items item : Items.itemList) {
-                if (item != null && (
-                        item.getitemName().toLowerCase().contains(keyword) ||
-                                item.getitemCategory().toLowerCase().contains(keyword) ||
-                                item.getitemDesc().toLowerCase().contains(keyword) ||
-                                item.getitemEffects().toLowerCase().contains(keyword) ||
-                                String.valueOf(item.getstartBuyingPrice()).contains(keyword) ||
-                                String.valueOf(item.getsellingPrice()).contains(keyword)
-                )) {
+                if (item == null) continue;
+
+                boolean matchFound;
+                if (isNumericSearch) {
+                    // Search by ID
+                    matchFound = String.valueOf(item.getitemID()).equals(searchTerm);
+                } else {
+                    // Search by name/description/effects (case-insensitive)
+                    String lowerSearch = searchTerm.toLowerCase();
+                    matchFound = item.getitemName().toLowerCase().contains(lowerSearch) ||
+                            item.getitemCategory().toLowerCase().contains(lowerSearch) ||
+                            item.getitemDesc().toLowerCase().contains(lowerSearch) ||
+                            item.getitemEffects().toLowerCase().contains(lowerSearch);
+                }
+
+                if (matchFound) {
                     foundItems.append("Item ID: ").append(item.getitemID()).append("\n");
                     foundItems.append("Name: ").append(item.getitemName()).append("\n");
                     foundItems.append("Category: ").append(item.getitemCategory()).append("\n");
@@ -681,7 +696,7 @@ public class DexGui {
             }
 
             if (foundItems.length() == 0) {
-                resultArea.setText("No item matches the keyword: " + keyword);
+                resultArea.setText("No items found matching: " + searchTerm);
             } else {
                 resultArea.setText(foundItems.toString());
             }
@@ -2185,8 +2200,14 @@ public class DexGui {
     }
 
     public static Pokemon searchByName(Pokemon[] pokemonList, String nameToSearch) {
+        if (nameToSearch == null || nameToSearch.trim().isEmpty()) {
+            return null;
+        }
+
+        String searchTerm = nameToSearch.trim().toLowerCase();
+
         for (Pokemon p : pokemonList) {
-            if (p != null && p.getName().equalsIgnoreCase(nameToSearch.trim())) {
+            if (p != null && p.getName().toLowerCase().contains(searchTerm)) {
                 return p; // Found matching name
             }
         }
@@ -2370,7 +2391,7 @@ public class DexGui {
             String t2 = p.getType2().toLowerCase();
             String input = typeInput.toLowerCase();
 
-            if (t1.equals(input) || t2.equals(input)) {
+            if (t1.contains(input) || t2.contains(input)) {
                 JPanel pokemonCard = DisplayPokemonSearch(p);
                 mainPanel.add(pokemonCard);
                 mainPanel.add(Box.createVerticalStrut(10));
@@ -3131,7 +3152,7 @@ public class DexGui {
     private static String formatPokemonLine(String csv) {
         String[] parts = csv.split(",");
         if (parts.length >= 3) {
-            return parts[1] + " (Lv." + parts[2] + ")";
+            return parts[1] + " (Lv." + parts[4] + ")";
         }
         return csv; // fallback
     }

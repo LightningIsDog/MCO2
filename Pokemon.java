@@ -615,7 +615,7 @@ public class Pokemon implements Serializable
      */
     public boolean canEvolve() {
         // Check level-based evolution
-        if (To != 0 && BaseLevel >= EvoLevel) {
+        if (To != 0 && BaseLevel >= EvoLevel && EvoLevel != 0) {
             return true;
         }
 
